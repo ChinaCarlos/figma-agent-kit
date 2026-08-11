@@ -4,13 +4,13 @@ Figma Agent Kit includes optional **AI layer rename** and **visual grouping** wo
 
 ## Setup
 
-1. Open the plugin → ⚙ → **模型设置**
-2. Set **API base URL** (default `https://api.openai.com/v1`)
+1. Open the plugin → ⚙ → choose UI language (**中文** / **English**) in the menu if needed
+2. ⚙ → **模型设置** → set **API base URL** (default `https://api.openai.com/v1`)
 3. Set **Model** (default `gpt-4o`; `gpt-4o-mini` also works)
 4. Paste your **API key**
 5. Click **Test connection**, then **Save**
 
-Credentials are stored in Figma `clientStorage` on your machine only.
+Credentials and language preference are stored in Figma `clientStorage` on your machine only. UI copy lives in `packages/figma-agent-plugin/src/ui/locales.json`.
 
 ### Prompt templates
 

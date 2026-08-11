@@ -1,5 +1,7 @@
 node_modules/
 dist/
+.tmp-ui-ux-pro-max/
+.tmp*/
 *.log
 .DS_Store
 .env

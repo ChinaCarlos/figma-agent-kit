@@ -51,8 +51,33 @@ function injectPromptTemplates(html) {
   return html.replace(marker, () => `${runtimeJs}\n      ${marker}`);
 }
 
+function injectLocales(html) {
+  const marker = "/* __I18N_LOCALES__ */";
+  if (!html.includes(marker)) {
+    throw new Error("ui.html i18n locales marker not found");
+  }
+  const locales = JSON.parse(
+    readFileSync(resolve(__dirname, "src/ui/locales.json"), "utf-8"),
+  );
+  const runtimeJs = `const I18N_LOCALES = ${JSON.stringify(locales)};`;
+  return html.replace(marker, () => `${runtimeJs}\n      ${marker}`);
+}
+
+function injectJsZip(html) {
+  const marker = "<!--FIGMA_AGENT_JSZIP-->";
+  if (!html.includes(marker)) {
+    throw new Error("ui.html JSZip marker not found");
+  }
+  const jszipPath = resolve(__dirname, "node_modules/jszip/dist/jszip.min.js");
+  const source = readFileSync(jszipPath, "utf-8");
+  // Avoid `$&` corruption from String.replace when vendor minified code contains it.
+  return html.replace(marker, () => `<script>${source}</script>`);
+}
+
 let uiHtml = readFileSync(resolve(__dirname, "src/ui/ui.html"), "utf-8");
 uiHtml = injectPromptTemplates(uiHtml);
+uiHtml = injectLocales(uiHtml);
+uiHtml = injectJsZip(uiHtml);
 uiHtml = uiHtml
   .replaceAll("__PLUGIN_VERSION__", pkg.version)
   .replaceAll("__VERSION_CHECK_URL__", versionCheckUrl)

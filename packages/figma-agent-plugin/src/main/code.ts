@@ -1,10 +1,20 @@
 import { handleBridgeRequest, getFileKey } from "../bridge/handlers";
+import {
+  collectExportableSelection,
+  collectExportPreviewNodes,
+  exportNodeAsSlicePng,
+  exportNodesByIdAsSlices,
+  sanitizeExportBaseName,
+  sanitizeExportFileName,
+} from "../export/slices";
 import { applyGroupPlan } from "../group/apply";
 import { collectGroupCandidates } from "../group/collect";
 import { applyRenames } from "../rename/apply";
 import { collectRenameCandidates } from "../rename/collect";
 import {
   BRIDGE_PORT,
+  EXPORT_PREVIEW_SCALE,
+  EXPORT_SLICE_SCALE,
   PROMPT_OVERRIDES_STORAGE_KEY,
   SETTINGS_STORAGE_KEY,
   UI_SIZE,
@@ -17,6 +27,8 @@ import type {
   SerializedSelectionItem,
   UIMessage,
 } from "../shared/types";
+
+let activePreviewRequestId: number | null = null;
 
 figma.showUI(__html__, {
   width: UI_SIZE.normal.width,
@@ -33,13 +45,153 @@ function serializeSelectionItems(): SerializedSelectionItem[] {
 }
 
 function postSelection(): void {
+  // Cancel in-flight 1× preview when selection changes.
+  activePreviewRequestId = null;
   const msg: PluginMessage = {
     type: "selectionChange",
     selection: serializeSelectionItems(),
+    exportNodes: collectExportPreviewNodes(figma.currentPage.selection),
     fileKey: getFileKey(),
     fileName: figma.root.name,
   };
   figma.ui.postMessage(msg);
+}
+
+async function handleExportSlices(requestId: number): Promise<void> {
+  activePreviewRequestId = requestId;
+  const selection = figma.currentPage.selection;
+
+  if (selection.length === 0) {
+    postError("Select layers to export first.");
+    figma.ui.postMessage({
+      type: "exportSlicesDone",
+      requestId,
+      loaded: 0,
+      total: 0,
+      skipped: [],
+    } satisfies PluginMessage);
+    return;
+  }
+
+  const { nodes, skipped } = collectExportableSelection(selection);
+  const total = nodes.length;
+  postStatus(`Loading slice preview (${EXPORT_PREVIEW_SCALE}×) · ${total}`);
+
+  if (total === 0) {
+    figma.ui.postMessage({
+      type: "exportSlicesDone",
+      requestId,
+      loaded: 0,
+      total: 0,
+      skipped,
+    } satisfies PluginMessage);
+    return;
+  }
+
+  let loaded = 0;
+  const usedNames = new Set<string>();
+  const localSkipped = [...skipped];
+
+  try {
+    for (const node of nodes) {
+      if (activePreviewRequestId !== requestId) return;
+      try {
+        const png = await exportNodeAsSlicePng(node, EXPORT_PREVIEW_SCALE);
+        const baseName = sanitizeExportBaseName(node.name);
+        let fileName = sanitizeExportFileName(node.name, EXPORT_PREVIEW_SCALE);
+        if (usedNames.has(fileName)) {
+          const stem = fileName.replace(/\.png$/i, "");
+          let n = 2;
+          while (usedNames.has(`${stem}-${n}.png`)) n += 1;
+          fileName = `${stem}-${n}.png`;
+        }
+        usedNames.add(fileName);
+        loaded += 1;
+        figma.ui.postMessage({
+          type: "exportPreviewItem",
+          requestId,
+          item: {
+            id: node.id,
+            name: node.name,
+            baseName,
+            fileName,
+            width: Math.round("width" in node ? node.width : 0),
+            height: Math.round("height" in node ? node.height : 0),
+            scale: EXPORT_PREVIEW_SCALE,
+            png: Array.from(png),
+          },
+          loaded,
+          total,
+        } satisfies PluginMessage);
+      } catch (err) {
+        localSkipped.push({ name: node.name, reason: String(err) });
+      }
+    }
+
+    if (activePreviewRequestId !== requestId) return;
+    postStatus(
+      `Preview ready: ${loaded} × ${EXPORT_PREVIEW_SCALE}; download uses ${EXPORT_SLICE_SCALE}×`,
+    );
+    figma.ui.postMessage({
+      type: "exportSlicesDone",
+      requestId,
+      loaded,
+      total,
+      skipped: localSkipped,
+    } satisfies PluginMessage);
+  } catch (err) {
+    if (activePreviewRequestId !== requestId) return;
+    postError(err instanceof Error ? err.message : String(err));
+    figma.ui.postMessage({
+      type: "exportSlicesDone",
+      requestId,
+      loaded,
+      total,
+      skipped: localSkipped,
+    } satisfies PluginMessage);
+  }
+}
+
+async function handleExportDelivery(
+  requestId: number,
+  nodeIds: string[],
+): Promise<void> {
+  if (!nodeIds?.length) {
+    figma.ui.postMessage({
+      type: "exportDeliveryDone",
+      requestId,
+      items: [],
+      skipped: [{ name: "", reason: "no nodes" }],
+    } satisfies PluginMessage);
+    return;
+  }
+
+  postStatus(`Exporting slices (${EXPORT_SLICE_SCALE}×) · ${nodeIds.length}`);
+  try {
+    const result = await exportNodesByIdAsSlices(nodeIds, EXPORT_SLICE_SCALE);
+    figma.ui.postMessage({
+      type: "exportDeliveryDone",
+      requestId,
+      items: result.items.map((item) => ({
+        id: item.id,
+        name: item.name,
+        baseName: item.baseName,
+        fileName: item.fileName,
+        width: item.width,
+        height: item.height,
+        scale: item.scale,
+        png: Array.from(item.png),
+      })),
+      skipped: result.skipped,
+    } satisfies PluginMessage);
+  } catch (err) {
+    figma.ui.postMessage({
+      type: "exportDeliveryDone",
+      requestId,
+      items: [],
+      skipped: [{ name: "", reason: String(err) }],
+    } satisfies PluginMessage);
+  }
 }
 
 function postBridgeStatus(connected: boolean): void {
@@ -328,6 +480,16 @@ figma.ui.onmessage = async (raw: UIMessage) => {
         cloneRootId: rootId,
         plan,
       } satisfies PluginMessage);
+      break;
+    }
+
+    case "exportSlices": {
+      await handleExportSlices(raw.requestId);
+      break;
+    }
+
+    case "exportDelivery": {
+      await handleExportDelivery(raw.requestId, raw.nodeIds);
       break;
     }
 

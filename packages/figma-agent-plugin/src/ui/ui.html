@@ -5,6 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Figma Agent Kit</title>
     <style>
+
+      :root {
+        /* Micro SaaS purple (ui-ux-pro-max) — light, accessible */
+        --color-primary: #6366f1;
+        --color-primary-hover: #4f46e5;
+        --color-primary-deep: #4338ca;
+        --color-primary-soft: #eef2ff;
+        --color-primary-soft-2: #f5f3ff;
+        --color-primary-border: #c7d2fe;
+        --color-bg: #f5f3ff;
+        --color-surface: #ffffff;
+        --color-fg: #1e1b4b;
+        --color-fg-secondary: #334155;
+        --color-muted: #64748b;
+        --color-muted-2: #94a3b8;
+        --color-border: #e0e7ff;
+        --color-border-strong: #c7d2fe;
+        --color-success: #059669;
+        --color-success-soft: var(--color-success-soft);
+        --color-danger: #dc2626;
+        --color-warning: #d97706;
+        --color-on-primary: #ffffff;
+        --radius-sm: 6px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
+        --transition-fast: 150ms ease;
+      }
+
+      button,
+      .nav-item,
+      .rail-btn,
+      .link-btn,
+      .settings-popover-item,
+      .prompt-tab {
+        cursor: pointer;
+      }
+
       * {
         box-sizing: border-box;
         margin: 0;
@@ -20,8 +57,8 @@
       body {
         font-family:
           -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
-        background: #f0f0f0;
-        color: #333;
+        background: var(--color-bg);
+        color: var(--color-fg-secondary);
         user-select: none;
       }
 
@@ -38,34 +75,34 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        background: #fff;
-        border-bottom: 1px solid #e5e5e5;
+        background: var(--color-surface);
+        border-bottom: 1px solid var(--color-border);
       }
 
       .brand-title {
         font-size: 13px;
         font-weight: 600;
-        color: #111;
+        color: var(--color-fg);
         letter-spacing: -0.2px;
       }
 
       .brand-sub {
         font-size: 10px;
-        color: #999;
+        color: var(--color-muted-2);
         margin-top: 1px;
       }
 
       .brand-ver {
         font-size: 11px;
         font-weight: 500;
-        color: #888;
+        color: var(--color-muted);
         margin-left: 6px;
       }
 
       .header-badge {
         font-size: 10px;
-        color: #18a0fb;
-        background: #e8f4fe;
+        color: var(--color-primary);
+        background: var(--color-primary-soft);
         padding: 3px 8px;
         border-radius: 10px;
         font-weight: 500;
@@ -89,11 +126,11 @@
       .btn-mini {
         width: 28px;
         height: 28px;
-        border: 1px solid #d6d6d6;
-        background: #fff;
+        border: 1px solid var(--color-border-strong);
+        background: var(--color-surface);
         border-radius: 6px;
         cursor: pointer;
-        color: #666;
+        color: var(--color-muted);
         font-size: 14px;
         line-height: 1;
         transition: all 0.15s ease;
@@ -117,16 +154,16 @@
         width: 6px;
         height: 6px;
         border-radius: 50%;
-        background: #e53e3e;
+        background: var(--color-danger);
         box-shadow: 0 0 0 1.5px #fff;
       }
 
       .btn-settings:hover,
       .settings-menu-wrap.is-open .btn-settings,
       .btn-mini:hover {
-        border-color: #18a0fb;
-        color: #18a0fb;
-        background: #f3f9ff;
+        border-color: var(--color-primary);
+        color: var(--color-primary);
+        background: var(--color-primary-soft-2);
       }
 
       .btn-mini .mini-icon-expand {
@@ -150,9 +187,9 @@
         position: absolute;
         top: calc(100% + 6px);
         right: 0;
-        min-width: 148px;
-        background: #fff;
-        border: 1px solid #e5e5e5;
+        min-width: 168px;
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
         border-radius: 8px;
         box-shadow: 0 10px 28px rgba(0, 0, 0, 0.14);
         padding: 4px;
@@ -174,24 +211,24 @@
         padding: 8px 10px;
         position: relative;
         font-size: 12px;
-        color: #333;
+        color: var(--color-fg-secondary);
         cursor: pointer;
       }
 
       .settings-popover-item:hover {
-        background: #f3f9ff;
-        color: #0b6cb8;
+        background: var(--color-primary-soft-2);
+        color: var(--color-primary-deep);
       }
 
       .settings-popover-item-desc {
         display: block;
         margin-top: 2px;
         font-size: 10px;
-        color: #999;
+        color: var(--color-muted-2);
       }
 
       .settings-popover-item:hover .settings-popover-item-desc {
-        color: #6b9fc4;
+        color: var(--color-primary);
       }
 
       .settings-popover-item.has-update::after {
@@ -202,7 +239,54 @@
         width: 6px;
         height: 6px;
         border-radius: 50%;
-        background: #e53e3e;
+        background: var(--color-danger);
+      }
+
+      .settings-popover-divider {
+        height: 1px;
+        margin: 4px 6px;
+        background: var(--color-border);
+      }
+
+      .settings-popover-lang {
+        padding: 6px 8px 8px;
+      }
+
+      .settings-popover-lang-label {
+        font-size: 10px;
+        color: var(--color-muted);
+        margin-bottom: 6px;
+        padding: 0 2px;
+      }
+
+      .settings-lang-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4px;
+      }
+
+      .settings-lang-btn {
+        border: 1px solid var(--color-border-strong);
+        background: var(--color-surface);
+        color: var(--color-fg-secondary);
+        border-radius: 6px;
+        height: 28px;
+        font-size: 11px;
+        cursor: pointer;
+        padding: 0 6px;
+      }
+
+      .settings-lang-btn:hover {
+        border-color: var(--color-primary);
+        color: var(--color-primary);
+        background: var(--color-primary-soft);
+      }
+
+      .settings-lang-btn.is-active {
+        border-color: var(--color-primary);
+        background: var(--color-primary-soft);
+        color: var(--color-primary-deep);
+        font-weight: 600;
       }
 
       .btn-bridge-reconnect {
@@ -213,7 +297,7 @@
         background: transparent;
         border-radius: 4px;
         cursor: pointer;
-        color: #888;
+        color: var(--color-muted);
         display: none;
         align-items: center;
         justify-content: center;
@@ -229,8 +313,8 @@
       }
 
       .btn-bridge-reconnect:hover {
-        color: #18a0fb;
-        background: rgba(24, 160, 251, 0.1);
+        color: var(--color-primary);
+        background: rgba(99, 102, 241, 0.12);
       }
 
       .btn-bridge-reconnect:disabled {
@@ -282,19 +366,19 @@
       }
 
       .bridge-toast.is-success {
-        background: #2f855a;
+        background: var(--color-success);
       }
 
       .bridge-toast.is-error {
-        background: #c53030;
+        background: var(--color-danger);
       }
 
       .mini-selection-bar {
         display: none;
         flex-shrink: 0;
         padding: 8px 12px 10px;
-        background: #fff;
-        border-bottom: 1px solid #e5e5e5;
+        background: var(--color-surface);
+        border-bottom: 1px solid var(--color-border);
         gap: 4px;
         flex-direction: column;
         min-height: 0;
@@ -307,21 +391,21 @@
 
       .mini-selection-label {
         font-size: 10px;
-        color: #999;
+        color: var(--color-muted-2);
         font-weight: 500;
       }
 
       #mini-selection-text {
         font-size: 12px;
         font-weight: 600;
-        color: #222;
+        color: var(--color-fg);
         line-height: 1.35;
         word-break: break-word;
       }
 
       #mini-selection-hint {
         font-size: 10px;
-        color: #888;
+        color: var(--color-muted);
         line-height: 1.35;
         word-break: break-word;
       }
@@ -362,7 +446,7 @@
       }
 
       body.mini-mode .app {
-        background: #fff;
+        background: var(--color-surface);
       }
 
       .mcp-bridge-panel {
@@ -373,11 +457,11 @@
         max-width: 420px;
         padding: 4px 10px;
         border-radius: 8px;
-        border: 1px solid #e8e8e8;
-        background: #fafafa;
+        border: 1px solid var(--color-border);
+        background: var(--color-primary-soft-2);
         font-size: 10px;
         line-height: 1.35;
-        color: #555;
+        color: var(--color-muted);
       }
 
       .bridge-dot {
@@ -389,7 +473,7 @@
       }
 
       .mcp-bridge-panel.connected .bridge-dot {
-        background: #38a169;
+        background: var(--color-success);
         box-shadow: 0 0 0 2px rgba(56, 161, 105, 0.2);
       }
 
@@ -399,7 +483,7 @@
       }
 
       .mcp-bridge-panel.disconnected .bridge-dot {
-        background: #e53e3e;
+        background: var(--color-danger);
       }
 
       @keyframes bridge-pulse {
@@ -415,15 +499,15 @@
       .bridge-status-text {
         flex-shrink: 0;
         font-weight: 600;
-        color: #444;
+        color: var(--color-fg-secondary);
       }
 
       .mcp-bridge-panel.connected .bridge-status-text {
-        color: #276749;
+        color: var(--color-success);
       }
 
       .mcp-bridge-panel.disconnected .bridge-status-text {
-        color: #c53030;
+        color: var(--color-danger);
       }
 
       .bridge-meta {
@@ -431,11 +515,11 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        color: #666;
+        color: var(--color-muted);
       }
 
       .bridge-meta strong {
-        color: #333;
+        color: var(--color-fg-secondary);
         font-weight: 600;
       }
 
@@ -448,8 +532,8 @@
       .sidebar {
         width: 220px;
         flex-shrink: 0;
-        background: #fafafa;
-        border-right: 1px solid #e5e5e5;
+        background: var(--color-primary-soft-2);
+        border-right: 1px solid var(--color-border);
         display: flex;
         flex-direction: column;
         padding: 12px;
@@ -508,10 +592,10 @@
       .btn-sidebar-expand {
         width: 22px;
         height: 22px;
-        border: 1px solid #ddd;
+        border: 1px solid var(--color-border-strong);
         border-radius: 5px;
-        background: #fff;
-        color: #666;
+        background: var(--color-surface);
+        color: var(--color-muted);
         font-size: 12px;
         line-height: 1;
         cursor: pointer;
@@ -524,9 +608,9 @@
 
       .btn-sidebar-collapse:hover,
       .btn-sidebar-expand:hover {
-        border-color: #18a0fb;
-        color: #18a0fb;
-        background: #f3f9ff;
+        border-color: var(--color-primary);
+        color: var(--color-primary);
+        background: var(--color-primary-soft-2);
       }
 
       .btn-sidebar-expand {
@@ -538,9 +622,9 @@
       .rail-btn {
         width: 32px;
         height: 32px;
-        border: 1px solid #e8e8e8;
+        border: 1px solid var(--color-border);
         border-radius: 8px;
-        background: #fff;
+        background: var(--color-surface);
         cursor: pointer;
         font-size: 15px;
         line-height: 1;
@@ -551,48 +635,48 @@
       }
 
       .rail-btn:hover {
-        border-color: #b3d9f9;
+        border-color: var(--color-primary-border);
         background: #f8fbff;
       }
 
       .rail-btn.active {
-        border-color: #18a0fb;
-        background: #e8f4fe;
-        box-shadow: 0 0 0 1px #18a0fb;
+        border-color: var(--color-primary);
+        background: var(--color-primary-soft);
+        box-shadow: 0 0 0 1px var(--color-primary);
       }
 
       .sidebar-section-label {
         font-size: 10px;
         font-weight: 600;
-        color: #999;
+        color: var(--color-muted-2);
         text-transform: uppercase;
         letter-spacing: 0.5px;
         margin-bottom: 6px;
       }
 
       .selection-card {
-        background: #fff;
-        border: 1px solid #e8e8e8;
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
         border-radius: 8px;
         padding: 10px 12px;
       }
 
       .selection-card.ready {
-        border-color: #b3d9f9;
+        border-color: var(--color-primary-border);
         background: #f8fbff;
       }
 
       #selection-text {
         font-size: 12px;
         font-weight: 600;
-        color: #111;
+        color: var(--color-fg);
         word-break: break-all;
         line-height: 1.4;
       }
 
       #selection-hint {
         font-size: 10px;
-        color: #888;
+        color: var(--color-muted);
         margin-top: 4px;
         line-height: 1.45;
       }
@@ -609,9 +693,9 @@
         gap: 10px;
         width: 100%;
         padding: 10px 12px;
-        border: 1px solid #e8e8e8;
+        border: 1px solid var(--color-border);
         border-radius: 8px;
-        background: #fff;
+        background: var(--color-surface);
         cursor: pointer;
         text-align: left;
         transition:
@@ -621,14 +705,14 @@
       }
 
       .nav-item:hover {
-        border-color: #b3d9f9;
+        border-color: var(--color-primary-border);
         background: #f8fbff;
       }
 
       .nav-item.active {
-        border-color: #18a0fb;
-        background: #e8f4fe;
-        box-shadow: 0 0 0 1px #18a0fb;
+        border-color: var(--color-primary);
+        background: var(--color-primary-soft);
+        box-shadow: 0 0 0 1px var(--color-primary);
       }
 
       .nav-icon {
@@ -641,13 +725,13 @@
       .nav-label {
         font-size: 12px;
         font-weight: 600;
-        color: #111;
+        color: var(--color-fg);
         display: block;
       }
 
       .nav-desc {
         font-size: 10px;
-        color: #888;
+        color: var(--color-muted);
         margin-top: 2px;
         display: block;
         line-height: 1.4;
@@ -658,13 +742,13 @@
         display: flex;
         flex-direction: column;
         min-width: 0;
-        background: #fff;
+        background: var(--color-surface);
       }
 
       .panel-header {
         flex-shrink: 0;
         padding: 14px 20px 10px;
-        border-bottom: 1px solid #f0f0f0;
+        border-bottom: 1px solid var(--color-border);
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -681,12 +765,12 @@
       #panel-title {
         font-size: 14px;
         font-weight: 600;
-        color: #111;
+        color: var(--color-fg);
       }
 
       .panel-count {
         font-size: 11px;
-        color: #999;
+        color: var(--color-muted-2);
         background: #f5f5f5;
         padding: 2px 8px;
         border-radius: 10px;
@@ -694,7 +778,7 @@
 
       .btn-run-task {
         border: none;
-        background: #18a0fb;
+        background: var(--color-primary);
         color: #fff;
         border-radius: 8px;
         height: 30px;
@@ -705,7 +789,7 @@
       }
 
       .btn-run-task:hover:not(:disabled) {
-        background: #0d8de0;
+        background: var(--color-primary-hover);
       }
 
       .btn-run-task:disabled {
@@ -741,7 +825,7 @@
         height: 100%;
         min-height: 240px;
         text-align: center;
-        color: #999;
+        color: var(--color-muted-2);
         padding: 24px;
       }
 
@@ -753,7 +837,7 @@
 
       .idle-hero h3 {
         font-size: 14px;
-        color: #555;
+        color: var(--color-muted);
         font-weight: 600;
         margin-bottom: 6px;
       }
@@ -769,7 +853,7 @@
         background: #f0f2f5;
         padding: 1px 5px;
         border-radius: 4px;
-        color: #555;
+        color: var(--color-muted);
       }
 
       .summary-card {
@@ -779,18 +863,18 @@
         padding: 12px 14px;
         font-size: 12px;
         line-height: 1.65;
-        color: #555;
+        color: var(--color-muted);
         margin-bottom: 12px;
       }
 
       .summary-card strong {
-        color: #111;
+        color: var(--color-fg);
       }
 
       .scroll-list {
-        border: 1px solid #e8e8e8;
+        border: 1px solid var(--color-border);
         border-radius: 8px;
-        background: #fafafa;
+        background: var(--color-primary-soft-2);
         overflow-y: auto;
         max-height: calc(100vh - 280px);
       }
@@ -807,12 +891,12 @@
       }
 
       .list-item.empty {
-        color: #999;
+        color: var(--color-muted-2);
         font-style: italic;
       }
 
       .change-old {
-        color: #999;
+        color: var(--color-muted-2);
         text-decoration: line-through;
         word-break: break-all;
       }
@@ -823,7 +907,7 @@
       }
 
       .change-new {
-        color: #276749;
+        color: var(--color-success);
         font-weight: 600;
         word-break: break-all;
       }
@@ -835,26 +919,26 @@
           ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
         font-size: 11px;
         padding: 10px;
-        border: 1px solid #ddd;
+        border: 1px solid var(--color-border-strong);
         border-radius: 8px;
         resize: vertical;
         line-height: 1.45;
-        color: #222;
-        background: #fafafa;
+        color: var(--color-fg);
+        background: var(--color-primary-soft-2);
       }
 
       .plan-editor:focus {
         outline: none;
-        border-color: #18a0fb;
-        background: #fff;
-        box-shadow: 0 0 0 2px rgba(24, 160, 251, 0.15);
+        border-color: var(--color-primary);
+        background: var(--color-surface);
+        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
       }
 
       .panel-footer {
         flex-shrink: 0;
         padding: 12px 20px;
-        border-top: 1px solid #f0f0f0;
-        background: #fafafa;
+        border-top: 1px solid var(--color-border);
+        background: var(--color-primary-soft-2);
       }
 
       .panel-footer.hidden {
@@ -864,7 +948,7 @@
       .btn-apply {
         width: 100%;
         padding: 11px;
-        background: #276749;
+        background: var(--color-success);
         color: #fff;
         border: none;
         border-radius: 8px;
@@ -874,11 +958,11 @@
       }
 
       .btn-apply:hover:not(:disabled) {
-        background: #1e4f3a;
+        background: #047857;
       }
 
       .btn-apply:disabled {
-        background: #9ae6b4;
+        background: #6ee7b7;
         cursor: not-allowed;
       }
 
@@ -888,8 +972,8 @@
         min-height: 36px;
         display: flex;
         flex-direction: column;
-        background: #fff;
-        border-top: 1px solid #e5e5e5;
+        background: var(--color-surface);
+        border-top: 1px solid var(--color-border);
         position: relative;
       }
 
@@ -934,7 +1018,7 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        border-bottom: 1px solid #f0f0f0;
+        border-bottom: 1px solid var(--color-border);
       }
 
       .console-title {
@@ -943,7 +1027,7 @@
         gap: 8px;
         font-size: 12px;
         font-weight: 600;
-        color: #444;
+        color: var(--color-fg-secondary);
       }
 
       .console-actions {
@@ -955,20 +1039,20 @@
       .btn-console-toggle,
       .btn-console-clear {
         border: 1px solid #e0e0e0;
-        background: #fff;
+        background: var(--color-surface);
         border-radius: 6px;
         height: 24px;
         padding: 0 8px;
         font-size: 11px;
-        color: #555;
+        color: var(--color-muted);
         cursor: pointer;
       }
 
       .btn-console-toggle:hover,
       .btn-console-clear:hover {
-        border-color: #18a0fb;
-        color: #18a0fb;
-        background: #f3f9ff;
+        border-color: var(--color-primary);
+        color: var(--color-primary);
+        background: var(--color-primary-soft-2);
       }
 
       .console-body {
@@ -979,7 +1063,7 @@
           ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
         font-size: 11px;
         line-height: 1.45;
-        color: #555;
+        color: var(--color-muted);
         white-space: pre-wrap;
         word-break: break-word;
         user-select: text;
@@ -989,7 +1073,7 @@
         width: 12px;
         height: 12px;
         border: 2px solid #e5e5e5;
-        border-top-color: #18a0fb;
+        border-top-color: var(--color-primary);
         border-radius: 50%;
         opacity: 0;
       }
@@ -1024,12 +1108,12 @@
         background: linear-gradient(
           135deg,
           transparent 50%,
-          #18a0fb 50%,
-          #18a0fb 58%,
+          var(--color-primary) 50%,
+          var(--color-primary) 58%,
           transparent 58%,
           transparent 66%,
-          #18a0fb 66%,
-          #18a0fb 74%,
+          var(--color-primary) 66%,
+          var(--color-primary) 74%,
           transparent 74%
         );
       }
@@ -1060,9 +1144,9 @@
       .update-modal {
         width: 100%;
         max-width: 480px;
-        background: #fff;
+        background: var(--color-surface);
         border-radius: 12px;
-        border: 1px solid #e5e5e5;
+        border: 1px solid var(--color-border);
         box-shadow: 0 14px 44px rgba(0, 0, 0, 0.18);
         overflow: hidden;
       }
@@ -1077,21 +1161,21 @@
         justify-content: space-between;
         align-items: center;
         padding: 12px 14px;
-        border-bottom: 1px solid #efefef;
+        border-bottom: 1px solid var(--color-border);
       }
 
       .settings-modal-title,
       .update-modal-title {
         font-size: 14px;
         font-weight: 700;
-        color: #111;
+        color: var(--color-fg);
       }
 
       .settings-modal-close {
         border: none;
         background: transparent;
         font-size: 18px;
-        color: #888;
+        color: var(--color-muted);
         cursor: pointer;
         width: 24px;
         height: 24px;
@@ -1114,30 +1198,32 @@
 
       .settings-field label {
         font-size: 11px;
-        color: #666;
+        color: var(--color-muted);
         font-weight: 600;
       }
 
-      .settings-input {
+      .settings-input,
+      .settings-select {
         width: 100%;
-        border: 1px solid #dcdcdc;
+        border: 1px solid var(--color-border-strong);
         border-radius: 8px;
         height: 32px;
         padding: 0 10px;
         font-size: 12px;
-        color: #222;
-        background: #fff;
+        color: var(--color-fg);
+        background: var(--color-surface);
       }
 
-      .settings-input:focus {
+      .settings-input:focus,
+      .settings-select:focus {
         outline: none;
-        border-color: #18a0fb;
-        box-shadow: 0 0 0 2px rgba(24, 160, 251, 0.15);
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
       }
 
       .settings-hint {
         font-size: 10px;
-        color: #888;
+        color: var(--color-muted);
         line-height: 1.45;
       }
 
@@ -1157,16 +1243,16 @@
 
       .settings-test-result {
         font-size: 11px;
-        color: #666;
+        color: var(--color-muted);
         min-height: 16px;
       }
 
       .settings-test-result.ok {
-        color: #276749;
+        color: var(--color-success);
       }
 
       .settings-test-result.err {
-        color: #c53030;
+        color: var(--color-danger);
       }
 
       .settings-modal-footer,
@@ -1174,21 +1260,21 @@
         display: flex;
         justify-content: flex-end;
         gap: 8px;
-        border-top: 1px solid #efefef;
+        border-top: 1px solid var(--color-border);
         padding: 10px 14px;
-        background: #fafafa;
+        background: var(--color-primary-soft-2);
       }
 
       .update-modal-current {
         font-size: 12px;
-        color: #666;
+        color: var(--color-muted);
       }
 
       .update-modal-notes {
         margin: 0;
         padding-left: 18px;
         font-size: 12px;
-        color: #333;
+        color: var(--color-fg-secondary);
         line-height: 1.55;
       }
 
@@ -1198,7 +1284,7 @@
 
       .update-modal-hint {
         font-size: 11px;
-        color: #888;
+        color: var(--color-muted);
         line-height: 1.45;
         background: #f7f7f7;
         border-radius: 8px;
@@ -1217,23 +1303,23 @@
 
       .btn-secondary {
         border-color: #dcdcdc;
-        color: #444;
-        background: #fff;
+        color: var(--color-fg-secondary);
+        background: var(--color-surface);
       }
 
       .btn-secondary:hover {
-        border-color: #18a0fb;
-        color: #18a0fb;
-        background: #f3f9ff;
+        border-color: var(--color-primary);
+        color: var(--color-primary);
+        background: var(--color-primary-soft-2);
       }
 
       .btn-primary {
-        background: #18a0fb;
+        background: var(--color-primary);
         color: #fff;
       }
 
       .btn-primary:hover {
-        background: #0d8de0;
+        background: var(--color-primary-hover);
       }
 
       .prompt-modal-mask {
@@ -1255,9 +1341,9 @@
         width: 100%;
         max-width: 640px;
         max-height: calc(100vh - 32px);
-        background: #fff;
+        background: var(--color-surface);
         border-radius: 12px;
-        border: 1px solid #e5e5e5;
+        border: 1px solid var(--color-border);
         box-shadow: 0 16px 48px rgba(0, 0, 0, 0.22);
         display: flex;
         flex-direction: column;
@@ -1269,14 +1355,14 @@
         justify-content: space-between;
         align-items: center;
         padding: 12px 14px;
-        border-bottom: 1px solid #efefef;
+        border-bottom: 1px solid var(--color-border);
         flex-shrink: 0;
       }
 
       .prompt-modal-title {
         font-size: 13px;
         font-weight: 600;
-        color: #111;
+        color: var(--color-fg);
       }
 
       .prompt-tabs {
@@ -1290,16 +1376,16 @@
         font-size: 11px;
         padding: 5px 10px;
         border-radius: 999px;
-        border: 1px solid #ddd;
-        background: #fff;
-        color: #555;
+        border: 1px solid var(--color-border-strong);
+        background: var(--color-surface);
+        color: var(--color-muted);
         cursor: pointer;
       }
 
       .prompt-tab.active {
-        border-color: #18a0fb;
-        background: #e8f4fe;
-        color: #0b6cb8;
+        border-color: var(--color-primary);
+        background: var(--color-primary-soft);
+        color: var(--color-primary-deep);
         font-weight: 600;
       }
 
@@ -1314,7 +1400,7 @@
 
       .prompt-hint {
         font-size: 10px;
-        color: #888;
+        color: var(--color-muted);
         line-height: 1.45;
       }
 
@@ -1329,18 +1415,18 @@
         font-family:
           ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
         padding: 10px;
-        border: 1px solid #ddd;
+        border: 1px solid var(--color-border-strong);
         border-radius: 8px;
-        color: #222;
-        background: #fafafa;
+        color: var(--color-fg);
+        background: var(--color-primary-soft-2);
         user-select: text;
       }
 
       .prompt-editor:focus {
         outline: none;
-        border-color: #18a0fb;
-        background: #fff;
-        box-shadow: 0 0 0 2px rgba(24, 160, 251, 0.15);
+        border-color: var(--color-primary);
+        background: var(--color-surface);
+        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
       }
 
       .prompt-modal-footer {
@@ -1348,10 +1434,259 @@
         justify-content: flex-end;
         gap: 8px;
         padding: 10px 14px 12px;
-        border-top: 1px solid #efefef;
+        border-top: 1px solid var(--color-border);
         flex-shrink: 0;
       }
-    </style>
+
+      .export-toolbar {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 10px;
+      }
+
+      .btn-export-all {
+        border: none;
+        background: var(--color-primary);
+        color: var(--color-on-primary);
+        border-radius: 8px;
+        height: 30px;
+        padding: 0 12px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .btn-export-all:hover:not(:disabled) {
+        background: var(--color-primary-hover);
+      }
+
+      .btn-export-all:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+
+      .export-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .export-item.is-skipped {
+        opacity: 0.65;
+      }
+
+      .export-thumb {
+        width: 48px;
+        height: 48px;
+        border-radius: 6px;
+        border: 1px solid var(--color-border);
+        object-fit: contain;
+        background: var(--color-primary-soft-2);
+        flex-shrink: 0;
+      }
+
+      .export-thumb.is-clickable {
+        cursor: zoom-in;
+        transition:
+          border-color 0.15s ease,
+          box-shadow 0.15s ease;
+      }
+
+      .export-thumb.is-clickable:hover {
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 2px var(--color-primary-soft);
+      }
+
+      .export-thumb.is-placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        color: var(--color-muted);
+      }
+
+      .image-preview-mask {
+        position: fixed;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background: rgba(15, 23, 42, 0.45);
+        z-index: 60;
+        padding: 16px;
+      }
+
+      .image-preview-mask.show {
+        display: flex;
+      }
+
+      .image-preview-modal {
+        width: 100%;
+        max-width: 560px;
+        max-height: calc(100vh - 32px);
+        background: var(--color-surface);
+        border-radius: 12px;
+        border: 1px solid var(--color-border);
+        box-shadow: 0 16px 48px rgba(15, 23, 42, 0.22);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .image-preview-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--color-border);
+        flex-shrink: 0;
+      }
+
+      .image-preview-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--color-fg);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        padding-right: 8px;
+      }
+
+      .image-preview-body {
+        padding: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background:
+          linear-gradient(45deg, var(--color-primary-soft-2) 25%, transparent 25%),
+          linear-gradient(-45deg, var(--color-primary-soft-2) 25%, transparent 25%),
+          linear-gradient(45deg, transparent 75%, var(--color-primary-soft-2) 75%),
+          linear-gradient(-45deg, transparent 75%, var(--color-primary-soft-2) 75%);
+        background-size: 16px 16px;
+        background-position:
+          0 0,
+          0 8px,
+          8px -8px,
+          -8px 0;
+        min-height: 200px;
+        overflow: auto;
+      }
+
+      .image-preview-body img {
+        max-width: 100%;
+        max-height: min(62vh, 480px);
+        object-fit: contain;
+        border-radius: 6px;
+        background: var(--color-surface);
+        box-shadow: 0 2px 12px rgba(15, 23, 42, 0.12);
+      }
+
+      .image-preview-meta {
+        font-size: 11px;
+        color: var(--color-muted);
+        padding: 0 14px 10px;
+        line-height: 1.4;
+      }
+
+      .image-preview-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        padding: 10px 14px 12px;
+        border-top: 1px solid var(--color-border);
+        flex-shrink: 0;
+      }
+
+      .export-meta {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .export-filename-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 4px;
+      }
+
+      .export-filename-input {
+        flex: 1;
+        min-width: 0;
+        height: 26px;
+        border: 1px solid var(--color-border-strong);
+        border-radius: 6px 0 0 6px;
+        padding: 0 8px;
+        font-size: 12px;
+        color: var(--color-fg);
+        background: var(--color-surface);
+      }
+
+      .export-filename-suffix {
+        height: 26px;
+        line-height: 26px;
+        padding: 0 8px;
+        border: 1px solid var(--color-border-strong);
+        border-left: none;
+        border-radius: 0 6px 6px 0;
+        font-size: 11px;
+        color: var(--color-muted);
+        background: var(--color-primary-soft-2);
+      }
+
+      .export-info-row {
+        font-size: 10px;
+        color: var(--color-muted);
+        line-height: 1.4;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .export-actions {
+        flex-shrink: 0;
+      }
+
+      .btn-export-one {
+        border: 1px solid var(--color-border-strong);
+        background: var(--color-surface);
+        color: var(--color-fg-secondary);
+        border-radius: 6px;
+        height: 28px;
+        padding: 0 10px;
+        font-size: 11px;
+        cursor: pointer;
+      }
+
+      .btn-export-one:hover:not(:disabled) {
+        border-color: var(--color-primary);
+        color: var(--color-primary);
+        background: var(--color-primary-soft);
+      }
+
+      .btn-export-one:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+
+      button:focus-visible,
+      .nav-item:focus-visible,
+      .rail-btn:focus-visible,
+      .settings-input:focus-visible,
+      .prompt-editor:focus-visible,
+      .plan-editor:focus-visible,
+      .settings-select:focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: 2px;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+</style>
   </head>
   <body>
     <div class="app">
@@ -1361,7 +1696,9 @@
             Figma Agent Kit
             <span class="brand-ver" id="versionTag">v__PLUGIN_VERSION__</span>
           </div>
-          <div class="brand-sub">AI 图层重命名 · 视觉分组 · MCP</div>
+          <div class="brand-sub" data-i18n="brand.sub">
+            AI 图层重命名 · 视觉分组 · MCP
+          </div>
         </div>
         <div class="header-right">
           <div
@@ -1373,6 +1710,8 @@
               id="btn-bridge-reconnect"
               class="btn-bridge-reconnect"
               type="button"
+              data-i18n="bridge.reconnect"
+              data-i18n-attr="title,aria-label"
               title="重新连接 MCP Bridge"
               aria-label="重新连接 MCP Bridge"
             >
@@ -1384,17 +1723,31 @@
               </svg>
             </button>
             <span class="bridge-dot" id="bridge-dot"></span>
-            <span class="bridge-status-text" id="bridge-status-text"
+            <span
+              class="bridge-status-text"
+              id="bridge-status-text"
+              data-i18n="bridge.connecting"
               >MCP Bridge 连接中</span
             >
-            <span class="bridge-meta" id="bridge-meta">等待文件信息…</span>
+            <span class="bridge-meta" id="bridge-meta" data-i18n="bridge.waitingFile"
+              >等待文件信息…</span
+            >
           </div>
-          <span class="header-badge" id="modelBadge" title="当前模型">gpt-4o</span>
+          <span
+            class="header-badge"
+            id="modelBadge"
+            data-i18n="model.current"
+            data-i18n-attr="title"
+            title="当前模型"
+            >gpt-4o</span
+          >
           <div class="settings-menu-wrap" id="settings-menu-wrap">
             <button
               id="btn-settings"
               class="btn-settings"
               type="button"
+              data-i18n="settings"
+              data-i18n-attr="title"
               title="设置"
               aria-haspopup="menu"
               aria-expanded="false"
@@ -1408,8 +1761,8 @@
                 id="settings-menu-model"
                 role="menuitem"
               >
-                模型设置
-                <span class="settings-popover-item-desc"
+                <span data-i18n="settings.model">模型设置</span>
+                <span class="settings-popover-item-desc" data-i18n="settings.modelDesc"
                   >API · Model · 连通性</span
                 >
               </button>
@@ -1419,8 +1772,12 @@
                 id="settings-menu-prompt"
                 role="menuitem"
               >
-                提示词设置
-                <span class="settings-popover-item-desc">自定义 AI 提示词</span>
+                <span data-i18n="settings.prompt">提示词设置</span>
+                <span
+                  class="settings-popover-item-desc"
+                  data-i18n="settings.promptDesc"
+                  >自定义 AI 提示词</span
+                >
               </button>
               <button
                 type="button"
@@ -1428,17 +1785,49 @@
                 id="settings-menu-update"
                 role="menuitem"
               >
-                检查更新
-                <span class="settings-popover-item-desc" id="settings-update-desc"
+                <span data-i18n="settings.update">检查更新</span>
+                <span
+                  class="settings-popover-item-desc"
+                  id="settings-update-desc"
+                  data-i18n="settings.updateNone"
                   >暂无更新</span
                 >
               </button>
+              <div class="settings-popover-divider" role="separator"></div>
+              <div class="settings-popover-lang">
+                <div
+                  class="settings-popover-lang-label"
+                  data-i18n="settings.language"
+                >
+                  语言 / Language
+                </div>
+                <div class="settings-lang-row" role="group" aria-label="Language">
+                  <button
+                    type="button"
+                    class="settings-lang-btn"
+                    data-locale="zh"
+                    id="settings-lang-zh"
+                  >
+                    中文
+                  </button>
+                  <button
+                    type="button"
+                    class="settings-lang-btn"
+                    data-locale="en"
+                    id="settings-lang-en"
+                  >
+                    English
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
           <button
             id="btn-mini"
             class="btn-mini"
             type="button"
+            data-i18n="mini.toggle"
+            data-i18n-attr="title"
             title="切换 Mini 模式（仅 MCP 与选区）"
             aria-pressed="false"
           >
@@ -1456,8 +1845,8 @@
       ></div>
 
       <div class="mini-selection-bar" id="mini-selection-bar">
-        <div class="mini-selection-label">当前选区</div>
-        <div id="mini-selection-text">正在同步...</div>
+        <div class="mini-selection-label" data-i18n="selection.current">当前选区</div>
+        <div id="mini-selection-text" data-i18n="selection.syncing">正在同步...</div>
         <div id="mini-selection-hint"></div>
       </div>
 
@@ -1466,11 +1855,15 @@
           <div class="sidebar-expanded">
             <div>
               <div class="sidebar-section-head">
-                <div class="sidebar-section-label">当前选区</div>
+                <div class="sidebar-section-label" data-i18n="selection.current">
+                  当前选区
+                </div>
                 <button
                   id="btn-sidebar-collapse"
                   class="btn-sidebar-collapse"
                   type="button"
+                  data-i18n="sidebar.collapse"
+                  data-i18n-attr="title,aria-label"
                   title="收起侧栏"
                   aria-label="收起侧栏"
                 >
@@ -1478,13 +1871,13 @@
                 </button>
               </div>
               <div id="selection-box" class="selection-card empty">
-                <div id="selection-text">正在同步...</div>
+                <div id="selection-text" data-i18n="selection.syncing">正在同步...</div>
                 <div id="selection-hint"></div>
               </div>
             </div>
 
             <div>
-              <div class="sidebar-section-label">功能</div>
+              <div class="sidebar-section-label" data-i18n="sidebar.features">功能</div>
               <div class="nav-list">
                 <button
                   id="btn-nav-bridge"
@@ -1494,8 +1887,10 @@
                 >
                   <span class="nav-icon">🔌</span>
                   <span>
-                    <span class="nav-label">MCP Bridge</span>
-                    <span class="nav-desc">Agent 读写当前文件</span>
+                    <span class="nav-label" data-i18n="nav.bridge">MCP Bridge</span>
+                    <span class="nav-desc" data-i18n="nav.bridgeDesc"
+                      >Agent 读写当前文件</span
+                    >
                   </span>
                 </button>
                 <button
@@ -1506,8 +1901,10 @@
                 >
                   <span class="nav-icon">✏️</span>
                   <span>
-                    <span class="nav-label">图层重命名</span>
-                    <span class="nav-desc">复制副本 · 语义化命名</span>
+                    <span class="nav-label" data-i18n="nav.rename">图层重命名</span>
+                    <span class="nav-desc" data-i18n="nav.renameDesc"
+                      >复制副本 · 语义化命名</span
+                    >
                   </span>
                 </button>
                 <button
@@ -1518,19 +1915,37 @@
                 >
                   <span class="nav-icon">🗂️</span>
                   <span>
-                    <span class="nav-label">视觉分组</span>
-                    <span class="nav-desc">复制副本 · 分组整理</span>
+                    <span class="nav-label" data-i18n="nav.group">视觉分组</span>
+                    <span class="nav-desc" data-i18n="nav.groupDesc"
+                      >复制副本 · 分组整理</span
+                    >
+                  </span>
+                </button>
+                <button
+                  id="btn-nav-export"
+                  class="nav-item"
+                  type="button"
+                  data-view="export"
+                >
+                  <span class="nav-icon">📥</span>
+                  <span>
+                    <span class="nav-label" data-i18n="nav.export">导出切图</span>
+                    <span class="nav-desc" data-i18n="nav.exportDesc"
+                      >预览 1× · 导出 3×</span
+                    >
                   </span>
                 </button>
               </div>
             </div>
           </div>
 
-          <div class="sidebar-rail" aria-label="功能快捷栏">
+          <div class="sidebar-rail" aria-label="Features">
             <button
               id="btn-sidebar-expand"
               class="btn-sidebar-expand"
               type="button"
+              data-i18n="sidebar.expand"
+              data-i18n-attr="title,aria-label"
               title="展开侧栏"
               aria-label="展开侧栏"
             >
@@ -1540,6 +1955,8 @@
               class="rail-btn active"
               type="button"
               data-view="bridge"
+              data-i18n="nav.bridge"
+              data-i18n-attr="title"
               title="MCP Bridge"
             >
               🔌
@@ -1548,6 +1965,8 @@
               class="rail-btn"
               type="button"
               data-view="rename"
+              data-i18n="nav.rename"
+              data-i18n-attr="title"
               title="图层重命名"
             >
               ✏️
@@ -1556,9 +1975,21 @@
               class="rail-btn"
               type="button"
               data-view="group"
+              data-i18n="nav.group"
+              data-i18n-attr="title"
               title="视觉分组"
             >
               🗂️
+            </button>
+            <button
+              class="rail-btn"
+              type="button"
+              data-view="export"
+              data-i18n="nav.export"
+              data-i18n-attr="title"
+              title="导出切图"
+            >
+              📥
             </button>
           </div>
         </aside>
@@ -1566,7 +1997,7 @@
         <main class="main-panel">
           <div class="panel-header">
             <div class="panel-header-left">
-              <h2 id="panel-title">MCP Bridge</h2>
+              <h2 id="panel-title" data-i18n="view.bridge.title">MCP Bridge</h2>
               <span id="panel-count" class="panel-count" style="display: none"></span>
             </div>
             <button
@@ -1574,6 +2005,7 @@
               class="btn-run-task hidden"
               type="button"
               disabled
+              data-i18n="panel.run"
             >
               开始执行
             </button>
@@ -1583,35 +2015,37 @@
             <div id="view-bridge" class="view active">
               <div class="idle-hero">
                 <div class="idle-icon">🔌</div>
-                <h3>连接 AI Agent</h3>
+                <h3 data-i18n="view.bridge.heroTitle">连接 AI Agent</h3>
                 <p>
-                  本地启动 <code>figma-agent-mcp</code>，在 Cursor / Claude Code /
-                  Codex 中配置 MCP。Bridge：
+                  <span data-i18n="view.bridge.heroDesc"
+                    >本地启动 figma-agent-mcp，在 Cursor / Claude Code / Codex
+                    中配置 MCP。Bridge：</span
+                  >
                   <code id="bridgeUrl">ws://localhost:__BRIDGE_PORT__/ws</code>
                 </p>
-                <p style="margin-top: 10px">
-                  选中图层后，Agent 可调用
-                  <strong>list_files / get_selection / get_node</strong> 等工具读写当前文件。
+                <p style="margin-top: 10px" data-i18n="view.bridge.heroMore">
+                  选中图层后，Agent 可调用 list_files / get_selection / get_node
+                  等工具读写当前文件。
                 </p>
               </div>
             </div>
 
             <div id="view-rename" class="view">
-              <div class="summary-card">
-                选中一个 <strong>Frame</strong> 或 <strong>Group</strong>，点击右上角
-                <strong>开始执行</strong>。插件会在原稿右侧创建副本，发送截图与图层列表给
+              <div class="summary-card" data-i18n="view.rename.summary">
+                选中一个 Frame 或 Group，点击右上角开始执行。插件会在原稿右侧创建副本，发送截图与图层列表给
                 AI，并在副本上重命名（原稿不变）。
               </div>
               <div class="scroll-list" id="rename-list">
-                <div class="list-item empty">尚未执行，结果将显示在这里</div>
+                <div class="list-item empty" data-i18n="view.rename.empty">
+                  尚未执行，结果将显示在这里
+                </div>
               </div>
             </div>
 
             <div id="view-group" class="view">
-              <div class="summary-card">
-                选中一个 <strong>Frame / Group / Section</strong>，点击
-                <strong>开始执行</strong>。AI 会给出视觉分组计划（JSON），可编辑后点击底部
-                <strong>应用分组计划到副本</strong>。
+              <div class="summary-card" data-i18n="view.group.summary">
+                选中一个 Frame / Group / Section，点击开始执行。AI
+                会给出视觉分组计划（JSON），可编辑后点击底部应用分组计划到副本。
               </div>
               <textarea
                 class="plan-editor"
@@ -1619,10 +2053,32 @@
                 placeholder='{"groups":[{"name":"Header","nodeIds":["…"],"subGroups":[]}]}'
               ></textarea>
             </div>
+
+            <div id="view-export" class="view">
+              <div
+                id="export-summary"
+                class="summary-card"
+                data-i18n="view.export.summaryEmpty"
+              >
+                在画布选中图层，将自动加载 1× 预览；下载 / ZIP 时再导出 3×。
+              </div>
+              <div class="export-toolbar">
+                <button
+                  id="btn-export-all"
+                  class="btn-export-all"
+                  type="button"
+                  disabled
+                  data-i18n="view.export.zip"
+                >
+                  打包下载 ZIP
+                </button>
+              </div>
+              <div class="scroll-list" id="export-list"></div>
+            </div>
           </div>
 
           <div id="panel-footer" class="panel-footer hidden">
-            <button id="applyGroupBtn" class="btn-apply" disabled>
+            <button id="applyGroupBtn" class="btn-apply" disabled data-i18n="panel.applyGroup">
               应用分组计划到副本
             </button>
           </div>
@@ -1633,22 +2089,30 @@
         <div
           class="console-resize-handle"
           id="console-resize-handle"
+          data-i18n="console.resize"
+          data-i18n-attr="title"
           title="向上拖动拉高日志区域"
         ></div>
         <div class="console-header">
           <div class="console-title">
             <div class="spinner" id="spinner"></div>
-            <span>运行日志</span>
+            <span data-i18n="console.title">运行日志</span>
           </div>
           <div class="console-actions">
             <button
               id="btn-console-toggle"
               class="btn-console-toggle"
               type="button"
+              data-i18n="console.expand"
             >
               展开
             </button>
-            <button id="btn-clear-log" class="btn-console-clear" type="button">
+            <button
+              id="btn-clear-log"
+              class="btn-console-clear"
+              type="button"
+              data-i18n="console.clear"
+            >
               清空
             </button>
           </div>
@@ -1660,6 +2124,8 @@
     <div
       class="window-resize-handle"
       id="window-resize-handle"
+      data-i18n="window.resize"
+      data-i18n-attr="title"
       title="拖动右下角放大插件窗口"
     ></div>
 
@@ -1671,11 +2137,19 @@
         aria-labelledby="settings-title"
       >
         <div class="settings-modal-header">
-          <div id="settings-title" class="settings-modal-title">模型设置</div>
+          <div
+            id="settings-title"
+            class="settings-modal-title"
+            data-i18n="settings.model"
+          >
+            模型设置
+          </div>
           <button
             id="settings-close"
             class="settings-modal-close"
             type="button"
+            data-i18n="settings.close"
+            data-i18n-attr="title"
             title="关闭"
             tabindex="-1"
           >
@@ -1692,11 +2166,9 @@
               placeholder="https://api.openai.com/v1"
               autocomplete="off"
             />
-            <div class="settings-hint">
-              OpenAI-compatible endpoint。已预置 OpenAI / 通义 / DeepSeek / Moonshot /
-              SiliconFlow / 智谱 / 火山方舟 / OpenRouter 等；自定义域名需加入
-              <code>manifest.json</code> →
-              <code>networkAccess.allowedDomains</code> 后重新构建。
+            <div class="settings-hint" data-i18n="settings.apiHint">
+              OpenAI-compatible endpoint。已预置常见大模型域名；自定义域名需加入
+              manifest.json → networkAccess.allowedDomains 后重新构建。
             </div>
           </div>
           <div class="settings-field">
@@ -1720,17 +2192,34 @@
             />
           </div>
           <div class="settings-test-row">
-            <button id="testConnectionBtn" class="btn-secondary" type="button">
-              Test connection
+            <button
+              id="testConnectionBtn"
+              class="btn-secondary"
+              type="button"
+              data-i18n="settings.test"
+            >
+              测试连接
             </button>
             <div id="testResult" class="settings-test-result"></div>
           </div>
         </div>
         <div class="settings-modal-footer">
-          <button id="settingsCancel" class="btn-secondary" type="button">
-            Cancel
+          <button
+            id="settingsCancel"
+            class="btn-secondary"
+            type="button"
+            data-i18n="settings.cancel"
+          >
+            取消
           </button>
-          <button id="settingsSave" class="btn-primary" type="button">Save</button>
+          <button
+            id="settingsSave"
+            class="btn-primary"
+            type="button"
+            data-i18n="settings.save"
+          >
+            保存
+          </button>
         </div>
       </div>
     </div>
@@ -1743,11 +2232,19 @@
         aria-labelledby="update-modal-title"
       >
         <div class="update-modal-header">
-          <div id="update-modal-title" class="update-modal-title">发现新版本</div>
+          <div
+            id="update-modal-title"
+            class="update-modal-title"
+            data-i18n="update.title"
+          >
+            发现新版本
+          </div>
           <button
             id="update-modal-close"
             class="settings-modal-close"
             type="button"
+            data-i18n="settings.close"
+            data-i18n-attr="title"
             title="关闭"
           >
             ×
@@ -1758,14 +2255,26 @@
             有新版本可用。
           </div>
           <ul id="updateNotes" class="update-modal-notes"></ul>
-          <div class="update-modal-hint">
-            更新通过 GitHub <code>releases/version.json</code> 发布（无 CDN）。
+          <div class="update-modal-hint" data-i18n="update.hint">
+            更新通过 GitHub releases/version.json 发布（无 CDN）。
           </div>
         </div>
         <div class="update-modal-footer">
-          <button id="updateLater" class="btn-secondary" type="button">Later</button>
-          <button id="updateDownload" class="btn-primary" type="button">
-            Download
+          <button
+            id="updateLater"
+            class="btn-secondary"
+            type="button"
+            data-i18n="update.later"
+          >
+            稍后
+          </button>
+          <button
+            id="updateDownload"
+            class="btn-primary"
+            type="button"
+            data-i18n="update.download"
+          >
+            下载
           </button>
         </div>
       </div>
@@ -1779,11 +2288,19 @@
         aria-labelledby="prompt-modal-title"
       >
         <div class="prompt-modal-header">
-          <div id="prompt-modal-title" class="prompt-modal-title">AI 提示词</div>
+          <div
+            id="prompt-modal-title"
+            class="prompt-modal-title"
+            data-i18n="prompt.title"
+          >
+            AI 提示词
+          </div>
           <button
             id="prompt-modal-close"
             class="settings-modal-close"
             type="button"
+            data-i18n="settings.close"
+            data-i18n-attr="title"
             title="关闭"
             tabindex="-1"
           >
@@ -1795,15 +2312,21 @@
             type="button"
             class="prompt-tab active"
             data-prompt-key="rename"
+            data-i18n="prompt.tabRename"
           >
             图层重命名
           </button>
-          <button type="button" class="prompt-tab" data-prompt-key="group">
+          <button
+            type="button"
+            class="prompt-tab"
+            data-prompt-key="group"
+            data-i18n="prompt.tabGroup"
+          >
             视觉分组
           </button>
         </div>
         <div class="prompt-modal-body">
-          <div class="prompt-hint" id="prompt-hint">
+          <div class="prompt-hint" id="prompt-hint" data-i18n="prompt.hintRename">
             用于图层重命名识图。占位符：{{candidates}}（候选节点 JSON）。
           </div>
           <textarea
@@ -1813,28 +2336,90 @@
           ></textarea>
         </div>
         <div class="prompt-modal-footer">
-          <button id="prompt-reset-btn" class="btn-secondary" type="button">
+          <button
+            id="prompt-reset-btn"
+            class="btn-secondary"
+            type="button"
+            data-i18n="prompt.reset"
+          >
             恢复默认
           </button>
-          <button id="prompt-cancel-btn" class="btn-secondary" type="button">
+          <button
+            id="prompt-cancel-btn"
+            class="btn-secondary"
+            type="button"
+            data-i18n="prompt.cancel"
+          >
             取消
           </button>
-          <button id="prompt-save-btn" class="btn-primary" type="button">
+          <button
+            id="prompt-save-btn"
+            class="btn-primary"
+            type="button"
+            data-i18n="prompt.save"
+          >
             保存提示词
           </button>
         </div>
       </div>
     </div>
 
+    <div id="image-preview-mask" class="image-preview-mask">
+      <div
+        class="image-preview-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="image-preview-title"
+      >
+        <div class="image-preview-header">
+          <div
+            id="image-preview-title"
+            class="image-preview-title"
+            data-i18n="view.export.previewTitle"
+          >
+            切图预览
+          </div>
+          <button
+            id="image-preview-close"
+            class="settings-modal-close"
+            type="button"
+            data-i18n="settings.close"
+            data-i18n-attr="title"
+            title="关闭"
+            tabindex="-1"
+          >
+            ×
+          </button>
+        </div>
+        <div class="image-preview-body">
+          <img id="image-preview-img" alt="" data-i18n="view.export.previewTitle" data-i18n-attr="alt" />
+        </div>
+        <div id="image-preview-meta" class="image-preview-meta"></div>
+        <div class="image-preview-footer">
+          <button
+            id="image-preview-ok"
+            class="btn-primary"
+            type="button"
+            data-i18n="view.export.previewClose"
+          >
+            关闭
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!--FIGMA_AGENT_JSZIP-->
     <!--FIGMA_AGENT_CODEC-->
     <script>
       /* __PROMPT_TEMPLATES__ */
+      /* __I18N_LOCALES__ */
       const PLUGIN_VERSION = "__PLUGIN_VERSION__";
       const VERSION_CHECK_URL = "__VERSION_CHECK_URL__";
       let BRIDGE_PORT = Number("__BRIDGE_PORT__");
       let bridgePortReady = false;
       const DEFAULT_API_BASE = "https://api.openai.com/v1";
       const DEFAULT_MODEL = "gpt-4o";
+      const DEFAULT_LOCALE = "zh";
       const VERSION_CHECK_DELAY_MS = 1000;
       const AI_SYSTEM =
         "You are a Figma design assistant. Follow the user instructions and reply with valid JSON only (no markdown).";
@@ -1846,26 +2431,102 @@
         max: { width: 1200, height: 900 },
       };
 
-      const VIEW_META = {
-        bridge: {
-          title: "MCP Bridge",
-          runLabel: "",
-          showRun: false,
-          showFooter: false,
-        },
-        rename: {
-          title: "图层重命名",
-          runLabel: "开始执行",
-          showRun: true,
-          showFooter: false,
-        },
-        group: {
-          title: "视觉分组",
-          runLabel: "开始执行",
-          showRun: true,
-          showFooter: true,
-        },
-      };
+      let locale = DEFAULT_LOCALE;
+
+      function t(key, params) {
+        const table =
+          (typeof I18N_LOCALES !== "undefined" &&
+            (I18N_LOCALES[locale] || I18N_LOCALES.zh)) ||
+          {};
+        const fallback =
+          (typeof I18N_LOCALES !== "undefined" && I18N_LOCALES.zh) || {};
+        let s = table[key] || fallback[key] || key;
+        if (params) {
+          s = s.replace(/\{(\w+)\}/g, (_, k) =>
+            params[k] != null ? String(params[k]) : "",
+          );
+        }
+        return s;
+      }
+
+      function normalizeLocale(value) {
+        return value === "en" ? "en" : "zh";
+      }
+
+      function applyI18n() {
+        document.documentElement.lang = locale === "en" ? "en" : "zh-CN";
+        document.querySelectorAll("[data-i18n]").forEach((el) => {
+          const key = el.getAttribute("data-i18n");
+          if (!key) return;
+          const attrSpec = el.getAttribute("data-i18n-attr");
+          const value = t(key);
+          if (attrSpec) {
+            attrSpec.split(",").forEach((attr) => {
+              const name = attr.trim();
+              if (name) el.setAttribute(name, value);
+            });
+            // Keep ⚙ / icons as button content when only attrs are translated
+            if (el.childElementCount === 0 && el.tagName !== "BUTTON") {
+              /* no-op */
+            }
+          } else {
+            el.textContent = value;
+          }
+        });
+        if (typeof syncLocaleButtons === "function") syncLocaleButtons();
+        // Dynamic view chrome
+        if (typeof switchView === "function") switchView(currentView || "bridge");
+        if (typeof syncRunButton === "function") syncRunButton();
+        if (typeof updateModelBadge === "function") updateModelBadge();
+        if (typeof setUpdateBadge === "function") setUpdateBadge(updateAvailable);
+        if (typeof renderSelection === "function") renderSelection(lastSelection || []);
+        if (typeof syncExportActionButtons === "function") syncExportActionButtons();
+        // Console toggle label follows collapsed state
+        if (consolePanel && btnConsoleToggle) {
+          btnConsoleToggle.textContent = consolePanel.classList.contains("collapsed")
+            ? t("console.expand")
+            : t("console.collapse");
+        }
+        // Re-apply bridge status after static i18n overwrite
+        if (bridgePanel.classList.contains("connected")) {
+          bridgeStatusText.textContent = t("bridge.connected");
+        } else if (bridgePanel.classList.contains("disconnected")) {
+          bridgeStatusText.textContent = t("bridge.disconnected");
+        } else {
+          bridgeStatusText.textContent = t("bridge.connecting");
+        }
+        updateBridgeMeta();
+      }
+
+      function getViewMeta(name) {
+        const map = {
+          bridge: {
+            titleKey: "view.bridge.title",
+            runKey: "panel.run",
+            showRun: false,
+            showFooter: false,
+          },
+          rename: {
+            titleKey: "view.rename.title",
+            runKey: "panel.run",
+            showRun: true,
+            showFooter: false,
+          },
+          group: {
+            titleKey: "view.group.title",
+            runKey: "panel.run",
+            showRun: true,
+            showFooter: true,
+          },
+          export: {
+            titleKey: "view.export.title",
+            runKey: "panel.run",
+            showRun: false,
+            showFooter: false,
+          },
+        };
+        return map[name] || map.bridge;
+      }
 
       const bridgePanel = document.getElementById("mcp-bridge-panel");
       const bridgeStatusText = document.getElementById("bridge-status-text");
@@ -1940,7 +2601,43 @@
         apiKey: "",
         model: DEFAULT_MODEL,
         dismissedVersion: "",
+        locale: DEFAULT_LOCALE,
       };
+      const settingsLangZh = document.getElementById("settings-lang-zh");
+      const settingsLangEn = document.getElementById("settings-lang-en");
+
+      function syncLocaleButtons() {
+        if (settingsLangZh) {
+          settingsLangZh.textContent = t("lang.zh");
+          settingsLangZh.classList.toggle("is-active", locale === "zh");
+          settingsLangZh.setAttribute(
+            "aria-pressed",
+            locale === "zh" ? "true" : "false",
+          );
+        }
+        if (settingsLangEn) {
+          settingsLangEn.textContent = t("lang.en");
+          settingsLangEn.classList.toggle("is-active", locale === "en");
+          settingsLangEn.setAttribute(
+            "aria-pressed",
+            locale === "en" ? "true" : "false",
+          );
+        }
+      }
+
+      function setLocale(next) {
+        const nextLocale = normalizeLocale(next);
+        if (nextLocale === locale && settings.locale === nextLocale) {
+          syncLocaleButtons();
+          return;
+        }
+        locale = nextLocale;
+        settings = { ...settings, locale: nextLocale };
+        syncLocaleButtons();
+        post({ type: "setSettings", settings });
+        applyI18n();
+        updateModelBadge();
+      }
 
       let pendingGroupCloneRootId = "";
       let remoteVersionInfo = null;
@@ -1950,16 +2647,12 @@
       let activePromptKey = "rename";
       let promptDraftDirty = false;
 
-      const PROMPT_TAB_META = {
-        rename: {
-          label: "图层重命名",
-          hint: "用于图层重命名识图。占位符：{{candidates}}（候选节点 JSON）。",
-        },
-        group: {
-          label: "视觉分组",
-          hint: "用于视觉分组识图。占位符：{{candidates}}、{{suggestedClusters}}。",
-        },
-      };
+      function getPromptTabMeta(key) {
+        if (key === "group") {
+          return { label: t("prompt.tabGroup"), hint: t("prompt.hintGroup") };
+        }
+        return { label: t("prompt.tabRename"), hint: t("prompt.hintRename") };
+      }
 
       function post(msg) {
         parent.postMessage({ pluginMessage: msg }, "*");
@@ -1992,7 +2685,9 @@
       function setConnected(connected) {
         bridgePanel.classList.remove("connecting", "connected", "disconnected");
         bridgePanel.classList.add(connected ? "connected" : "disconnected");
-        bridgeStatusText.textContent = connected ? "MCP Bridge 已连接" : "MCP Bridge 未连接";
+        bridgeStatusText.textContent = connected
+          ? t("bridge.connected")
+          : t("bridge.disconnected");
         btnBridgeReconnect.classList.remove("is-spinning");
         btnBridgeReconnect.disabled = false;
         post({ type: connected ? "bridge-connected" : "bridge-disconnected" });
@@ -2001,20 +2696,24 @@
       function setConnecting() {
         bridgePanel.classList.remove("connected", "disconnected");
         bridgePanel.classList.add("connecting");
-        bridgeStatusText.textContent = "MCP Bridge 连接中";
+        bridgeStatusText.textContent = t("bridge.connecting");
       }
 
       function updateBridgeMeta() {
         const name = fileName || "Untitled";
         const key = fileKey ? String(fileKey).slice(0, 10) : "—";
-        bridgeMeta.innerHTML = `<strong>${escapeHtml(name)}</strong> · ${escapeHtml(key)}`;
+        if (!fileName && !fileKey) {
+          bridgeMeta.textContent = t("bridge.waitingFile");
+        } else {
+          bridgeMeta.innerHTML = `<strong>${escapeHtml(name)}</strong> · ${escapeHtml(key)}`;
+        }
         bridgePanel.title = `figma-agent-mcp · ${buildWsUrl()}`;
       }
 
       function updateModelBadge() {
         const model = (settings.model || DEFAULT_MODEL).trim() || DEFAULT_MODEL;
         modelBadge.textContent = model;
-        modelBadge.title = `当前模型：${model}`;
+        modelBadge.title = t("model.currentOf", { model });
       }
 
       function normalizeBaseUrl(url) {
@@ -2121,7 +2820,7 @@
       function loadPromptEditor(key) {
         activePromptKey = key || activePromptKey || "rename";
         syncPromptTabs();
-        const meta = PROMPT_TAB_META[activePromptKey] || PROMPT_TAB_META.rename;
+        const meta = getPromptTabMeta(activePromptKey);
         if (promptHint) promptHint.textContent = meta.hint;
         if (promptEditor) {
           promptEditor.value = getEffectivePromptTemplate(activePromptKey);
@@ -2179,13 +2878,18 @@
         btnSettings.classList.toggle("has-update", visible);
         settingsMenuUpdate.classList.toggle("has-update", visible);
         settingsUpdateDesc.textContent = visible
-          ? `有新版本 ${remoteVersionInfo?.latest || ""}`.trim()
-          : "暂无更新";
+          ? t("settings.updateAvailable", {
+              version: remoteVersionInfo?.latest || "",
+            })
+          : t("settings.updateNone");
       }
 
       function showUpdateModal(info) {
         remoteVersionInfo = info;
-        updateVersionText.textContent = `版本 ${info.latest} 可用（当前 ${PLUGIN_VERSION}）。`;
+        updateVersionText.textContent = t("update.available", {
+          latest: info.latest,
+          current: PLUGIN_VERSION,
+        });
         updateNotes.innerHTML = "";
         for (const note of info.notes || []) {
           const li = document.createElement("li");
@@ -2215,14 +2919,14 @@
           ) {
             showUpdateModal(info);
           } else if (!newer && force) {
-            appendLog(`已是最新版本（${PLUGIN_VERSION}）。`);
-            showToast(`已是最新版本 ${PLUGIN_VERSION}`, "success");
+            appendLog(t("update.latest", { version: PLUGIN_VERSION }));
+            showToast(t("update.latestToast", { version: PLUGIN_VERSION }), "success");
           }
           return info;
         } catch (err) {
           if (force) {
-            appendLog("检查更新失败: " + err.message);
-            showToast("检查更新失败", "error");
+            appendLog(t("update.fail") + ": " + err.message);
+            showToast(t("update.fail"), "error");
           }
           return null;
         }
@@ -2241,10 +2945,10 @@
         const count = lastSelection.length;
         if (!count) {
           selectionBox.className = "selection-card empty";
-          selectionText.textContent = "未选中图层";
-          selectionHint.textContent = "在画布中选择 Frame / Group / Section";
-          miniSelectionText.textContent = "未选中图层";
-          miniSelectionHint.textContent = "在画布中选择图层";
+          selectionText.textContent = t("selection.empty");
+          selectionHint.textContent = t("selection.emptyHint");
+          miniSelectionText.textContent = t("selection.empty");
+          miniSelectionHint.textContent = t("selection.emptyHintMini");
           panelCount.style.display = "none";
           syncRunButton();
           return;
@@ -2257,16 +2961,16 @@
           miniSelectionText.textContent = lastSelection[0].name;
           miniSelectionHint.textContent = lastSelection[0].type;
         } else {
-          selectionText.textContent = `${count} 个图层`;
+          selectionText.textContent = t("selection.count", { count });
           selectionHint.textContent = lastSelection
             .slice(0, 3)
             .map((i) => i.name)
             .join(" · ");
-          miniSelectionText.textContent = `${count} 个图层`;
+          miniSelectionText.textContent = t("selection.count", { count });
           miniSelectionHint.textContent = selectionHint.textContent;
         }
         panelCount.style.display = "";
-        panelCount.textContent = `${count} 选中`;
+        panelCount.textContent = t("selection.selected", { count });
         syncRunButton();
       }
 
@@ -2275,7 +2979,7 @@
         if (!items?.length) {
           const empty = document.createElement("div");
           empty.className = "list-item empty";
-          empty.textContent = "无重命名结果";
+          empty.textContent = t("view.rename.noResult");
           renameList.appendChild(empty);
           return;
         }
@@ -2315,7 +3019,7 @@
           (socket.readyState === WebSocket.OPEN ||
             socket.readyState === WebSocket.CONNECTING)
         ) {
-          if (manual) showToast("已在连接中", "success");
+          if (manual) showToast(t("bridge.connectingToast"), "success");
           return;
         }
 
@@ -2326,7 +3030,7 @@
           btnBridgeReconnect.classList.add("is-spinning");
           btnBridgeReconnect.disabled = true;
         }
-        appendLog(manual ? "手动重连 bridge…" : "Connecting to bridge…");
+        appendLog(manual ? t("bridge.manualReconnect") : "Connecting to bridge…");
 
         try {
           socket = new WebSocket(url);
@@ -2335,7 +3039,7 @@
           appendLog("WebSocket error: " + err.message);
           setConnected(false);
           scheduleReconnect();
-          if (manual) showToast("连接失败", "error");
+          if (manual) showToast(t("bridge.connectFail"), "error");
           return;
         }
 
@@ -2343,7 +3047,7 @@
           reconnectDelay = 1000;
           setConnected(true);
           appendLog("Bridge connected (msgpack)");
-          if (manual) showToast("Bridge 已连接", "success");
+          if (manual) showToast(t("bridge.connectedToast"), "success");
         };
 
         socket.onclose = () => {
@@ -2354,7 +3058,7 @@
 
         socket.onerror = () => {
           appendLog("Bridge connection failed");
-          if (manual) showToast("连接失败", "error");
+          if (manual) showToast(t("bridge.connectFail"), "error");
         };
 
         socket.onmessage = (event) => {
@@ -2416,9 +3120,9 @@
       }
 
       function syncRunButton() {
-        const meta = VIEW_META[currentView];
+        const meta = getViewMeta(currentView);
         btnRunTask.classList.toggle("hidden", !meta.showRun);
-        btnRunTask.textContent = meta.runLabel || "开始执行";
+        btnRunTask.textContent = t(meta.runKey);
         const canRun =
           !busy &&
           lastSelection.length > 0 &&
@@ -2428,8 +3132,8 @@
 
       function switchView(name) {
         currentView = name;
-        const meta = VIEW_META[name] || VIEW_META.bridge;
-        panelTitle.textContent = meta.title;
+        const meta = getViewMeta(name);
+        panelTitle.textContent = t(meta.titleKey);
         panelFooter.classList.toggle("hidden", !meta.showFooter);
 
         document.querySelectorAll(".nav-item, .rail-btn").forEach((el) => {
@@ -2439,6 +3143,12 @@
           view.classList.toggle("active", view.id === `view-${name}`);
         });
         syncRunButton();
+        if (
+          name === "export" &&
+          typeof refreshExportPanelFromSelection === "function"
+        ) {
+          refreshExportPanelFromSelection(lastExportNodes || []);
+        }
       }
 
       function toggleMini() {
@@ -2474,11 +3184,10 @@
         testResult.textContent = "";
         testResult.className = "settings-test-result";
         post({ type: "getSettings" });
-        // 把焦点收进输入框，避免空格/回车激活背后的 ⚙ / 菜单按钮导致误关
+        // 把焦点收进弹窗内，避免空格/回车激活背后的 ⚙ / 菜单按钮导致误关
         requestAnimationFrame(() => {
           try {
             apiBaseUrlInput.focus({ preventScroll: true });
-            apiBaseUrlInput.select();
           } catch (_) {
             apiBaseUrlInput.focus();
           }
@@ -2500,16 +3209,19 @@
           apiBaseUrl: apiBaseUrlInput.value.trim() || DEFAULT_API_BASE,
           model: modelInput.value.trim() || DEFAULT_MODEL,
           apiKey: apiKeyInput.value.trim(),
+          locale: normalizeLocale(settings.locale || locale),
         };
+        locale = settings.locale;
         post({ type: "setSettings", settings });
+        applyI18n();
         updateModelBadge();
         closeSettings();
-        appendLog("Settings saved");
-        showToast("设置已保存", "success");
+        appendLog(t("settings.saved"));
+        showToast(t("toast.settingsSaved"), "success");
       }
 
       async function testConnection() {
-        testResult.textContent = "Testing…";
+        testResult.textContent = t("settings.testing");
         testResult.className = "settings-test-result";
         const prev = { ...settings };
         settings = {
@@ -2523,7 +3235,7 @@
             system: 'Reply with JSON: {"ok":true}',
             userText: "ping",
           });
-          testResult.textContent = "Connection OK";
+          testResult.textContent = t("settings.testOk");
           testResult.className = "settings-test-result ok";
         } catch (err) {
           testResult.textContent = err.message;
@@ -2588,12 +3300,12 @@
           plan = JSON.parse(groupPlanEditor.value);
         } catch {
           appendLog("Invalid JSON in plan editor");
-          showToast("分组计划 JSON 无效", "error");
+          showToast(t("toast.invalidPlan"), "error");
           return;
         }
         if (!pendingGroupCloneRootId) {
           appendLog("No clone in progress. Run Start group first.");
-          showToast("请先开始视觉分组", "error");
+          showToast(t("toast.startGroupFirst"), "error");
           return;
         }
         applyGroupBtn.disabled = true;
@@ -2658,6 +3370,14 @@
         closeSettingsMenu();
         checkForUpdates({ force: true, showModal: true });
       });
+      [settingsLangZh, settingsLangEn].forEach((btn) => {
+        if (!btn) return;
+        btn.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setLocale(btn.getAttribute("data-locale"));
+        });
+      });
       document.addEventListener("click", (e) => {
         if (!settingsMenuWrap.classList.contains("is-open")) return;
         if (settingsMenuWrap.contains(e.target)) return;
@@ -2701,9 +3421,7 @@
           const key = btn.getAttribute("data-prompt-key");
           if (!key || key === activePromptKey) return;
           if (promptDraftDirty && promptEditor) {
-            const ok = window.confirm(
-              "当前提示词有未保存修改，切换标签将丢弃修改，是否继续？",
-            );
+            const ok = window.confirm(t("prompt.switchConfirm"));
             if (!ok) return;
           }
           loadPromptEditor(key);
@@ -2723,7 +3441,7 @@
         if (!promptEditor) return;
         promptEditor.value = getDefaultPromptTemplate(activePromptKey);
         promptDraftDirty = true;
-        appendLog("已载入默认提示词（尚未保存）：" + activePromptKey);
+        appendLog(t("prompt.loadedDefault", { key: activePromptKey }));
       });
       promptSaveBtn.addEventListener("click", () => {
         if (!promptEditor) return;
@@ -2738,15 +3456,20 @@
         savePromptOverrides(next);
         promptDraftDirty = false;
         appendLog(
-          "提示词已保存：" +
-            ((PROMPT_TAB_META[activePromptKey] || {}).label || activePromptKey),
+          t("prompt.savedLog", { label: getPromptTabMeta(activePromptKey).label }),
         );
-        showToast("提示词已保存", "success");
+        showToast(t("prompt.saved"), "success");
         closePromptModal();
       });
 
       document.addEventListener("keydown", (e) => {
         if (e.key !== "Escape") return;
+        const previewMask = document.getElementById("image-preview-mask");
+        if (previewMask && previewMask.classList.contains("show")) {
+          if (typeof closeImagePreview === "function") closeImagePreview();
+          e.preventDefault();
+          return;
+        }
         if (promptModalMask.classList.contains("show")) {
           closePromptModal();
           e.preventDefault();
@@ -2812,7 +3535,9 @@
 
       btnConsoleToggle.addEventListener("click", () => {
         const collapsed = consolePanel.classList.toggle("collapsed");
-        btnConsoleToggle.textContent = collapsed ? "展开" : "收起";
+        btnConsoleToggle.textContent = collapsed
+          ? t("console.expand")
+          : t("console.collapse");
       });
       btnClearLog.addEventListener("click", () => {
         consoleBody.textContent = "";
@@ -2879,6 +3604,11 @@
             fileName = msg.fileName;
             updateBridgeMeta();
             renderSelection(msg.selection);
+            if (typeof refreshExportPanelFromSelection === "function") {
+              refreshExportPanelFromSelection(msg.exportNodes || []);
+            } else {
+              lastExportNodes = msg.exportNodes || [];
+            }
             if (!socket || socket.readyState !== WebSocket.OPEN) connectBridge();
             break;
 
@@ -2904,10 +3634,13 @@
               apiKey: msg.settings.apiKey || "",
               model: msg.settings.model || DEFAULT_MODEL,
               dismissedVersion: msg.settings.dismissedVersion || "",
+              locale: normalizeLocale(msg.settings.locale || DEFAULT_LOCALE),
             };
+            locale = settings.locale;
             apiBaseUrlInput.value = settings.apiBaseUrl;
             modelInput.value = settings.model;
             apiKeyInput.value = settings.apiKey;
+            applyI18n();
             updateModelBadge();
             if (
               remoteVersionInfo &&
@@ -2961,14 +3694,14 @@
           case "renameDone":
             setBusy(false);
             appendLog(`Done. Renamed ${msg.items.length} layer(s) on clone.`);
-            showToast(`已重命名 ${msg.items.length} 层`, "success");
+            showToast(t("toast.renamed", { count: msg.items.length }), "success");
             break;
 
           case "groupDone":
             setBusy(false);
             applyGroupBtn.disabled = false;
             appendLog("Done. Applied grouping on clone.");
-            showToast("分组已应用到副本", "success");
+            showToast(t("toast.grouped"), "success");
             break;
 
           case "log":
@@ -2984,9 +3717,766 @@
             appendLog("Error: " + msg.message);
             showToast(msg.message, "error");
             break;
+
+          case "exportPreviewItem":
+            if (typeof applyExportPreviewItem === "function") {
+              applyExportPreviewItem(msg);
+            }
+            break;
+
+          case "exportSlicesDone":
+            if (typeof showExportResults === "function") {
+              showExportResults(msg);
+            }
+            break;
+
+          case "exportDeliveryDone":
+            if (typeof handleExportDeliveryDone === "function") {
+              handleExportDeliveryDone(msg);
+            }
+            break;
         }
       };
 
+      // --- Export slices (1× preview → 3× download / ZIP) ---
+      const exportSummary = document.getElementById("export-summary");
+      const exportList = document.getElementById("export-list");
+      const btnExportAll = document.getElementById("btn-export-all");
+
+      let lastExportNodes = [];
+      let exportListItems = [];
+      let lastExportSelectionKey = "";
+      let exportRequestKey = "";
+      let exportRequestSeq = 0;
+      let exportActiveSeq = 0;
+      let exportDeliverySeq = 0;
+      let pendingExportDelivery = {};
+      let exportPanelLoading = false;
+      let exportPreviewLoaded = 0;
+      let exportPreviewTotal = 0;
+      let exportDownloadingId = null;
+      let exportZipBusy = false;
+      let exportAutoTimer = null;
+      let exportThumbUrls = [];
+      let imagePreviewObjectUrl = null;
+      const imagePreviewMask = document.getElementById("image-preview-mask");
+      const imagePreviewClose = document.getElementById("image-preview-close");
+      const imagePreviewOk = document.getElementById("image-preview-ok");
+      const imagePreviewImg = document.getElementById("image-preview-img");
+      const imagePreviewTitle = document.getElementById("image-preview-title");
+      const imagePreviewMeta = document.getElementById("image-preview-meta");
+
+      function openImagePreview(item) {
+        if (
+          !item ||
+          !hasExportPng(item.png) ||
+          !imagePreviewMask ||
+          !imagePreviewImg
+        ) {
+          return;
+        }
+        if (imagePreviewObjectUrl) {
+          URL.revokeObjectURL(imagePreviewObjectUrl);
+          imagePreviewObjectUrl = null;
+        }
+        try {
+          const bytes = normalizeExportPngBytes(item.png);
+          if (!bytes) throw new Error("invalid png");
+          imagePreviewObjectUrl = URL.createObjectURL(
+            new Blob([bytes], { type: "image/png" }),
+          );
+          imagePreviewImg.src = imagePreviewObjectUrl;
+        } catch (err) {
+          appendLog(
+            t("export.log.previewOpenFail", {
+              error: err && err.message ? err.message : String(err),
+            }),
+          );
+          return;
+        }
+        if (imagePreviewTitle) {
+          imagePreviewTitle.textContent =
+            item.name || t("view.export.previewTitle");
+        }
+        if (imagePreviewMeta) {
+          const fileStem = item.customBaseName || item.baseName || "";
+          imagePreviewMeta.textContent = t("view.export.previewMeta", {
+            width: item.width || 0,
+            height: item.height || 0,
+            file: fileStem ? " · " + fileStem + ".png" : "",
+          });
+        }
+        imagePreviewMask.classList.add("show");
+      }
+
+      function closeImagePreview() {
+        if (imagePreviewMask) imagePreviewMask.classList.remove("show");
+        if (imagePreviewImg) imagePreviewImg.removeAttribute("src");
+        if (imagePreviewObjectUrl) {
+          URL.revokeObjectURL(imagePreviewObjectUrl);
+          imagePreviewObjectUrl = null;
+        }
+      }
+
+      function normalizeExportPngBytes(png) {
+        if (!png) return null;
+        if (png instanceof Uint8Array) return png.length > 0 ? png : null;
+        if (typeof ArrayBuffer !== "undefined" && png instanceof ArrayBuffer) {
+          const fromBuf = new Uint8Array(png);
+          return fromBuf.length > 0 ? fromBuf : null;
+        }
+        if (Array.isArray(png)) return png.length > 0 ? new Uint8Array(png) : null;
+        if (
+          typeof png === "object" &&
+          typeof png.length === "number" &&
+          png.length > 0
+        ) {
+          try {
+            const fromLike = new Uint8Array(png);
+            return fromLike.length > 0 ? fromLike : null;
+          } catch (_) {
+            return null;
+          }
+        }
+        return null;
+      }
+
+      function hasExportPng(png) {
+        const bytes = normalizeExportPngBytes(png);
+        return !!(bytes && bytes.length > 0);
+      }
+
+      function revokeExportThumbUrls() {
+        exportThumbUrls.forEach((url) => URL.revokeObjectURL(url));
+        exportThumbUrls = [];
+      }
+
+      function pngToObjectUrl(png) {
+        const bytes = normalizeExportPngBytes(png);
+        if (!bytes) throw new Error("invalid png");
+        const url = URL.createObjectURL(
+          new Blob([bytes], { type: "image/png" }),
+        );
+        exportThumbUrls.push(url);
+        return url;
+      }
+
+      function downloadBlobFile(fileName, blob) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+
+      function sanitizeExportBaseName(name) {
+        return (
+          String(name || "layer")
+            .trim()
+            .replace(/[\\/:*?"<>|]/g, "-")
+            .replace(/\s+/g, "-")
+            .replace(/-+/g, "-")
+            .replace(/^-+|-+$/g, "") || "layer"
+        );
+      }
+
+      function resolveExportFileName(item) {
+        const raw = (
+          item.customBaseName != null
+            ? item.customBaseName
+            : item.baseName || item.name || "layer"
+        ).trim();
+        const stem =
+          raw
+            .replace(/[\\/:*?"<>|]/g, "-")
+            .replace(/\s+/g, "-")
+            .replace(/\.png$/i, "")
+            .replace(/@[0-9]+x$/i, "") || "layer";
+        return stem + ".png";
+      }
+
+      function ensureUniqueFileNames(items) {
+        const used = new Set();
+        return items.map((item) => {
+          let name = resolveExportFileName(item);
+          if (!used.has(name)) {
+            used.add(name);
+            return { item, fileName: name };
+          }
+          const stem = name.replace(/\.png$/i, "");
+          let n = 2;
+          while (used.has(stem + "-" + n + ".png")) n += 1;
+          name = stem + "-" + n + ".png";
+          used.add(name);
+          return { item, fileName: name };
+        });
+      }
+
+      function getSelectionExportKey(nodes) {
+        return (nodes || [])
+          .map((n) => n.id)
+          .sort()
+          .join("|");
+      }
+
+      function getExportableListItems() {
+        return exportListItems.filter(
+          (item) => item.exportable !== false && !!item.id,
+        );
+      }
+
+      function getExportedListItems() {
+        return exportListItems.filter(
+          (item) =>
+            item.exportable !== false && !!item.id && hasExportPng(item.png),
+        );
+      }
+
+      function yieldToUi() {
+        return new Promise((resolve) => setTimeout(resolve, 0));
+      }
+
+      function syncExportActionButtons() {
+        if (!btnExportAll) return;
+        const hasItems = getExportableListItems().length > 0;
+        const busy = exportZipBusy || !!exportDownloadingId;
+        btnExportAll.disabled = !hasItems || busy;
+        btnExportAll.textContent = exportZipBusy
+          ? t("view.export.zipBusy")
+          : t("view.export.zip");
+      }
+
+      function setExportPanelLoading(loading) {
+        exportPanelLoading = loading;
+        syncExportActionButtons();
+        if (currentView === "export") {
+          updateExportSummary(
+            { exportNodes: lastExportNodes },
+            exportPreviewLoaded,
+          );
+          renderExportList();
+        }
+      }
+
+      function updateExportSummary(selection, previewCount) {
+        if (!exportSummary) return;
+        const nodes = (selection && selection.exportNodes) || lastExportNodes || [];
+        const exportable = nodes.filter((n) => n.exportable);
+        const skipped = nodes.filter((n) => !n.exportable);
+        const loaded =
+          typeof previewCount === "number"
+            ? previewCount
+            : getExportedListItems().length;
+        const skippedSuffix =
+          skipped.length > 0
+            ? t("view.export.skippedSuffix", { count: skipped.length })
+            : "";
+
+        if (exportPanelLoading && exportable.length > 0) {
+          exportSummary.innerHTML = t("view.export.summaryLoading", {
+            loaded,
+            total: exportPreviewTotal || exportable.length,
+          });
+          return;
+        }
+
+        if (nodes.length === 0) {
+          exportSummary.textContent = t("view.export.summaryEmpty");
+          return;
+        }
+
+        if (exportable.length === 0) {
+          exportSummary.innerHTML = t("view.export.summaryNoneExportable", {
+            count: nodes.length,
+          });
+          return;
+        }
+
+        exportSummary.innerHTML = t("view.export.summaryReady", {
+          count: exportable.length,
+          skipped: skippedSuffix,
+          loaded,
+          total: exportPreviewTotal || exportable.length,
+        });
+      }
+
+      function renderExportList() {
+        if (!exportList) return;
+        revokeExportThumbUrls();
+        exportList.innerHTML = "";
+
+        exportListItems.forEach((item) => {
+          const row = document.createElement("div");
+          row.className =
+            "list-item export-item" +
+            (item.exportable === false ? " is-skipped" : "");
+          const hasPng = hasExportPng(item.png);
+          const isDownloading = exportDownloadingId === item.id;
+          const isBusy =
+            isDownloading ||
+            exportZipBusy ||
+            (!!exportDownloadingId && exportDownloadingId !== item.id);
+
+          if (hasPng) {
+            const thumb = document.createElement("img");
+            thumb.className = "export-thumb is-clickable";
+            thumb.alt = item.name;
+            thumb.title = t("view.export.previewHint");
+            try {
+              thumb.src = pngToObjectUrl(item.png);
+              thumb.addEventListener("click", (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                openImagePreview(item);
+              });
+              row.appendChild(thumb);
+            } catch (_) {
+              const placeholder = document.createElement("div");
+              placeholder.className = "export-thumb is-placeholder";
+              placeholder.textContent = t("view.export.previewFail");
+              row.appendChild(placeholder);
+            }
+          } else {
+            const thumb = document.createElement("div");
+            thumb.className = "export-thumb is-placeholder";
+            if (item.exportable === false) {
+              thumb.textContent = t("view.export.skip");
+            } else if (exportPanelLoading) {
+              thumb.textContent = t("view.export.loading");
+            } else {
+              thumb.textContent = t("view.export.pending");
+            }
+            row.appendChild(thumb);
+          }
+
+          const meta = document.createElement("div");
+          meta.className = "export-meta";
+
+          const filenameRow = document.createElement("div");
+          filenameRow.className = "export-filename-row";
+
+          const input = document.createElement("input");
+          input.type = "text";
+          input.className = "export-filename-input";
+          input.value = item.customBaseName || item.baseName || item.name;
+          input.title = t("view.export.filenameTitle");
+          input.disabled = item.exportable === false;
+          input.addEventListener("input", () => {
+            item.customBaseName = input.value;
+          });
+
+          const suffix = document.createElement("span");
+          suffix.className = "export-filename-suffix";
+          suffix.textContent = ".png";
+
+          filenameRow.appendChild(input);
+          filenameRow.appendChild(suffix);
+
+          const infoRow = document.createElement("div");
+          infoRow.className = "export-info-row";
+          if (item.exportable === false) {
+            infoRow.textContent = item.skipReason || t("view.export.skip");
+          } else {
+            infoRow.textContent =
+              item.name +
+              " · " +
+              item.width +
+              "×" +
+              item.height +
+              (hasPng ? " · 1×" : "");
+          }
+
+          meta.appendChild(filenameRow);
+          meta.appendChild(infoRow);
+
+          const actions = document.createElement("div");
+          actions.className = "export-actions";
+          const canAct = item.exportable !== false && !!item.id;
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "btn-export-one";
+          btn.textContent = isDownloading
+            ? t("view.export.downloading")
+            : t("view.export.download");
+          btn.disabled = !canAct || isBusy;
+          if (canAct) {
+            btn.addEventListener("click", () => {
+              downloadPngFile(resolveExportFileName(item), item);
+            });
+          }
+          actions.appendChild(btn);
+
+          row.appendChild(meta);
+          row.appendChild(actions);
+          exportList.appendChild(row);
+        });
+      }
+
+      function buildExportListFromSelection(nodes, preserveNames) {
+        const nameById = {};
+        if (preserveNames) {
+          exportListItems.forEach((item) => {
+            if (item.id) nameById[item.id] = item.customBaseName;
+          });
+        }
+        exportListItems = (nodes || []).map((node) => {
+          const baseName = sanitizeExportBaseName(node.name);
+          return {
+            id: node.id,
+            name: node.name,
+            baseName,
+            customBaseName: nameById[node.id] || baseName,
+            width: node.width,
+            height: node.height,
+            exportable: node.exportable !== false,
+            skipReason: node.skipReason,
+            png: null,
+            deliveryPng: null,
+            deliveryScale: 0,
+          };
+        });
+      }
+
+      function scheduleAutoExport(key) {
+        if (exportAutoTimer) clearTimeout(exportAutoTimer);
+        const exportableCount = lastExportNodes.filter((n) => n.exportable)
+          .length;
+        const delay = exportableCount > 15 ? 280 : 160;
+        exportAutoTimer = setTimeout(() => {
+          exportAutoTimer = null;
+          if (currentView !== "export") return;
+          if (lastExportSelectionKey !== key) return;
+          if (!lastExportNodes.some((n) => n.exportable)) return;
+          autoExportSlices(key);
+        }, delay);
+      }
+
+      function autoExportSlices(key) {
+        exportRequestSeq += 1;
+        exportActiveSeq = exportRequestSeq;
+        exportRequestKey = key;
+        exportPreviewLoaded = 0;
+        exportPreviewTotal = lastExportNodes.filter((n) => n.exportable).length;
+        setExportPanelLoading(true);
+        appendLog(t("export.log.preview"));
+        post({ type: "exportSlices", requestId: exportActiveSeq });
+      }
+
+      function refreshExportPanelFromSelection(exportNodes) {
+        const nodes = exportNodes || [];
+        lastExportNodes = nodes;
+        const key = getSelectionExportKey(nodes);
+        const previewCount = getExportedListItems().length;
+        const selectionChanged = key !== lastExportSelectionKey;
+        const exportable = nodes.filter((n) => n.exportable);
+
+        if (selectionChanged) {
+          lastExportSelectionKey = key;
+          exportRequestSeq += 1;
+          exportActiveSeq = exportRequestSeq;
+          buildExportListFromSelection(nodes, false);
+          exportPreviewLoaded = 0;
+          exportPreviewTotal = exportable.length;
+        } else if (previewCount === 0 && !exportPanelLoading) {
+          buildExportListFromSelection(nodes, true);
+        }
+
+        if (currentView === "export") {
+          renderExportList();
+          updateExportSummary({ exportNodes: nodes }, getExportedListItems().length);
+        }
+        syncExportActionButtons();
+
+        if (currentView !== "export") return;
+
+        if (exportable.length > 0) {
+          if (selectionChanged || (previewCount === 0 && !exportPanelLoading)) {
+            scheduleAutoExport(key);
+          }
+        } else {
+          if (exportAutoTimer) {
+            clearTimeout(exportAutoTimer);
+            exportAutoTimer = null;
+          }
+          setExportPanelLoading(false);
+        }
+      }
+
+      function applyExportPreviewItem(msg) {
+        if (!msg || msg.requestId !== exportActiveSeq) return;
+        const itemPayload = msg.item;
+        if (!itemPayload || !itemPayload.id) return;
+
+        exportPreviewLoaded = msg.loaded || exportPreviewLoaded;
+        exportPreviewTotal = msg.total || exportPreviewTotal;
+
+        let target = exportListItems.find((item) => item.id === itemPayload.id);
+        if (!target) {
+          target = {
+            id: itemPayload.id,
+            name: itemPayload.name,
+            baseName:
+              itemPayload.baseName || sanitizeExportBaseName(itemPayload.name),
+            customBaseName:
+              itemPayload.baseName || sanitizeExportBaseName(itemPayload.name),
+            width: itemPayload.width,
+            height: itemPayload.height,
+            exportable: true,
+            png: null,
+            deliveryPng: null,
+            deliveryScale: 0,
+          };
+          exportListItems.push(target);
+        }
+
+        const normalizedPng = normalizeExportPngBytes(itemPayload.png);
+        if (normalizedPng) target.png = normalizedPng;
+        target.width = itemPayload.width;
+        target.height = itemPayload.height;
+        target.name = itemPayload.name || target.name;
+        target.exportable = true;
+
+        if (currentView === "export") {
+          renderExportList();
+          updateExportSummary(
+            { exportNodes: lastExportNodes },
+            exportPreviewLoaded,
+          );
+        }
+        syncExportActionButtons();
+      }
+
+      function showExportResults(payload) {
+        const isStale =
+          payload.requestId != null && payload.requestId !== exportActiveSeq;
+        const currentKey = getSelectionExportKey(lastExportNodes);
+        const keyMismatch = exportRequestKey && currentKey !== exportRequestKey;
+        if (isStale || keyMismatch) return;
+
+        setExportPanelLoading(false);
+        exportPreviewLoaded =
+          payload.loaded != null
+            ? payload.loaded
+            : getExportedListItems().length;
+        exportPreviewTotal =
+          payload.total != null ? payload.total : exportPreviewTotal;
+        exportRequestKey = currentKey;
+        lastExportSelectionKey = currentKey;
+
+        (payload.skipped || []).forEach((skip) => {
+          const exists = exportListItems.some(
+            (item) => item.name === skip.name && item.exportable === false,
+          );
+          if (!exists && skip.name) {
+            exportListItems.push({
+              id: "",
+              name: skip.name,
+              baseName: sanitizeExportBaseName(skip.name),
+              customBaseName: sanitizeExportBaseName(skip.name),
+              width: 0,
+              height: 0,
+              exportable: false,
+              skipReason: skip.reason,
+              png: null,
+              deliveryPng: null,
+              deliveryScale: 0,
+            });
+          }
+        });
+
+        if (currentView === "export") {
+          renderExportList();
+          updateExportSummary(
+            { exportNodes: lastExportNodes },
+            exportPreviewLoaded,
+          );
+        }
+        syncExportActionButtons();
+      }
+
+      function requestExportDelivery(nodeIds) {
+        const ids = (nodeIds || []).filter(Boolean);
+        if (ids.length === 0) {
+          return Promise.resolve({
+            items: [],
+            skipped: [{ name: "", reason: "no nodes" }],
+          });
+        }
+        exportDeliverySeq += 1;
+        const requestId = exportDeliverySeq;
+        return new Promise((resolve, reject) => {
+          pendingExportDelivery[requestId] = { resolve, reject };
+          post({ type: "exportDelivery", requestId, nodeIds: ids });
+        });
+      }
+
+      function handleExportDeliveryDone(msg) {
+        const pending = pendingExportDelivery[msg.requestId];
+        if (!pending) return;
+        delete pendingExportDelivery[msg.requestId];
+        pending.resolve({
+          items: msg.items || [],
+          skipped: msg.skipped || [],
+        });
+      }
+
+      async function ensureDeliveryPng(item) {
+        if (hasExportPng(item.deliveryPng)) return item.deliveryPng;
+        if (!item.id) throw new Error("missing node id");
+        const result = await requestExportDelivery([item.id]);
+        const delivered = (result.items || []).find(
+          (entry) => entry.id === item.id,
+        );
+        if (!delivered || !hasExportPng(delivered.png)) {
+          const reason =
+            (result.skipped &&
+              result.skipped[0] &&
+              result.skipped[0].reason) ||
+            "3x export failed";
+          throw new Error(reason);
+        }
+        item.deliveryPng = normalizeExportPngBytes(delivered.png);
+        if (!item.deliveryPng) throw new Error("invalid 3x png");
+        item.deliveryScale = delivered.scale || 3;
+        return item.deliveryPng;
+      }
+
+      async function ensureDeliveryPngs(items) {
+        const needIds = [];
+        items.forEach((item) => {
+          if (item && item.id && !hasExportPng(item.deliveryPng)) {
+            needIds.push(item.id);
+          }
+        });
+        if (needIds.length > 0) {
+          const result = await requestExportDelivery(needIds);
+          const byId = {};
+          (result.items || []).forEach((entry) => {
+            byId[entry.id] = entry;
+          });
+          items.forEach((item) => {
+            if (!item || hasExportPng(item.deliveryPng)) return;
+            const delivered = byId[item.id];
+            if (delivered && hasExportPng(delivered.png)) {
+              item.deliveryPng = normalizeExportPngBytes(delivered.png);
+              item.deliveryScale = delivered.scale || 3;
+            }
+          });
+        }
+        return items.filter((item) => hasExportPng(item.deliveryPng));
+      }
+
+      async function downloadPngFile(fileName, item) {
+        if (!item || item.exportable === false || !item.id) return;
+        if (exportZipBusy) return;
+
+        exportDownloadingId = item.id;
+        if (currentView === "export") renderExportList();
+        syncExportActionButtons();
+        await yieldToUi();
+
+        try {
+          appendLog(t("export.log.download", { name: fileName }));
+          const delivery = await ensureDeliveryPng(item);
+          const raw =
+            delivery instanceof Uint8Array
+              ? delivery
+              : new Uint8Array(delivery);
+          downloadBlobFile(
+            fileName,
+            new Blob([raw], { type: "image/png" }),
+          );
+          appendLog(t("export.log.downloaded", { name: fileName }));
+        } catch (err) {
+          appendLog(
+            t("export.log.fail", {
+              error: err && err.message ? err.message : String(err),
+            }),
+          );
+        } finally {
+          exportDownloadingId = null;
+          if (currentView === "export") renderExportList();
+          syncExportActionButtons();
+        }
+      }
+
+      async function downloadExportItemsAsZip(items) {
+        if (typeof JSZip === "undefined") {
+          appendLog(t("export.log.noJszip"));
+          return;
+        }
+        if (!items || items.length === 0) return;
+        if (exportZipBusy || exportDownloadingId) return;
+
+        exportZipBusy = true;
+        syncExportActionButtons();
+        if (currentView === "export") renderExportList();
+        appendLog(t("export.log.zip"));
+        await yieldToUi();
+
+        try {
+          const readyItems = await ensureDeliveryPngs(items);
+          if (readyItems.length === 0) {
+            throw new Error("no 3x slices");
+          }
+          const zip = new JSZip();
+          const entries = ensureUniqueFileNames(readyItems);
+          for (let i = 0; i < entries.length; i++) {
+            const entry = entries[i];
+            const raw =
+              entry.item.deliveryPng instanceof Uint8Array
+                ? entry.item.deliveryPng
+                : new Uint8Array(entry.item.deliveryPng);
+            zip.file(entry.fileName, raw);
+            await yieldToUi();
+          }
+          const blob = await zip.generateAsync({
+            type: "blob",
+            compression: "STORE",
+          });
+          const stamp = new Date()
+            .toISOString()
+            .slice(0, 16)
+            .replace(/[-:T]/g, "");
+          downloadBlobFile("figma-slices-" + stamp + ".zip", blob);
+          appendLog(t("export.log.zipDone", { count: entries.length }));
+        } catch (err) {
+          appendLog(
+            t("export.log.zipFail", {
+              error: err && err.message ? err.message : String(err),
+            }),
+          );
+        } finally {
+          exportZipBusy = false;
+          syncExportActionButtons();
+          if (currentView === "export") renderExportList();
+        }
+      }
+
+      if (btnExportAll) {
+        btnExportAll.addEventListener("click", () => {
+          downloadExportItemsAsZip(getExportableListItems());
+        });
+      }
+
+      [imagePreviewClose, imagePreviewOk].forEach((el) => {
+        if (el) el.addEventListener("click", closeImagePreview);
+      });
+      if (imagePreviewMask) {
+        const modal = imagePreviewMask.querySelector(".image-preview-modal");
+        if (modal) {
+          modal.addEventListener("mousedown", (e) => e.stopPropagation());
+          modal.addEventListener("click", (e) => e.stopPropagation());
+        }
+        imagePreviewMask.addEventListener("click", (e) => {
+          if (e.target === imagePreviewMask) closeImagePreview();
+        });
+      }
+
+      applyI18n();
       updateModelBadge();
       switchView("bridge");
       post({ type: "ui-ready" });

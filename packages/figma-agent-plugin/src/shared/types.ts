@@ -1,8 +1,12 @@
+export type UiLocale = "zh" | "en";
+
 export interface PluginSettings {
   apiBaseUrl?: string;
   apiKey?: string;
   model?: string;
   dismissedVersion?: string;
+  /** UI language. Default: zh */
+  locale?: UiLocale;
 }
 
 export type PromptOverrideKey = "rename" | "group";
@@ -49,6 +53,32 @@ export interface GroupPlan {
   groups: GroupPlanItem[];
 }
 
+export interface ExportPreviewNode {
+  id: string;
+  name: string;
+  width: number;
+  height: number;
+  type: string;
+  exportable: boolean;
+  skipReason?: string;
+}
+
+export interface ExportDeliveryItem {
+  id: string;
+  name: string;
+  baseName: string;
+  fileName: string;
+  width: number;
+  height: number;
+  scale: number;
+  png: number[];
+}
+
+export interface ExportSkipped {
+  name: string;
+  reason: string;
+}
+
 export type UIMessage =
   | { type: "ui-ready" }
   | { type: "bridge-connected" }
@@ -69,12 +99,15 @@ export type UIMessage =
   | { type: "startRename" }
   | { type: "renameResult"; items: RenameItem[]; cloneRootId: string }
   | { type: "startGroup" }
-  | { type: "groupApply"; plan: GroupPlan; cloneRootId: string };
+  | { type: "groupApply"; plan: GroupPlan; cloneRootId: string }
+  | { type: "exportSlices"; requestId: number }
+  | { type: "exportDelivery"; requestId: number; nodeIds: string[] };
 
 export type PluginMessage =
   | {
       type: "selectionChange";
       selection: SerializedSelectionItem[];
+      exportNodes: ExportPreviewNode[];
       fileKey: string;
       fileName: string;
     }
@@ -112,7 +145,27 @@ export type PluginMessage =
       cloneRootId: string;
     }
   | { type: "renameDone"; cloneRootId: string; items: RenameItem[] }
-  | { type: "groupDone"; cloneRootId: string; plan: GroupPlan };
+  | { type: "groupDone"; cloneRootId: string; plan: GroupPlan }
+  | {
+      type: "exportPreviewItem";
+      requestId: number;
+      item: ExportDeliveryItem;
+      loaded: number;
+      total: number;
+    }
+  | {
+      type: "exportSlicesDone";
+      requestId: number;
+      loaded: number;
+      total: number;
+      skipped: ExportSkipped[];
+    }
+  | {
+      type: "exportDeliveryDone";
+      requestId: number;
+      items: ExportDeliveryItem[];
+      skipped: ExportSkipped[];
+    };
 
 export interface SerializedSelectionItem {
   id: string;

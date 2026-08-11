@@ -17,3 +17,10 @@ export const PROMPT_OVERRIDES_STORAGE_KEY = "figmaAgentKit.promptOverrides";
 
 export const DEFAULT_API_BASE_URL = "https://api.openai.com/v1";
 export const DEFAULT_MODEL = "gpt-4o";
+
+/** Slice list preview scale (thumbnails). */
+export const EXPORT_PREVIEW_SCALE = 1;
+/** Formal download / ZIP scale. */
+export const EXPORT_SLICE_SCALE = 3;
+/** Max nodes per export batch. */
+export const MAX_EXPORT_NODES = 50;
