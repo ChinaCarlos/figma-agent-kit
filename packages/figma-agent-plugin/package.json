@@ -1,6 +1,6 @@
 {
   "name": "figma-agent-plugin",
-  "version": "0.1.3",
+  "version": "1.0.0",
   "private": true,
   "description": "Figma Agent Kit — MCP bridge, AI layer rename & visual grouping",
   "license": "MIT",

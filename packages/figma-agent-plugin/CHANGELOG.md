@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+### Changed
+
+### Fixed
+
+## [1.0.0] - 2026-08-11
+
+### Added
+
 - First stable **1.0.0** kit release (MCP + plugin versions locked)
 - Docs site for install / agent setup / tools: https://chinacarlos.github.io/figma-agent-kit/
 
@@ -17,6 +25,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Promoted from 0.1.x preview line to stable 1.0.0
 
 ### Fixed
+
+### Changed
+
+- First stable 1.0.0 — bilingual docs site, npm MCP, plugin ZIP
 
 ## [0.1.3] - 2026-08-11
 
@@ -57,8 +69,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - AI layer rename and visual grouping (OpenAI-compatible)
 - Settings, Mini mode, and GitHub `version.json` update check
 
-[Unreleased]: https://github.com/ChinaCarlos/figma-agent-kit/compare/figma-agent-plugin-v0.1.3...HEAD
-[0.1.3]: https://github.com/ChinaCarlos/figma-agent-kit/releases/tag/figma-agent-plugin-v0.1.3
-[0.1.2]: https://github.com/ChinaCarlos/figma-agent-kit/releases/tag/figma-agent-plugin-v0.1.2
-[0.1.1]: https://github.com/ChinaCarlos/figma-agent-kit/releases/tag/figma-agent-plugin-v0.1.1
-[0.1.0]: https://github.com/ChinaCarlos/figma-agent-kit/releases/tag/figma-agent-plugin-v0.1.0
+[Unreleased]: https://github.com/ChinaCarlos/figma-agent-kit/releases
+[1.0.0]: https://github.com/ChinaCarlos/figma-agent-kit/releases/tag/figma-agent-plugin-v1.0.0
