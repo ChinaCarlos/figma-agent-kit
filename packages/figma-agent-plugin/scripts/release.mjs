@@ -167,7 +167,7 @@ function assertGitClean() {
   process.exit(1);
 }
 
-function main() {
+async function main() {
   const opts = parseArgs(process.argv.slice(2));
   const pkg = JSON.parse(fs.readFileSync(PKG_JSON, "utf8"));
   const oldVersion = pkg.version;
@@ -206,7 +206,7 @@ function main() {
 
   if (!opts.dryRun) {
     run("pnpm run build");
-    const artifacts = buildReleaseArtifacts();
+    const artifacts = await buildReleaseArtifacts();
     printReleaseSummary(artifacts);
   } else {
     console.log("[plugin-release] would build + assemble ZIP + version.json");
@@ -243,4 +243,9 @@ function main() {
 
 const isMain =
   process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
-if (isMain) main();
+if (isMain) {
+  main().catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
+}

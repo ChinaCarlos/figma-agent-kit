@@ -1,6 +1,6 @@
 {
   "name": "figma-agent-mcp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "MCP server bridging Cursor agents to a Figma plugin via WebSocket",
   "type": "module",
   "main": "./dist/index.js",

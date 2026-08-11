@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+## [0.1.1] - 2026-08-11
+
+### Changed
+
+- CI npm publish test; keep mcp + plugin at same version
+
 ## [0.1.0] - 2026-08-11
 
 ### Added
@@ -23,4 +29,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Core read/write Figma tools via the companion plugin
 
 [Unreleased]: https://www.npmjs.com/package/figma-agent-mcp
-[0.1.0]: https://www.npmjs.com/package/figma-agent-mcp/v/0.1.0
+[0.1.1]: https://www.npmjs.com/package/figma-agent-mcp/v/0.1.1
