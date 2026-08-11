@@ -1,0 +1,18 @@
+[
+  {
+    "text": "guide",
+    "link": "/guide/getting-started",
+    "activeMatch": "/guide/"
+  },
+  {
+    "text": "reference",
+    "link": "/reference/architecture",
+    "activeMatch": "/reference/"
+  },
+  {
+    "text": "release",
+    "link": "/release/mcp-release",
+    "activeMatch": "/release/"
+  }
+]
+

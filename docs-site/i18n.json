@@ -1,0 +1,58 @@
+{
+  "guide": {
+    "zh": "指南",
+    "en": "Guide"
+  },
+  "reference": {
+    "zh": "参考",
+    "en": "Reference"
+  },
+  "release": {
+    "zh": "发版",
+    "en": "Release"
+  },
+  "gettingStarted": {
+    "zh": "上手指南",
+    "en": "Getting started"
+  },
+  "agentSetup": {
+    "zh": "接入 AI Agent",
+    "en": "Connect AI agents"
+  },
+  "screenshots": {
+    "zh": "截图图库",
+    "en": "Screenshots"
+  },
+  "aiFeatures": {
+    "zh": "AI 功能",
+    "en": "AI features"
+  },
+  "exportingSlices": {
+    "zh": "导出切图",
+    "en": "Exporting slices"
+  },
+  "faq": {
+    "zh": "常见问题",
+    "en": "FAQ"
+  },
+  "architecture": {
+    "zh": "架构说明",
+    "en": "Architecture"
+  },
+  "bridgeProtocol": {
+    "zh": "桥接协议",
+    "en": "Bridge protocol"
+  },
+  "tools": {
+    "zh": "MCP 工具",
+    "en": "MCP tools"
+  },
+  "mcpRelease": {
+    "zh": "MCP 发版",
+    "en": "MCP release"
+  },
+  "pluginRelease": {
+    "zh": "插件发版",
+    "en": "Plugin release"
+  }
+}

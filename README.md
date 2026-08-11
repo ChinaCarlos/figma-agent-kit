@@ -3,6 +3,7 @@
 **简体中文** | [English](./README.en.md)
 
 [![CI](https://github.com/ChinaCarlos/figma-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/ChinaCarlos/figma-agent-kit/actions/workflows/ci.yml)
+[![Docs](https://github.com/ChinaCarlos/figma-agent-kit/actions/workflows/docs.yml/badge.svg)](https://chinacarlos.github.io/figma-agent-kit/)
 [![npm](https://img.shields.io/npm/v/figma-agent-mcp.svg)](https://www.npmjs.com/package/figma-agent-mcp)
 [![npm downloads](https://img.shields.io/npm/dm/figma-agent-mcp.svg)](https://www.npmjs.com/package/figma-agent-mcp)
 [![GitHub release](https://img.shields.io/github/v/release/ChinaCarlos/figma-agent-kit)](https://github.com/ChinaCarlos/figma-agent-kit/releases)
@@ -35,7 +36,7 @@ flowchart LR
   PluginMain --> FigmaAPI[Figma_Plugin_API]
 ```
 
-深入阅读：[架构说明](./docs/zh/architecture.md) · [截图图库](./docs/zh/screenshots.md) · [中文文档索引](./docs/zh/README.md) · [English README](./README.en.md)
+深入阅读：[文档站](https://chinacarlos.github.io/figma-agent-kit/) · [架构说明](./docs/zh/architecture.md) · [截图图库](./docs/zh/screenshots.md) · [中文文档索引](./docs/zh/README.md) · [English README](./README.en.md)
 
 ## 支持的编辑器
 
@@ -137,6 +138,10 @@ pnpm build:all
 完整步骤见 [上手指南](./docs/zh/getting-started.md)。
 
 ## 文档索引
+
+在线文档（Rspress / GitHub Pages，中英切换）：**[https://chinacarlos.github.io/figma-agent-kit/](https://chinacarlos.github.io/figma-agent-kit/)**
+
+本地预览：`pnpm install && pnpm dev:docs`
 
 | 文档 | 说明 |
 |------|------|

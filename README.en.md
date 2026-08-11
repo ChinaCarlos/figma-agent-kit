@@ -3,6 +3,7 @@
 [简体中文](./README.md) | **English**
 
 [![CI](https://github.com/ChinaCarlos/figma-agent-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/ChinaCarlos/figma-agent-kit/actions/workflows/ci.yml)
+[![Docs](https://github.com/ChinaCarlos/figma-agent-kit/actions/workflows/docs.yml/badge.svg)](https://chinacarlos.github.io/figma-agent-kit/)
 [![npm](https://img.shields.io/npm/v/figma-agent-mcp.svg)](https://www.npmjs.com/package/figma-agent-mcp)
 [![npm downloads](https://img.shields.io/npm/dm/figma-agent-mcp.svg)](https://www.npmjs.com/package/figma-agent-mcp)
 [![GitHub release](https://img.shields.io/github/v/release/ChinaCarlos/figma-agent-kit)](https://github.com/ChinaCarlos/figma-agent-kit/releases)
@@ -35,7 +36,7 @@ flowchart LR
   PluginMain --> FigmaAPI[Figma_Plugin_API]
 ```
 
-Deep dive: [docs/architecture.md](./docs/architecture.md) · [Screenshot gallery](./docs/screenshots.md).  
+Deep dive: [Docs site](https://chinacarlos.github.io/figma-agent-kit/en/) · [docs/architecture.md](./docs/architecture.md) · [Screenshot gallery](./docs/screenshots.md).  
 Default GitHub homepage README is **Chinese** — [简体中文 README](./README.md).
 
 ## Supported editors
@@ -138,6 +139,10 @@ pnpm build:all
 Full walkthrough: [docs/getting-started.md](./docs/getting-started.md).
 
 ## Documentation
+
+Published docs site (zh / en switcher): **[https://chinacarlos.github.io/figma-agent-kit/en/](https://chinacarlos.github.io/figma-agent-kit/en/)**
+
+Local preview: `pnpm install && pnpm dev:docs`
 
 Repository homepage defaults to **Chinese** ([README.md](./README.md)). This page is the **English** README.
 

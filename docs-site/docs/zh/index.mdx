@@ -1,0 +1,38 @@
+---
+pageType: home
+
+hero:
+  name: Figma Agent Kit
+  text: 面向 AI Agent 的本地 Figma 桥
+  tagline: 开源 Figma Desktop 插件 + MCP，让 Cursor / Claude Code / Codex 等读写当前打开的设计稿
+  image:
+    src: /hero.jpg
+    alt: Figma 画布与 AI Agent 通过本地 MCP 桥连接
+  actions:
+    - theme: brand
+      text: 上手指南
+      link: /guide/getting-started
+    - theme: alt
+      text: GitHub
+      link: https://github.com/ChinaCarlos/figma-agent-kit
+
+features:
+  - title: 多编辑器 MCP
+    details: 适配 Cursor、Claude Code、Codex、Qoder、CodeBuddy、Trae 等 stdio MCP 宿主。
+    icon: /icons/mcp.png
+  - title: 37 个读写工具
+    details: 文档/选区/节点、填充、文本、Auto Layout、创建分组、Motion、截图导出。
+    icon: /icons/tools.png
+  - title: 本地隐私优先
+    details: 桥接流量走 localhost（默认端口 1998），无需经 Figma REST API 上传画布。
+    icon: /icons/privacy.png
+  - title: Leader / Follower
+    details: 多 Agent 窗口共用一条 WebSocket 桥，自动选举与 Follower RPC。
+    icon: /icons/bridge.png
+  - title: 设计师工作流
+    details: 可选 AI 重命名/分组、3× 切图导出、插件中英界面。
+    icon: /icons/design.png
+  - title: 开源可审计
+    details: MIT 许可，npm 发布 MCP，GitHub Releases 分发插件 ZIP。
+    icon: /icons/oss.png
+---

@@ -28,7 +28,11 @@
     "release:kit": "node ./scripts/release-kit.mjs",
     "release:kit:patch": "node ./scripts/release-kit.mjs patch",
     "release:kit:minor": "node ./scripts/release-kit.mjs minor",
-    "release:kit:major": "node ./scripts/release-kit.mjs major"
+    "release:kit:major": "node ./scripts/release-kit.mjs major",
+    "dev:docs": "pnpm --filter figma-agent-kit-docs dev",
+    "build:docs": "pnpm --filter figma-agent-kit-docs build",
+    "preview:docs": "pnpm --filter figma-agent-kit-docs preview",
+    "sync:docs": "pnpm --filter figma-agent-kit-docs sync"
   },
   "license": "MIT",
   "repository": {

@@ -1,0 +1,17 @@
+[
+  {
+    "type": "dir-section-header",
+    "name": "guide",
+    "label": "guide"
+  },
+  {
+    "type": "dir-section-header",
+    "name": "reference",
+    "label": "reference"
+  },
+  {
+    "type": "dir-section-header",
+    "name": "release",
+    "label": "release"
+  }
+]

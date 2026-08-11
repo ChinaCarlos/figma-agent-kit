@@ -1,0 +1,147 @@
+/**
+ * Figma Agent Kit docs theme — purple + deep blue
+ * @see https://rspress.rs/zh/ui/vars
+ */
+:where(:root) {
+  --fak-purple: #7c3aed;
+  --fak-purple-light: #a78bfa;
+  --fak-purple-soft: #ede9fe;
+  --fak-purple-dark: #6d28d9;
+  --fak-navy: #1e3a8a;
+  --fak-navy-deep: #172554;
+  --fak-blue: #2563eb;
+
+  --rp-c-brand: var(--fak-purple);
+  --rp-c-brand-light: var(--fak-purple-light);
+  --rp-c-brand-lighter: var(--fak-purple-soft);
+  --rp-c-brand-dark: var(--fak-purple-dark);
+  --rp-c-brand-darker: #5b21b6;
+  --rp-c-brand-tint: rgba(124, 58, 237, 0.14);
+
+  --rp-c-text-code: #4338ca;
+  --rp-c-text-code-bg: rgba(124, 58, 237, 0.07);
+}
+
+:where(html:not(.rp-dark)) {
+  --rp-home-hero-secondary-color: var(--fak-blue);
+
+  --rp-home-hero-title-bg: linear-gradient(
+    105deg,
+    var(--fak-navy-deep) 0%,
+    var(--fak-purple-dark) 45%,
+    var(--fak-blue) 100%
+  );
+
+  /* Base must be page white — solid lavender slabs create a hard cut at 1000px */
+  --rp-home-background-bg:
+    radial-gradient(56% 62% at 100% 0%, rgba(124, 58, 237, 0.2) 0%, transparent 72%),
+    radial-gradient(52% 70% at 48% 0%, rgba(37, 99, 235, 0.12) 0%, transparent 74%),
+    radial-gradient(68% 58% at 0% 0%, rgba(30, 58, 138, 0.1) 0%, transparent 70%),
+    #ffffff;
+
+  --rp-home-feature-bg: linear-gradient(145deg, #ffffff 0%, rgba(237, 233, 254, 0.45) 100%);
+}
+
+:where(html.rp-dark) {
+  --rp-home-hero-secondary-color: #93c5fd;
+
+  --rp-home-hero-title-bg: linear-gradient(
+    105deg,
+    #c4b5fd 0%,
+    #a78bfa 40%,
+    #60a5fa 100%
+  );
+
+  --rp-home-background-bg:
+    radial-gradient(56% 62% at 100% 0%, rgba(124, 58, 237, 0.32) 0%, transparent 72%),
+    radial-gradient(55% 78% at 48% 0%, rgba(0, 0, 0, 0.55) 0%, transparent 88%),
+    radial-gradient(90% 70% at 0% 0%, rgba(30, 58, 138, 0.42) 0%, transparent 72%),
+    #0b1020;
+
+  --rp-home-feature-bg: linear-gradient(
+    145deg,
+    rgba(124, 58, 237, 0.08),
+    rgba(37, 99, 235, 0.1)
+  );
+}
+
+/* Softly fade the hero wash so it never ends as a hard horizontal edge */
+.rp-home-background {
+  height: 1200px !important;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 0%,
+    #000 45%,
+    rgba(0, 0, 0, 0.55) 70%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    #000 0%,
+    #000 45%,
+    rgba(0, 0, 0, 0.55) 70%,
+    transparent 100%
+  );
+}
+
+.rp-doc .rp-table th {
+  background: var(--rp-c-bg-soft);
+}
+
+.rp-doc blockquote {
+  border-left-color: var(--rp-c-brand);
+}
+
+/* Hero art */
+.rp-home-hero__image img {
+  border-radius: 20px;
+  box-shadow:
+    0 20px 50px rgba(30, 58, 138, 0.22),
+    0 0 0 1px rgba(124, 58, 237, 0.12);
+}
+
+/* Feature icons — AI-generated tiles */
+.rp-home-feature__icon img {
+  width: 56px !important;
+  height: 56px !important;
+  border-radius: 14px;
+  object-fit: cover;
+  box-shadow: 0 8px 20px rgba(30, 58, 138, 0.16);
+}
+
+.rp-home-feature__icon {
+  background: transparent !important;
+  border: none !important;
+  min-width: 56px !important;
+  min-height: 56px !important;
+  padding: 0 !important;
+}
+
+.rp-home-feature__card {
+  border-color: rgba(124, 58, 237, 0.12) !important;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.rp-home-feature__card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(124, 58, 237, 0.3) !important;
+  box-shadow: 0 12px 28px rgba(30, 58, 138, 0.12);
+}
+
+:where(html.rp-dark) .rp-home-feature__card {
+  border-color: rgba(167, 139, 250, 0.16) !important;
+}
+
+:where(html.rp-dark) .rp-home-feature__card:hover {
+  border-color: rgba(167, 139, 250, 0.35) !important;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+}
+
+:where(html.rp-dark) .rp-home-hero__image img {
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(167, 139, 250, 0.2);
+}

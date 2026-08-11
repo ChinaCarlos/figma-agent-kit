@@ -15,3 +15,13 @@ releases/*.zip
 .idea/
 .vscode/
 *.map
+docs-site/doc_build/
+docs-site/.rspress/
+# Synced from docs/ by scripts/sync-docs-site.mjs (predev / prebuild)
+docs-site/docs/public/images/
+docs-site/docs/zh/guide/*.md
+docs-site/docs/zh/reference/*.md
+docs-site/docs/zh/release/*.md
+docs-site/docs/en/guide/*.md
+docs-site/docs/en/reference/*.md
+docs-site/docs/en/release/*.md

@@ -20,6 +20,8 @@ Requirements: Node.js ≥ 20, pnpm ≥ 9, Figma Desktop.
 | `pnpm build:all` | Production build both packages |
 | `pnpm start:mcp` | Run built MCP on the bridge port |
 | `pnpm sync:bridge` | Sync `bridge.config.json` → MCP + plugin + manifest |
+| `pnpm dev:docs` | Rspress docs site (syncs `docs/` → `docs-site/`) |
+| `pnpm build:docs` | Build docs for GitHub Pages |
 
 Import the plugin from `packages/figma-agent-plugin/manifest.json` (Development). Reload after UI/bridge changes.
 
@@ -40,13 +42,14 @@ Change `defaultPort` → `pnpm sync:bridge` → rebuild → reload plugin → re
 ```text
 packages/figma-agent-mcp/     # MCP + bridge server
 packages/figma-agent-plugin/  # Figma plugin
-docs/                         # User & architecture docs (English)
-scripts/                      # sync-bridge, release-kit
+docs/                         # Source docs (English) + docs/zh/ (Chinese)
+docs-site/                    # Rspress site → GitHub Pages
+scripts/                      # sync-bridge, sync-docs-site, release-kit
 ```
 
 Read [docs/architecture.md](./docs/architecture.md) (or [中文](./docs/zh/architecture.md)) before large changes.
 
-Docs are bilingual: homepage **`README.md` is Chinese** by default; English landing page is `README.en.md`. Detailed docs live under `docs/zh/` (Chinese) and `docs/` (English). Prefer GitHub raw URLs for screenshots (`https://raw.githubusercontent.com/ChinaCarlos/figma-agent-kit/main/docs/images/...`).
+Docs are bilingual: homepage **`README.md` is Chinese** by default; English landing page is `README.en.md`. Detailed docs live under `docs/zh/` (Chinese) and `docs/` (English). The published site is [chinacarlos.github.io/figma-agent-kit](https://chinacarlos.github.io/figma-agent-kit/) (`pnpm sync:docs` copies Markdown into `docs-site/` before build). Prefer GitHub raw URLs for screenshots in source Markdown (`https://raw.githubusercontent.com/ChinaCarlos/figma-agent-kit/main/docs/images/...`).
 
 ## Pull requests
 
