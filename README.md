@@ -4,7 +4,7 @@ Open-source toolkit that connects **Figma** to AI agents (Cursor, Claude Code, C
 
 ```text
 AI Agent  ──stdio MCP──►  figma-agent-mcp  ──WebSocket──►  Figma Agent Kit plugin
-                              :1994                         (Figma Desktop)
+                              :1998                         (Figma Desktop)
 ```
 
 ## Packages
@@ -20,9 +20,10 @@ AI Agent  ──stdio MCP──►  figma-agent-mcp  ──WebSocket──►  F
 - Multi-file support via `fileKey` (leader/follower when multiple MCP processes start)
 - Plugin panel: bridge status, selection sync, settings storage, Mini mode
 - Core tools: document/selection/node/screenshot, text & visibility edits, create/group/delete, selection & zoom
+- **AI layer rename** — semantic names on a clone via OpenAI-compatible vision API
+- **AI visual grouping** — nested group plan on a clone, editable JSON before apply
+- **GitHub version checks** — `releases/version.json` on `main` (no CDN)
 - **No** cloud upload, **no** vendor lock-in for AI keys in the bridge path
-
-> Layer rename / visual grouping AI workflows can be added later as optional plugin features. v0.1 focuses on a solid Agent ↔ Figma bridge.
 
 ## Requirements
 
@@ -53,7 +54,7 @@ pnpm start:mcp
 # or: pnpm --filter figma-agent-mcp start
 ```
 
-Default bridge port: `1994` (override with `FIGMA_AGENT_MCP_PORT`).
+Default bridge port: `1998` (override with `FIGMA_AGENT_MCP_PORT`).
 
 ### 3. Connect an agent (Cursor example)
 
@@ -85,11 +86,16 @@ For local development without publishing:
 
 Keep the Figma file open with the plugin running, then ask the agent to call `list_files` / `get_selection` / `get_node`, etc.
 
+### 4. AI features (optional)
+
+Open **Settings** in the plugin, set `apiBaseUrl` / `model` / `apiKey`, then use **Rename** or **Group** tabs. See [docs/ai-features.md](docs/ai-features.md).
+
 ## Documentation
 
 | Doc | Content |
 |-----|---------|
-| [docs/getting-started.md](docs/getting-started.md) | Install, Import, first tool call |
+| [docs/getting-started.md](docs/getting-started.md) | Install, import, MCP, version publishing |
+| [docs/ai-features.md](docs/ai-features.md) | AI rename/group setup |
 | [docs/bridge-protocol.md](docs/bridge-protocol.md) | WebSocket / RPC contract |
 | [docs/tools.md](docs/tools.md) | MCP tool reference |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | How to contribute |
@@ -98,8 +104,9 @@ Keep the Figma file open with the plugin running, then ask the agent to call `li
 
 - Bridge traffic stays on **localhost**
 - Do not commit API keys or `.env` files
-- Plugin `networkAccess` only allows `ws://localhost:1994` by default
-- Optional API base URL / key in settings are stored in Figma `clientStorage` for future AI features; the bridge itself does not require them
+- Plugin `networkAccess` allows `ws://localhost:1998`, `https://raw.githubusercontent.com`, and `https://api.openai.com` by default
+- Other AI API hosts require editing `manifest.json` → `allowedDomains` and rebuilding
+- API credentials are stored in Figma `clientStorage` for plugin AI features only
 
 ## License
 

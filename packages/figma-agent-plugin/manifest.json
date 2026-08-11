@@ -6,7 +6,11 @@
   "editorType": ["figma", "dev"],
   "documentAccess": "dynamic-page",
   "networkAccess": {
-    "allowedDomains": ["ws://localhost:1994"],
-    "reasoning": "Local MCP bridge WebSocket connection to figma-agent-mcp on the developer machine."
+    "allowedDomains": [
+      "ws://localhost:1998",
+      "https://raw.githubusercontent.com",
+      "https://api.openai.com"
+    ],
+    "reasoning": "Local MCP bridge (ws://localhost:1998), GitHub release version checks (raw.githubusercontent.com), and default OpenAI-compatible API (api.openai.com). For other AI providers, add their host to allowedDomains in manifest.json and rebuild."
   }
 }

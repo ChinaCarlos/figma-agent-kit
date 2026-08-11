@@ -4,7 +4,14 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const uiHtml = readFileSync(resolve(__dirname, "src/ui/ui.html"), "utf-8");
+const pkg = JSON.parse(readFileSync(resolve(__dirname, "package.json"), "utf-8"));
+const versionCheckUrl =
+  "https://raw.githubusercontent.com/ChinaCarlos/figma-agent-kit/main/releases/version.json";
+
+let uiHtml = readFileSync(resolve(__dirname, "src/ui/ui.html"), "utf-8");
+uiHtml = uiHtml
+  .replaceAll("__PLUGIN_VERSION__", pkg.version)
+  .replaceAll("__VERSION_CHECK_URL__", versionCheckUrl);
 
 export default defineConfig({
   source: {
@@ -13,6 +20,7 @@ export default defineConfig({
     },
     define: {
       __html__: JSON.stringify(uiHtml),
+      __PLUGIN_VERSION__: JSON.stringify(pkg.version),
     },
   },
   output: {

@@ -6,7 +6,7 @@ Figma Agent Kit plugin — connects Figma Desktop to a local MCP bridge so AI ag
 
 - [Figma Desktop](https://www.figma.com/downloads/)
 - Node.js 20+ and [pnpm](https://pnpm.io/)
-- [`figma-agent-mcp`](../figma-agent-mcp) running locally (WebSocket on port `1994`)
+- [`figma-agent-mcp`](../figma-agent-mcp) running locally (WebSocket on port `1998`)
 
 ## Build
 
@@ -38,12 +38,12 @@ Output: `dist/code.js`
 3. Configure your agent to use the `figma-agent-mcp` MCP server
 4. The plugin UI shows bridge status and current selection
 
-**Mini mode** collapses the panel to a compact header. **Settings** stores optional API credentials locally (for future AI features; not used by the bridge).
+**Mini mode** collapses the panel to a compact header. **Settings** stores OpenAI-compatible API credentials for **Rename** and **Group** tabs. **Version checks** pull from `releases/version.json` on GitHub.
 
 ## Architecture
 
 ```
-AI Agent  ←→  figma-agent-mcp (stdio MCP + WS :1994)  ←→  Plugin UI  ←→  Plugin main (Figma API)
+AI Agent  ←→  figma-agent-mcp (stdio MCP + WS :1998)  ←→  Plugin UI  ←→  Plugin main (Figma API)
 ```
 
 See the [figma-agent-kit](https://github.com/ChinaCarlos/figma-agent-kit) monorepo README for full documentation.

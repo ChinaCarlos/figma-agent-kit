@@ -15,7 +15,7 @@ MCP client  --stdio-->  figma-agent-mcp
                      Figma plugin main (Plugin API)
 ```
 
-Default `PORT` = `1994`. Override with `FIGMA_AGENT_MCP_PORT`.
+Default `PORT` = `1998`. Override with `FIGMA_AGENT_MCP_PORT`.
 
 ## Roles
 
@@ -33,7 +33,7 @@ If the leader dies, a follower attempts takeover.
 ### Connect
 
 ```text
-ws://localhost:1994/ws?fileKey=<FILE_KEY>&fileName=<ENCODED_NAME>
+ws://localhost:1998/ws?fileKey=<FILE_KEY>&fileName=<ENCODED_NAME>
 ```
 
 - `fileKey` is required (Figma `figma.fileKey`, or a local fallback for unsaved files).

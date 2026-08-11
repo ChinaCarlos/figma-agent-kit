@@ -15,6 +15,7 @@
       --accent-hover: #1d4ed8;
       --ok: #16a34a;
       --err: #dc2626;
+      --warn: #d97706;
       --radius: 8px;
       --shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
       font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -36,9 +37,10 @@
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      padding: 12px 14px;
+      padding: 10px 12px;
       background: var(--surface);
       border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
     }
 
     .brand {
@@ -47,17 +49,24 @@
       letter-spacing: -0.01em;
     }
 
+    .version-tag {
+      font-size: 10px;
+      color: var(--muted);
+      font-weight: 500;
+      margin-left: 6px;
+    }
+
     .header-right {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
 
     .status {
       display: flex;
       align-items: center;
       gap: 6px;
-      font-size: 12px;
+      font-size: 11px;
       color: var(--muted);
     }
 
@@ -71,6 +80,48 @@
 
     .dot.connected { background: var(--ok); }
 
+    .update-dot {
+      display: none;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--err);
+      position: absolute;
+      top: 2px;
+      right: 2px;
+    }
+
+    .btn-wrap { position: relative; }
+
+    .update-dot.visible { display: block; }
+
+    nav.tabs {
+      display: flex;
+      gap: 4px;
+      padding: 8px 12px 0;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    nav.tabs button {
+      border: none;
+      border-bottom: 2px solid transparent;
+      border-radius: 6px 6px 0 0;
+      background: transparent;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    nav.tabs button.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+      background: var(--bg);
+    }
+
     button {
       border: 1px solid var(--border);
       background: var(--surface);
@@ -83,23 +134,28 @@
     }
 
     button:hover { background: #f0f2f5; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
     button.primary {
       background: var(--accent);
       border-color: var(--accent);
       color: #fff;
     }
-    button.primary:hover { background: var(--accent-hover); }
+    button.primary:hover:not(:disabled) { background: var(--accent-hover); }
 
     main {
       flex: 1;
-      padding: 14px;
+      padding: 12px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
       overflow: auto;
     }
 
+    body.mini nav.tabs,
     body.mini main { display: none; }
+
+    .panel { display: none; flex-direction: column; gap: 10px; }
+    .panel.active { display: flex; }
 
     .card {
       background: var(--surface);
@@ -110,7 +166,7 @@
     }
 
     .card h2 {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.04em;
@@ -123,7 +179,7 @@
       display: flex;
       flex-direction: column;
       gap: 6px;
-      max-height: 200px;
+      max-height: 140px;
       overflow: auto;
     }
 
@@ -166,13 +222,47 @@
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       font-size: 11px;
       color: var(--muted);
-      max-height: 80px;
+      max-height: 120px;
       overflow: auto;
       white-space: pre-wrap;
       word-break: break-word;
     }
 
-    /* Modal */
+    .action-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .results-list {
+      list-style: none;
+      max-height: 160px;
+      overflow: auto;
+      font-size: 11px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    .results-list li {
+      padding: 4px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .results-list .old { color: var(--muted); text-decoration: line-through; }
+    .results-list .new { color: var(--ok); }
+
+    textarea.plan-editor {
+      width: 100%;
+      min-height: 180px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 11px;
+      padding: 8px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      resize: vertical;
+      line-height: 1.4;
+    }
+
     .overlay {
       display: none;
       position: fixed;
@@ -191,7 +281,9 @@
       border-radius: var(--radius);
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
       width: 100%;
-      max-width: 340px;
+      max-width: 360px;
+      max-height: 90vh;
+      overflow: auto;
       padding: 16px;
     }
 
@@ -200,11 +292,16 @@
       margin-bottom: 4px;
     }
 
-    .modal p {
+    .modal p, .modal li {
       font-size: 12px;
       color: var(--muted);
-      margin-bottom: 14px;
       line-height: 1.4;
+    }
+
+    .modal p { margin-bottom: 10px; }
+
+    .modal ul {
+      margin: 0 0 12px 18px;
     }
 
     label {
@@ -214,63 +311,165 @@
       margin-bottom: 4px;
     }
 
-    input {
+    input, select {
       width: 100%;
       padding: 7px 10px;
       border: 1px solid var(--border);
       border-radius: 6px;
       font-size: 12px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .modal-actions {
       display: flex;
       justify-content: flex-end;
       gap: 8px;
-      margin-top: 4px;
+      margin-top: 8px;
+      flex-wrap: wrap;
     }
+
+    .settings-section {
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .settings-section:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .hint {
+      font-size: 11px;
+      color: var(--muted);
+      margin: -6px 0 10px;
+      line-height: 1.4;
+    }
+
+    .test-result {
+      font-size: 11px;
+      margin-bottom: 8px;
+      min-height: 16px;
+    }
+
+    .test-result.ok { color: var(--ok); }
+    .test-result.err { color: var(--err); }
   </style>
 </head>
 <body>
   <header>
-    <span class="brand">Figma Agent Kit</span>
+    <div>
+      <span class="brand">Figma Agent Kit</span>
+      <span class="version-tag" id="versionTag">v__PLUGIN_VERSION__</span>
+    </div>
     <div class="header-right">
       <div class="status" title="MCP bridge connection">
         <span class="dot" id="statusDot"></span>
         <span id="statusText">Disconnected</span>
       </div>
+      <div class="btn-wrap">
+        <button id="settingsBtn" type="button">Settings</button>
+        <span class="update-dot" id="updateDot"></span>
+      </div>
       <button id="miniBtn" type="button">Mini</button>
-      <button id="settingsBtn" type="button">Settings</button>
     </div>
   </header>
 
+  <nav class="tabs" role="tablist">
+    <button type="button" class="tab active" data-tab="bridge">Bridge</button>
+    <button type="button" class="tab" data-tab="rename">Rename</button>
+    <button type="button" class="tab" data-tab="group">Group</button>
+  </nav>
+
   <main>
-    <section class="card">
-      <h2>Selection</h2>
-      <ul class="selection-list" id="selectionList">
-        <li class="empty">No layers selected</li>
-      </ul>
+    <section class="panel active" id="panel-bridge" data-panel="bridge">
+      <section class="card">
+        <h2>Selection</h2>
+        <ul class="selection-list" id="selectionList">
+          <li class="empty">No layers selected</li>
+        </ul>
+      </section>
+      <section class="card help">
+        <p>Run <code>figma-agent-mcp</code> locally, then connect your AI agent via MCP.</p>
+        <p style="margin-top:6px">Bridge: <code id="bridgeUrl">ws://localhost:1998/ws</code></p>
+      </section>
+      <section class="card">
+        <h2>Activity</h2>
+        <div class="log" id="bridgeLog">Waiting for bridge…</div>
+      </section>
     </section>
 
-    <section class="card help">
-      <p>Run <code>figma-agent-mcp</code> locally, then connect your AI agent (Cursor, Claude Code, Codex, …) via MCP.</p>
-      <p style="margin-top:6px">Bridge: <code id="bridgeUrl">ws://localhost:1994/ws</code></p>
+    <section class="panel" id="panel-rename" data-panel="rename">
+      <section class="card help">
+        <p>Select one <strong>Frame</strong> or <strong>Group</strong>. The plugin clones it to the right, sends a screenshot + layer list to your AI API, and renames layers on the clone.</p>
+      </section>
+      <section class="card">
+        <div class="action-row">
+          <button type="button" class="primary" id="startRenameBtn">Start rename</button>
+        </div>
+      </section>
+      <section class="card">
+        <h2>Progress</h2>
+        <div class="log" id="renameLog">Ready.</div>
+      </section>
+      <section class="card">
+        <h2>Results</h2>
+        <ul class="results-list" id="renameResults">
+          <li class="empty">No results yet</li>
+        </ul>
+      </section>
     </section>
 
-    <section class="card">
-      <h2>Activity</h2>
-      <div class="log" id="log">Waiting for bridge…</div>
+    <section class="panel" id="panel-group" data-panel="group">
+      <section class="card help">
+        <p>Select one <strong>Frame</strong>, <strong>Group</strong>, or <strong>Section</strong>. AI suggests visual groups for direct children on a clone. Edit the JSON plan, then Apply.</p>
+      </section>
+      <section class="card">
+        <div class="action-row">
+          <button type="button" class="primary" id="startGroupBtn">Start group</button>
+          <button type="button" id="applyGroupBtn" disabled>Apply groups</button>
+        </div>
+      </section>
+      <section class="card">
+        <h2>Group plan (JSON)</h2>
+        <textarea class="plan-editor" id="groupPlanEditor" placeholder='{"groups":[{"name":"Header","nodeIds":["…"],"subGroups":[]}]}'></textarea>
+      </section>
+      <section class="card">
+        <h2>Progress</h2>
+        <div class="log" id="groupLog">Ready.</div>
+      </section>
     </section>
   </main>
 
   <div class="overlay" id="settingsOverlay">
     <div class="modal">
       <h3>Settings</h3>
-      <p>Optional AI provider credentials (stored locally in Figma). Not used by the bridge.</p>
-      <label for="apiBaseUrl">API base URL</label>
-      <input id="apiBaseUrl" type="url" placeholder="https://api.example.com/v1" autocomplete="off" />
-      <label for="apiKey">API key</label>
-      <input id="apiKey" type="password" placeholder="sk-…" autocomplete="off" />
+
+      <div class="settings-section">
+        <label for="apiBaseUrl">API base URL</label>
+        <input id="apiBaseUrl" type="url" placeholder="https://api.openai.com/v1" autocomplete="off" />
+        <p class="hint">OpenAI-compatible endpoint. Other hosts must be added to <code>manifest.json</code> → <code>networkAccess.allowedDomains</code>, then rebuild.</p>
+
+        <label for="model">Model</label>
+        <input id="model" type="text" placeholder="gpt-4o" autocomplete="off" />
+
+        <label for="apiKey">API key</label>
+        <input id="apiKey" type="password" placeholder="sk-…" autocomplete="off" />
+
+        <div class="test-result" id="testResult"></div>
+        <div class="modal-actions" style="justify-content:flex-start;margin-top:0">
+          <button type="button" id="testConnectionBtn">Test connection</button>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <p style="margin-bottom:8px">Updates are published via <code>releases/version.json</code> on GitHub (no CDN).</p>
+        <div class="modal-actions" style="justify-content:flex-start;margin-top:0">
+          <button type="button" id="checkUpdatesBtn">Check for updates</button>
+        </div>
+      </div>
+
       <div class="modal-actions">
         <button type="button" id="settingsCancel">Cancel</button>
         <button type="button" class="primary" id="settingsSave">Save</button>
@@ -278,25 +477,60 @@
     </div>
   </div>
 
+  <div class="overlay" id="updateOverlay">
+    <div class="modal">
+      <h3>Update available</h3>
+      <p id="updateVersionText">A new version is available.</p>
+      <ul id="updateNotes"></ul>
+      <div class="modal-actions">
+        <button type="button" id="updateLater">Later</button>
+        <button type="button" class="primary" id="updateDownload">Download</button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    const BRIDGE_PORT = 1994;
+    const PLUGIN_VERSION = "__PLUGIN_VERSION__";
+    const VERSION_CHECK_URL = "__VERSION_CHECK_URL__";
+    const BRIDGE_PORT = 1998;
+    const DEFAULT_API_BASE = "https://api.openai.com/v1";
+    const DEFAULT_MODEL = "gpt-4o";
+    const VERSION_CHECK_DELAY_MS = 1000;
+
     const UI_SIZE = {
-      normal: { width: 420, height: 520 },
+      normal: { width: 440, height: 640 },
       mini: { width: 300, height: 120 },
     };
 
     const statusDot = document.getElementById("statusDot");
     const statusText = document.getElementById("statusText");
     const selectionList = document.getElementById("selectionList");
-    const logEl = document.getElementById("log");
+    const bridgeLog = document.getElementById("bridgeLog");
+    const renameLog = document.getElementById("renameLog");
+    const groupLog = document.getElementById("groupLog");
     const bridgeUrlEl = document.getElementById("bridgeUrl");
     const miniBtn = document.getElementById("miniBtn");
     const settingsBtn = document.getElementById("settingsBtn");
+    const updateDot = document.getElementById("updateDot");
     const settingsOverlay = document.getElementById("settingsOverlay");
+    const updateOverlay = document.getElementById("updateOverlay");
     const apiBaseUrlInput = document.getElementById("apiBaseUrl");
+    const modelInput = document.getElementById("model");
     const apiKeyInput = document.getElementById("apiKey");
+    const testResult = document.getElementById("testResult");
+    const testConnectionBtn = document.getElementById("testConnectionBtn");
+    const checkUpdatesBtn = document.getElementById("checkUpdatesBtn");
     const settingsCancel = document.getElementById("settingsCancel");
     const settingsSave = document.getElementById("settingsSave");
+    const updateLater = document.getElementById("updateLater");
+    const updateDownload = document.getElementById("updateDownload");
+    const updateVersionText = document.getElementById("updateVersionText");
+    const updateNotes = document.getElementById("updateNotes");
+    const startRenameBtn = document.getElementById("startRenameBtn");
+    const startGroupBtn = document.getElementById("startGroupBtn");
+    const applyGroupBtn = document.getElementById("applyGroupBtn");
+    const groupPlanEditor = document.getElementById("groupPlanEditor");
+    const renameResults = document.getElementById("renameResults");
 
     let fileKey = "";
     let fileName = "";
@@ -305,19 +539,159 @@
     let reconnectTimer = null;
     let reconnectDelay = 1000;
 
+    let settings = {
+      apiBaseUrl: DEFAULT_API_BASE,
+      apiKey: "",
+      model: DEFAULT_MODEL,
+      dismissedVersion: "",
+    };
+
+    let pendingCloneRootId = "";
+    let pendingGroupCloneRootId = "";
+    let remoteVersionInfo = null;
+    let updateAvailable = false;
+
     function post(msg) {
       parent.postMessage({ pluginMessage: msg }, "*");
     }
 
-    function appendLog(line) {
+    function appendLog(el, line) {
       const ts = new Date().toLocaleTimeString();
-      logEl.textContent = `[${ts}] ${line}\n` + logEl.textContent.slice(0, 2000);
+      el.textContent = `[${ts}] ${line}\n` + el.textContent.slice(0, 3000);
     }
+
+    function logBridge(line) { appendLog(bridgeLog, line); }
+    function logRename(line) { appendLog(renameLog, line); }
+    function logGroup(line) { appendLog(groupLog, line); }
 
     function setConnected(connected) {
       statusDot.classList.toggle("connected", connected);
       statusText.textContent = connected ? "Connected" : "Disconnected";
       post({ type: connected ? "bridge-connected" : "bridge-disconnected" });
+    }
+
+    function normalizeBaseUrl(url) {
+      return (url || DEFAULT_API_BASE).replace(/\/+$/, "");
+    }
+
+    function getSettingsForApi() {
+      return {
+        apiBaseUrl: normalizeBaseUrl(settings.apiBaseUrl || apiBaseUrlInput.value),
+        apiKey: (settings.apiKey || apiKeyInput.value || "").trim(),
+        model: (settings.model || modelInput.value || DEFAULT_MODEL).trim() || DEFAULT_MODEL,
+      };
+    }
+
+    function pngBytesToBase64(png) {
+      const bytes = new Uint8Array(png);
+      let binary = "";
+      const chunk = 0x8000;
+      for (let i = 0; i < bytes.length; i += chunk) {
+        binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
+      }
+      return btoa(binary);
+    }
+
+    async function callChatJson({ system, userText, png }) {
+      const cfg = getSettingsForApi();
+      if (!cfg.apiKey) throw new Error("API key is required");
+
+      const content = [{ type: "text", text: userText }];
+      if (png?.length) {
+        content.push({
+          type: "image_url",
+          image_url: { url: `data:image/png;base64,${pngBytesToBase64(png)}` },
+        });
+      }
+
+      const res = await fetch(`${cfg.apiBaseUrl}/chat/completions`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${cfg.apiKey}`,
+        },
+        body: JSON.stringify({
+          model: cfg.model,
+          response_format: { type: "json_object" },
+          messages: [
+            { role: "system", content: system },
+            { role: "user", content },
+          ],
+          temperature: 0.2,
+        }),
+      });
+
+      if (!res.ok) {
+        const body = await res.text().catch(() => "");
+        throw new Error(`API ${res.status}: ${body.slice(0, 200)}`);
+      }
+
+      const data = await res.json();
+      const raw = data.choices?.[0]?.message?.content;
+      if (!raw) throw new Error("Empty model response");
+      return JSON.parse(raw);
+    }
+
+    const RENAME_SYSTEM = `You rename Figma layers for clarity. Return JSON only:
+{"rename":[{"id":"node-id","newName":"semantic-name"}]}
+Use kebab-case English names describing visual role (e.g. hero-title, nav-bar). Only use ids from the candidate list. Skip unchanged generic names when a better name is obvious.`;
+
+    const GROUP_SYSTEM = `You group Figma layers by visual regions. Return JSON only:
+{"groups":[{"name":"group-name","nodeIds":["id1","id2"],"subGroups":[]}]}
+Use kebab-case English group names. Each nodeId must appear at most once. Prefer 2-8 top-level groups. Nest with subGroups when needed (depth-first). Only use ids from candidates.`;
+
+    function compareVersions(a, b) {
+      const pa = String(a).split(".").map((n) => parseInt(n, 10) || 0);
+      const pb = String(b).split(".").map((n) => parseInt(n, 10) || 0);
+      const len = Math.max(pa.length, pb.length);
+      for (let i = 0; i < len; i++) {
+        const da = pa[i] || 0;
+        const db = pb[i] || 0;
+        if (da > db) return 1;
+        if (da < db) return -1;
+      }
+      return 0;
+    }
+
+    function setUpdateBadge(visible) {
+      updateAvailable = visible;
+      updateDot.classList.toggle("visible", visible);
+    }
+
+    function showUpdateModal(info) {
+      remoteVersionInfo = info;
+      updateVersionText.textContent = `Version ${info.latest} is available (you have ${PLUGIN_VERSION}).`;
+      updateNotes.innerHTML = "";
+      for (const note of info.notes || []) {
+        const li = document.createElement("li");
+        li.textContent = note;
+        updateNotes.appendChild(li);
+      }
+      updateOverlay.classList.add("open");
+    }
+
+    async function fetchVersionInfo() {
+      const url = `${VERSION_CHECK_URL}?_t=${Date.now()}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`Version check failed (${res.status})`);
+      return res.json();
+    }
+
+    async function checkForUpdates({ showModal = false, force = false } = {}) {
+      try {
+        const info = await fetchVersionInfo();
+        const newer = compareVersions(info.latest, PLUGIN_VERSION) > 0;
+        setUpdateBadge(newer);
+        if (newer && (showModal || force) && settings.dismissedVersion !== info.latest) {
+          showUpdateModal(info);
+        } else if (!newer && force) {
+          logBridge(`You are on the latest version (${PLUGIN_VERSION}).`);
+        }
+        return info;
+      } catch (err) {
+        if (force) logBridge("Update check failed: " + err.message);
+        return null;
+      }
     }
 
     function buildWsUrl() {
@@ -350,6 +724,31 @@
       }
     }
 
+    function renderRenameResults(items, candidates) {
+      renameResults.innerHTML = "";
+      if (!items?.length) {
+        const li = document.createElement("li");
+        li.className = "empty";
+        li.textContent = "No results yet";
+        renameResults.appendChild(li);
+        return;
+      }
+      const byId = new Map((candidates || []).map((c) => [c.id, c.name]));
+      for (const item of items) {
+        const li = document.createElement("li");
+        const oldName = byId.get(item.id) || item.id;
+        li.innerHTML = `<span class="old">${escapeHtml(oldName)}</span> → <span class="new">${escapeHtml(item.newName)}</span>`;
+        renameResults.appendChild(li);
+      }
+    }
+
+    function escapeHtml(s) {
+      return String(s)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
     function scheduleReconnect() {
       if (reconnectTimer) return;
       reconnectTimer = setTimeout(() => {
@@ -366,12 +765,12 @@
 
       const url = buildWsUrl();
       bridgeUrlEl.textContent = url;
-      appendLog("Connecting to bridge…");
+      logBridge("Connecting to bridge…");
 
       try {
         socket = new WebSocket(url);
       } catch (err) {
-        appendLog("WebSocket error: " + err.message);
+        logBridge("WebSocket error: " + err.message);
         setConnected(false);
         scheduleReconnect();
         return;
@@ -380,17 +779,17 @@
       socket.onopen = () => {
         reconnectDelay = 1000;
         setConnected(true);
-        appendLog("Bridge connected");
+        logBridge("Bridge connected");
       };
 
       socket.onclose = () => {
         setConnected(false);
-        appendLog("Bridge disconnected");
+        logBridge("Bridge disconnected");
         scheduleReconnect();
       };
 
       socket.onerror = () => {
-        appendLog("Bridge connection failed");
+        logBridge("Bridge connection failed");
       };
 
       socket.onmessage = (event) => {
@@ -398,7 +797,7 @@
         try {
           msg = JSON.parse(event.data);
         } catch {
-          appendLog("Invalid JSON from bridge");
+          logBridge("Invalid JSON from bridge");
           return;
         }
 
@@ -425,6 +824,15 @@
       socket.send(JSON.stringify(response));
     }
 
+    function switchTab(name) {
+      document.querySelectorAll(".tab").forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.tab === name);
+      });
+      document.querySelectorAll(".panel").forEach((panel) => {
+        panel.classList.toggle("active", panel.dataset.panel === name);
+      });
+    }
+
     function toggleMini() {
       miniMode = !miniMode;
       document.body.classList.toggle("mini", miniMode);
@@ -435,6 +843,11 @@
 
     function openSettings() {
       settingsOverlay.classList.add("open");
+      apiBaseUrlInput.value = settings.apiBaseUrl || DEFAULT_API_BASE;
+      modelInput.value = settings.model || DEFAULT_MODEL;
+      apiKeyInput.value = settings.apiKey || "";
+      testResult.textContent = "";
+      testResult.className = "test-result";
       post({ type: "getSettings" });
     }
 
@@ -443,24 +856,162 @@
     }
 
     function saveSettings() {
-      post({
-        type: "setSettings",
-        settings: {
-          apiBaseUrl: apiBaseUrlInput.value.trim() || undefined,
-          apiKey: apiKeyInput.value.trim() || undefined,
-        },
-      });
+      settings = {
+        ...settings,
+        apiBaseUrl: apiBaseUrlInput.value.trim() || DEFAULT_API_BASE,
+        model: modelInput.value.trim() || DEFAULT_MODEL,
+        apiKey: apiKeyInput.value.trim(),
+      };
+      post({ type: "setSettings", settings });
       closeSettings();
-      appendLog("Settings saved");
+      logBridge("Settings saved");
     }
+
+    async function testConnection() {
+      testResult.textContent = "Testing…";
+      testResult.className = "test-result";
+      const prev = { ...settings };
+      settings = {
+        ...settings,
+        apiBaseUrl: apiBaseUrlInput.value.trim() || DEFAULT_API_BASE,
+        model: modelInput.value.trim() || DEFAULT_MODEL,
+        apiKey: apiKeyInput.value.trim(),
+      };
+      try {
+        await callChatJson({
+          system: "Reply with JSON: {\"ok\":true}",
+          userText: "ping",
+        });
+        testResult.textContent = "Connection OK";
+        testResult.className = "test-result ok";
+      } catch (err) {
+        testResult.textContent = err.message;
+        testResult.className = "test-result err";
+      }
+      settings = prev;
+    }
+
+    async function handleAiRename(msg) {
+      pendingCloneRootId = msg.cloneRootId;
+      startRenameBtn.disabled = true;
+      logRename(`AI rename: ${msg.candidates.length} candidates…`);
+      try {
+        const userText = `Candidates JSON:\n${JSON.stringify(msg.candidates, null, 2)}\n\nRename layers to meaningful semantic names based on the screenshot.`;
+        const result = await callChatJson({
+          system: RENAME_SYSTEM,
+          userText,
+          png: msg.png,
+        });
+        const items = result.rename || [];
+        if (!items.length) throw new Error("Model returned no rename items");
+        renderRenameResults(items, msg.candidates);
+        logRename(`Applying ${items.length} names…`);
+        post({ type: "renameResult", items, cloneRootId: msg.cloneRootId });
+      } catch (err) {
+        logRename("Error: " + err.message);
+        post({ type: "error", message: err.message });
+      } finally {
+        startRenameBtn.disabled = false;
+      }
+    }
+
+    async function handleAiGroup(msg) {
+      pendingGroupCloneRootId = msg.cloneRootId;
+      startGroupBtn.disabled = true;
+      applyGroupBtn.disabled = true;
+      logGroup(`AI group: ${msg.candidates.length} children…`);
+      try {
+        const clusterHint = msg.suggestedClusters?.length
+          ? `\nSuggested proximity clusters (optional hint):\n${JSON.stringify(msg.suggestedClusters, null, 2)}`
+          : "";
+        const userText = `Direct children JSON:\n${JSON.stringify(msg.candidates, null, 2)}${clusterHint}\n\nPropose visual grouping for the screenshot.`;
+        const result = await callChatJson({
+          system: GROUP_SYSTEM,
+          userText,
+          png: msg.png,
+        });
+        const plan = { groups: result.groups || [] };
+        if (!plan.groups.length) throw new Error("Model returned no groups");
+        groupPlanEditor.value = JSON.stringify(plan, null, 2);
+        applyGroupBtn.disabled = false;
+        logGroup(`Plan ready (${plan.groups.length} top-level groups). Review and click Apply.`);
+      } catch (err) {
+        logGroup("Error: " + err.message);
+        post({ type: "error", message: err.message });
+      } finally {
+        startGroupBtn.disabled = false;
+      }
+    }
+
+    function applyGroupPlan() {
+      let plan;
+      try {
+        plan = JSON.parse(groupPlanEditor.value);
+      } catch {
+        logGroup("Invalid JSON in plan editor");
+        return;
+      }
+      if (!pendingGroupCloneRootId) {
+        logGroup("No clone in progress. Run Start group first.");
+        return;
+      }
+      applyGroupBtn.disabled = true;
+      logGroup("Applying groups on clone…");
+      post({
+        type: "groupApply",
+        plan,
+        cloneRootId: pendingGroupCloneRootId,
+      });
+    }
+
+    document.querySelectorAll(".tab").forEach((btn) => {
+      btn.addEventListener("click", () => switchTab(btn.dataset.tab));
+    });
 
     miniBtn.addEventListener("click", toggleMini);
     settingsBtn.addEventListener("click", openSettings);
     settingsCancel.addEventListener("click", closeSettings);
     settingsSave.addEventListener("click", saveSettings);
+    testConnectionBtn.addEventListener("click", testConnection);
+    checkUpdatesBtn.addEventListener("click", () => checkForUpdates({ force: true, showModal: true }));
     settingsOverlay.addEventListener("click", (e) => {
       if (e.target === settingsOverlay) closeSettings();
     });
+
+    updateLater.addEventListener("click", () => {
+      if (remoteVersionInfo?.latest) {
+        settings.dismissedVersion = remoteVersionInfo.latest;
+        post({ type: "setSettings", settings });
+      }
+      updateOverlay.classList.remove("open");
+    });
+
+    updateDownload.addEventListener("click", () => {
+      const base = remoteVersionInfo?.downloadUrl ||
+        "https://github.com/ChinaCarlos/figma-agent-kit/archive/refs/heads/main.zip";
+      post({ type: "openExternal", url: `${base}?_t=${Date.now()}` });
+      if (remoteVersionInfo?.latest) {
+        settings.dismissedVersion = remoteVersionInfo.latest;
+        post({ type: "setSettings", settings });
+      }
+      updateOverlay.classList.remove("open");
+    });
+
+    updateOverlay.addEventListener("click", (e) => {
+      if (e.target === updateOverlay) updateOverlay.classList.remove("open");
+    });
+
+    startRenameBtn.addEventListener("click", () => {
+      logRename("Starting rename workflow…");
+      post({ type: "startRename" });
+    });
+
+    startGroupBtn.addEventListener("click", () => {
+      logGroup("Starting group workflow…");
+      post({ type: "startGroup" });
+    });
+
+    applyGroupBtn.addEventListener("click", applyGroupPlan);
 
     window.onmessage = (event) => {
       const msg = event.data.pluginMessage;
@@ -486,30 +1037,68 @@
             data: msg.data,
             error: msg.error,
           });
-          appendLog(`${msg.ok ? "OK" : "ERR"} ${msg.requestId.slice(0, 8)}…`);
+          logBridge(`${msg.ok ? "OK" : "ERR"} ${msg.requestId.slice(0, 8)}…`);
           break;
 
         case "settings":
-          apiBaseUrlInput.value = msg.settings.apiBaseUrl || "";
-          apiKeyInput.value = msg.settings.apiKey || "";
+          settings = {
+            apiBaseUrl: msg.settings.apiBaseUrl || DEFAULT_API_BASE,
+            apiKey: msg.settings.apiKey || "",
+            model: msg.settings.model || DEFAULT_MODEL,
+            dismissedVersion: msg.settings.dismissedVersion || "",
+          };
+          apiBaseUrlInput.value = settings.apiBaseUrl;
+          modelInput.value = settings.model;
+          apiKeyInput.value = settings.apiKey;
+          if (remoteVersionInfo && settings.dismissedVersion === remoteVersionInfo.latest) {
+            updateOverlay.classList.remove("open");
+          }
+          break;
+
+        case "pluginVersion":
+          break;
+
+        case "aiRenameRequest":
+          handleAiRename(msg);
+          break;
+
+        case "aiGroupRequest":
+          handleAiGroup(msg);
+          break;
+
+        case "renameDone":
+          logRename(`Done. Renamed ${msg.items.length} layer(s) on clone.`);
+          break;
+
+        case "groupDone":
+          applyGroupBtn.disabled = false;
+          logGroup(`Done. Applied grouping on clone.`);
           break;
 
         case "log":
-          appendLog(`[${msg.level}] ${msg.message}`);
+          logBridge(`[${msg.level}] ${msg.message}`);
           break;
 
         case "status":
-          appendLog(msg.message);
+          logBridge(msg.message);
+          logRename(msg.message);
+          logGroup(msg.message);
           break;
 
         case "error":
-          appendLog("Error: " + msg.message);
+          logBridge("Error: " + msg.message);
+          logRename("Error: " + msg.message);
+          logGroup("Error: " + msg.message);
           break;
       }
     };
 
     post({ type: "ui-ready" });
     connectBridge();
+
+    setTimeout(() => {
+      checkForUpdates({ showModal: true });
+    }, VERSION_CHECK_DELAY_MS);
   </script>
 </body>
 </html>

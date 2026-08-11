@@ -5,7 +5,7 @@ import { Election } from "./election.js";
 import { registerTools } from "./tools.js";
 import { VERSION } from "./version.js";
 
-const DEFAULT_PORT = 1994;
+const DEFAULT_PORT = 1998;
 const port = Number(process.env.FIGMA_AGENT_MCP_PORT ?? DEFAULT_PORT);
 
 let election: Election | null = null;

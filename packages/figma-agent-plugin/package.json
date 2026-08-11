@@ -2,7 +2,7 @@
   "name": "figma-agent-plugin",
   "version": "0.1.0",
   "private": true,
-  "description": "Figma Agent Kit — local MCP bridge plugin for AI agents",
+  "description": "Figma Agent Kit — MCP bridge, AI layer rename & visual grouping",
   "license": "MIT",
   "scripts": {
     "dev": "NODE_ENV=development rsbuild build --watch",

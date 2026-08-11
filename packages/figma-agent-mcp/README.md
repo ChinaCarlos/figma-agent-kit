@@ -32,7 +32,7 @@ Add to your Cursor MCP settings (`~/.cursor/mcp.json` or project `.cursor/mcp.js
 
 ### Custom port
 
-Default port is **1994**. Override with the `FIGMA_AGENT_MCP_PORT` environment variable:
+Default port is **1998**. Override with the `FIGMA_AGENT_MCP_PORT` environment variable:
 
 ```json
 {
@@ -41,7 +41,7 @@ Default port is **1994**. Override with the `FIGMA_AGENT_MCP_PORT` environment v
       "command": "npx",
       "args": ["-y", "figma-agent-mcp"],
       "env": {
-        "FIGMA_AGENT_MCP_PORT": "1994"
+        "FIGMA_AGENT_MCP_PORT": "1998"
       }
     }
   }
