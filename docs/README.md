@@ -1,8 +1,10 @@
 # Documentation
 
-**English** | [简体中文](./zh/README.md)
+[简体中文](./zh/README.md) | **English**
 
 English docs for **Figma Agent Kit** — local Figma Desktop bridge for AI agents.
+
+> The repository homepage ([README.md](../README.md)) defaults to **Chinese**. English landing page: [README.en.md](../README.en.md).
 
 > Screenshot images use GitHub raw URLs (`raw.githubusercontent.com/.../docs/images/...`) so they render on npm, mirrors, and cross-linked pages.
 

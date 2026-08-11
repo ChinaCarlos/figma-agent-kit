@@ -46,7 +46,7 @@ scripts/                      # sync-bridge, release-kit
 
 Read [docs/architecture.md](./docs/architecture.md) (or [中文](./docs/zh/architecture.md)) before large changes.
 
-Docs are bilingual: English under `docs/`, Chinese under `docs/zh/`, with `README.md` / `README.zh-CN.md` language switchers. Prefer GitHub raw URLs for screenshots (`https://raw.githubusercontent.com/ChinaCarlos/figma-agent-kit/main/docs/images/...`).
+Docs are bilingual: homepage **`README.md` is Chinese** by default; English landing page is `README.en.md`. Detailed docs live under `docs/zh/` (Chinese) and `docs/` (English). Prefer GitHub raw URLs for screenshots (`https://raw.githubusercontent.com/ChinaCarlos/figma-agent-kit/main/docs/images/...`).
 
 ## Pull requests
 
