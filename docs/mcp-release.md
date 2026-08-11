@@ -19,19 +19,23 @@ npm login --registry https://registry.npmjs.org/
 npm whoami --registry https://registry.npmjs.org/
 ```
 
-## 日常发版
+## 日常发版（推荐：与插件同版本）
 
-工作区干净时，在 monorepo 根目录：
+MCP 与插件版本应对齐。一键发两边：
 
 ```bash
-# 预览
-cd packages/figma-agent-mcp && node scripts/release.mjs patch --dry-run
+pnpm release:kit:patch   # 或 minor / major
+```
 
-# bump → build → commit → tag figma-agent-mcp-vX.Y.Z → push
-# → CI：pack + GitHub Release（无 NPM_TOKEN 时不发 npm）
+会 bump **root + mcp + plugin** 到同一版本，打两个 tag，触发：
+
+- **Release MCP** → `npm publish`（需 Secret `NPM_TOKEN`）+ 可选 GitHub Release  
+- **Release Plugin** → 插件 ZIP GitHub Release  
+
+只发 MCP（可能造成版本不一致，不推荐）：
+
+```bash
 pnpm release:mcp:patch
-pnpm release:mcp:minor
-pnpm release:mcp:major
 ```
 
 本地一并发布到 npm：
