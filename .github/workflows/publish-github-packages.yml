@@ -1,0 +1,42 @@
+# Publish figma-agent-mcp to GitHub Packages (repo sidebar → Packages).
+# Does not bump versions. Use after a release, or manually for backfill.
+name: Publish GitHub Packages
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: publish-github-packages
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          registry-url: https://npm.pkg.github.com
+          scope: "@${{ github.repository_owner }}"
+
+      - run: pnpm install
+
+      - name: Build MCP
+        run: pnpm build:mcp
+
+      - name: Publish to GitHub Packages
+        working-directory: packages/figma-agent-mcp
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+        run: node scripts/publish-github-packages.mjs

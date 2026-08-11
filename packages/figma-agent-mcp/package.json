@@ -27,7 +27,8 @@
     "release:patch": "node scripts/release.mjs patch",
     "release:minor": "node scripts/release.mjs minor",
     "release:major": "node scripts/release.mjs major",
-    "publish:npm": "npm publish --access public --registry https://registry.npmjs.org/"
+    "publish:npm": "npm publish --access public --registry https://registry.npmjs.org/",
+    "publish:github": "node scripts/publish-github-packages.mjs"
   },
   "keywords": [
     "figma",

@@ -8,9 +8,12 @@
 |------|--------|
 | bump / CHANGELOG / tag / push | 本地 `pnpm release:mcp:*` 或 Actions **Release MCP** |
 | `pnpm pack` + GitHub Release（附 `.tgz`） | GitHub Actions |
-| `npm publish` | **本地**（`npm login` + `--publish`），不必把 `NPM_TOKEN` 存进 GitHub |
+| `npm publish`（npmjs） | **本地**（`npm login` + `--publish`），或 Secret `NPM_TOKEN` |
+| GitHub Packages（仓库侧栏 Packages） | Actions 用 `GITHUB_TOKEN` 自动发布 `@<owner>/figma-agent-mcp` |
 
-若仓库配置了可选 Secret `NPM_TOKEN`，Actions 也会尝试 `npm publish`；未配置则跳过，不影响打包与 Release。
+仓库首页 **Packages** 只展示 [GitHub Packages](https://docs.github.com/packages)（`npm.pkg.github.com`），**不是** GitHub Releases，也不是 npmjs。发版时 CI 会同步发布；补发可用 Actions → **Publish GitHub Packages**。
+
+若配置了可选 Secret `NPM_TOKEN`，Actions 也会尝试 `npm publish` 到 npmjs；未配置则跳过，不影响 GitHub Release / GitHub Packages。
 
 ## 一次性准备（本地 npm）
 

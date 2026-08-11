@@ -22,6 +22,7 @@ on:
 
 permissions:
   contents: write
+  packages: write
   id-token: write
 
 concurrency:
@@ -96,6 +97,13 @@ jobs:
           fi
           npm publish --access public --provenance
 
+      - name: Publish to GitHub Packages
+        working-directory: packages/figma-agent-mcp
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+        run: node scripts/publish-github-packages.mjs
+
       - name: Write release notes
         run: |
           node packages/figma-agent-mcp/scripts/changelog-notes.mjs "${{ steps.meta.outputs.version }}" \
@@ -153,6 +161,13 @@ jobs:
             exit 0
           fi
           npm publish --access public --provenance
+
+      - name: Publish to GitHub Packages
+        working-directory: packages/figma-agent-mcp
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+        run: node scripts/publish-github-packages.mjs
 
       - name: Write release notes
         run: |
