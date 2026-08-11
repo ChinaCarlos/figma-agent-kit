@@ -9,6 +9,7 @@ dist/
 coverage/
 *.tsbuildinfo
 releases/*/
+releases/*.zip
 .idea/
 .vscode/
 *.map

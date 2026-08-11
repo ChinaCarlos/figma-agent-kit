@@ -2,9 +2,12 @@
   "latest": "0.1.0",
   "releasedAt": "2026-08-11",
   "notes": [
-    "Initial open-source release",
-    "MCP bridge on localhost:1998",
-    "AI rename & visual grouping (OpenAI-compatible)"
+    "Initial open-source plugin release",
+    "Local MCP bridge client (MessagePack WebSocket)",
+    "AI layer rename & visual grouping (OpenAI-compatible)",
+    "Settings, Mini mode, and GitHub version check"
   ],
-  "downloadUrl": "https://github.com/ChinaCarlos/figma-agent-kit/archive/refs/heads/main.zip"
+  "downloadUrl": "https://github.com/ChinaCarlos/figma-agent-kit/releases/download/figma-agent-plugin-v0.1.0/figma-agent-plugin-v0.1.0.zip",
+  "zipFileName": "figma-agent-plugin-v0.1.0.zip",
+  "tag": "figma-agent-plugin-v0.1.0"
 }

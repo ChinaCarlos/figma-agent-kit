@@ -91,20 +91,21 @@ Optional runtime override for the MCP process only: `FIGMA_AGENT_MCP_PORT` (must
 
 Use the Mini toggle in the plugin header to shrink the panel to bridge + selection only. Useful while chatting with an agent.
 
-## Publishing a new version
+## Publishing a new plugin version
 
-Version checks use a file in **this GitHub repo** — no CDN:
+Plugin ZIPs are published to **GitHub Releases** (not npm). See [plugin-release.md](./plugin-release.md).
 
-1. Bump `version` in `packages/figma-agent-plugin/package.json` (and root `package.json` if you keep them in sync).
-2. Update `releases/version.json`:
-   - `latest` — semver string
-   - `releasedAt` — date
-   - `notes` — bullet list for the update modal
-   - `downloadUrl` — zip or release asset URL
-3. Commit and push to `main`.
-4. The plugin fetches `https://raw.githubusercontent.com/ChinaCarlos/figma-agent-kit/main/releases/version.json?_t=…` on startup.
+```bash
+pnpm release:plugin:patch   # bump → ZIP → tag → Actions creates the Release
+```
+
+`releases/version.json` on `main` points `downloadUrl` at the Release asset. The plugin checks:
+
+`https://raw.githubusercontent.com/ChinaCarlos/figma-agent-kit/main/releases/version.json`
 
 Users with an older build see a red dot on Settings and an update modal (unless they dismiss that version).
+
+MCP npm releases: [mcp-release.md](./mcp-release.md).
 
 ## Troubleshooting
 

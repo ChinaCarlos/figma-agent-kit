@@ -19,7 +19,12 @@
     "release:mcp": "pnpm --filter figma-agent-mcp release",
     "release:mcp:patch": "pnpm --filter figma-agent-mcp release:patch",
     "release:mcp:minor": "pnpm --filter figma-agent-mcp release:minor",
-    "release:mcp:major": "pnpm --filter figma-agent-mcp release:major"
+    "release:mcp:major": "pnpm --filter figma-agent-mcp release:major",
+    "release:plugin": "pnpm --filter figma-agent-plugin release",
+    "release:plugin:patch": "pnpm --filter figma-agent-plugin release:patch",
+    "release:plugin:minor": "pnpm --filter figma-agent-plugin release:minor",
+    "release:plugin:major": "pnpm --filter figma-agent-plugin release:major",
+    "pack:plugin": "pnpm --filter figma-agent-plugin pack:release"
   },
   "license": "MIT",
   "repository": {

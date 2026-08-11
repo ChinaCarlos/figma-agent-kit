@@ -1,0 +1,52 @@
+name: Pack Plugin
+
+# Build + ZIP only (no bump / no GitHub Release). Verifies plugin packaging on CI.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "packages/figma-agent-plugin/**"
+      - ".github/workflows/pack-plugin.yml"
+      - "bridge.config.json"
+      - "package.json"
+      - "pnpm-lock.yaml"
+
+permissions:
+  contents: read
+
+jobs:
+  pack:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install
+
+      - name: Build + assemble ZIP
+        id: pack
+        run: |
+          pnpm pack:plugin
+          VERSION=$(node -p "require('./packages/figma-agent-plugin/package.json').version")
+          ZIP="figma-agent-plugin-v${VERSION}.zip"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "zip=$ZIP" >> "$GITHUB_OUTPUT"
+          ls -lh "releases/$ZIP"
+          unzip -l "releases/$ZIP"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: figma-agent-plugin-pack
+          path: |
+            releases/${{ steps.pack.outputs.zip }}
+            releases/version.json
+          retention-days: 7

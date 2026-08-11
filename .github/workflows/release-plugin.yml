@@ -1,0 +1,149 @@
+name: Release Plugin
+
+on:
+  push:
+    tags:
+      - "figma-agent-plugin-v*"
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: Semver bump type
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+      notes:
+        description: Optional CHANGELOG note
+        required: false
+        type: string
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-plugin
+  cancel-in-progress: false
+
+jobs:
+  release-dispatch:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Bump + build + zip (no git)
+        env:
+          NOTES: ${{ inputs.notes }}
+        run: |
+          ARGS=("${{ inputs.bump }}" --no-git)
+          if [ -n "$NOTES" ]; then
+            ARGS+=(--notes "$NOTES")
+          fi
+          node packages/figma-agent-plugin/scripts/release.mjs "${ARGS[@]}"
+
+      - name: Commit, tag, push
+        id: meta
+        run: |
+          VERSION=$(node -p "require('./packages/figma-agent-plugin/package.json').version")
+          TAG="figma-agent-plugin-v${VERSION}"
+          git add packages/figma-agent-plugin/package.json \
+                  packages/figma-agent-plugin/CHANGELOG.md \
+                  package.json \
+                  releases/version.json
+          git commit -m "chore(plugin): release v${VERSION}"
+          git tag -a "$TAG" -m "figma-agent-plugin v${VERSION}"
+          git push origin HEAD
+          git push origin "$TAG"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "zip=figma-agent-plugin-v${VERSION}.zip" >> "$GITHUB_OUTPUT"
+
+      - name: Write release notes
+        run: |
+          node packages/figma-agent-plugin/scripts/changelog-notes.mjs "${{ steps.meta.outputs.version }}" \
+            > "${{ runner.temp }}/release-notes.md"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.meta.outputs.tag }}
+          name: Figma Agent Kit plugin v${{ steps.meta.outputs.version }}
+          body_path: ${{ runner.temp }}/release-notes.md
+          files: releases/${{ steps.meta.outputs.zip }}
+
+  publish-on-tag:
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/figma-agent-plugin-v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install
+
+      - name: Build + assemble ZIP
+        run: pnpm pack:plugin
+
+      - name: Resolve version
+        id: meta
+        run: |
+          VERSION=$(node -p "require('./packages/figma-agent-plugin/package.json').version")
+          TAG="figma-agent-plugin-v${VERSION}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "zip=figma-agent-plugin-v${VERSION}.zip" >> "$GITHUB_OUTPUT"
+
+      - name: Ensure version.json downloadUrl
+        run: |
+          # Re-write version.json so downloadUrl matches this Release asset
+          node -e "
+            const fs = require('fs');
+            const v = '${{ steps.meta.outputs.version }}';
+            const zip = '${{ steps.meta.outputs.zip }}';
+            const tag = '${{ steps.meta.outputs.tag }}';
+            const p = 'releases/version.json';
+            const prev = JSON.parse(fs.readFileSync(p, 'utf8'));
+            prev.latest = v;
+            prev.tag = tag;
+            prev.zipFileName = zip;
+            prev.downloadUrl = 'https://github.com/ChinaCarlos/figma-agent-kit/releases/download/' + tag + '/' + zip;
+            prev.releasedAt = new Date().toISOString().slice(0, 10);
+            fs.writeFileSync(p, JSON.stringify(prev, null, 2) + '\n');
+          "
+
+      - name: Write release notes
+        run: |
+          node packages/figma-agent-plugin/scripts/changelog-notes.mjs "${{ steps.meta.outputs.version }}" \
+            > "${{ runner.temp }}/release-notes.md"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.meta.outputs.tag }}
+          name: Figma Agent Kit plugin v${{ steps.meta.outputs.version }}
+          body_path: ${{ runner.temp }}/release-notes.md
+          files: releases/${{ steps.meta.outputs.zip }}

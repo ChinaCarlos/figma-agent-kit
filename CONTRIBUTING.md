@@ -17,7 +17,9 @@ pnpm build:all
 | MCP watch | `pnpm dev:mcp` |
 | MCP build | `pnpm build:mcp` |
 | Start MCP | `pnpm start:mcp` |
-| Release MCP (patch/minor/major) | `pnpm release:mcp:patch` 等 |
+| Release MCP (npm) | `pnpm release:mcp:patch` 等 |
+| Release plugin (GitHub ZIP) | `pnpm release:plugin:patch` 等 |
+| Pack plugin ZIP only | `pnpm pack:plugin` |
 
 After plugin changes, **Reload plugin** in Figma Desktop.
 

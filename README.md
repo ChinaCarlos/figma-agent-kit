@@ -99,7 +99,8 @@ Open **Settings** in the plugin, set `apiBaseUrl` / `model` / `apiKey`, then use
 | [docs/ai-features.md](docs/ai-features.md) | AI rename/group setup |
 | [docs/bridge-protocol.md](docs/bridge-protocol.md) | WebSocket / RPC contract |
 | [docs/tools.md](docs/tools.md) | MCP tool reference |
-| [docs/mcp-release.md](docs/mcp-release.md) | npm + GitHub Release for `figma-agent-mcp` |
+| [docs/mcp-release.md](docs/mcp-release.md) | npm for `figma-agent-mcp` |
+| [docs/plugin-release.md](docs/plugin-release.md) | Plugin ZIP on GitHub Releases |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | How to contribute |
 
 ## Security & privacy

@@ -8,7 +8,16 @@
     "predev": "node ../../scripts/sync-bridge-config.mjs",
     "dev": "NODE_ENV=development rsbuild build --watch",
     "prebuild": "node ../../scripts/sync-bridge-config.mjs",
-    "build": "NODE_ENV=production rsbuild build"
+    "build": "NODE_ENV=production rsbuild build",
+    "assemble": "node scripts/assemble-release.mjs",
+    "pack:release": "pnpm run build && pnpm run assemble",
+    "version:patch": "node scripts/release.mjs patch --no-git",
+    "version:minor": "node scripts/release.mjs minor --no-git",
+    "version:major": "node scripts/release.mjs major --no-git",
+    "release": "node scripts/release.mjs",
+    "release:patch": "node scripts/release.mjs patch",
+    "release:minor": "node scripts/release.mjs minor",
+    "release:major": "node scripts/release.mjs major"
   },
   "devDependencies": {
     "@figma/plugin-typings": "^1.109.0",
