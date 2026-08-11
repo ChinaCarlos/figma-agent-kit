@@ -181,3 +181,9 @@ pnpm sync:bridge   # 修改 bridge.config.json 后
 ## 致谢
 
 灵感来自社区中各类本地 Figma ↔ Agent 桥接实践，面向 Desktop + MCP 优先工作流打造。
+
+## Star History
+
+如果本项目对你有帮助，欢迎点个 **Star** 支持一下 ⭐
+
+[![Star History Chart](https://api.star-history.com/svg?repos=ChinaCarlos/figma-agent-kit&type=Date)](https://star-history.com/#ChinaCarlos/figma-agent-kit&Date)

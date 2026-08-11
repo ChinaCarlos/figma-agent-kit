@@ -183,3 +183,9 @@ pnpm sync:bridge   # after changing bridge.config.json
 ## Acknowledgments
 
 Inspired by local Figma ↔ agent bridge patterns in the wider design-tooling community. Built for Desktop + MCP-first workflows.
+
+## Star History
+
+If this project helps you, a **Star** is always appreciated ⭐
+
+[![Star History Chart](https://api.star-history.com/svg?repos=ChinaCarlos/figma-agent-kit&type=Date)](https://star-history.com/#ChinaCarlos/figma-agent-kit&Date)
