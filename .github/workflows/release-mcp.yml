@@ -1,0 +1,168 @@
+name: Release MCP
+
+on:
+  push:
+    tags:
+      - "figma-agent-mcp-v*"
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: Semver bump type
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+      notes:
+        description: Optional CHANGELOG note
+        required: false
+        type: string
+        default: ""
+
+permissions:
+  contents: write
+  id-token: write
+
+concurrency:
+  group: release-mcp
+  cancel-in-progress: false
+
+jobs:
+  # Actions UI: bump → commit/tag/push → optional npm → GitHub Release
+  release-dispatch:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+
+      - run: pnpm install
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Bump version (files only)
+        env:
+          NOTES: ${{ inputs.notes }}
+        run: |
+          ARGS=("${{ inputs.bump }}" --no-git)
+          if [ -n "$NOTES" ]; then
+            ARGS+=(--notes "$NOTES")
+          fi
+          node packages/figma-agent-mcp/scripts/release.mjs "${ARGS[@]}"
+
+      - name: Commit, tag, push
+        id: meta
+        run: |
+          VERSION=$(node -p "require('./packages/figma-agent-mcp/package.json').version")
+          TAG="figma-agent-mcp-v${VERSION}"
+          git add packages/figma-agent-mcp/package.json \
+                  packages/figma-agent-mcp/src/version.ts \
+                  packages/figma-agent-mcp/CHANGELOG.md
+          git commit -m "chore(figma-agent-mcp): release v${VERSION}"
+          git tag -a "$TAG" -m "figma-agent-mcp v${VERSION}"
+          git push origin HEAD
+          git push origin "$TAG"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Pack npm tarball
+        working-directory: packages/figma-agent-mcp
+        run: |
+          pnpm pack
+          echo "TARBALL=$(ls figma-agent-mcp-*.tgz | head -n1)" >> "$GITHUB_ENV"
+
+      - name: Publish to npm (optional)
+        working-directory: packages/figma-agent-mcp
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -z "$NODE_AUTH_TOKEN" ]; then
+            echo "NPM_TOKEN not set — skip npm publish (pack + GitHub Release only)."
+            echo "Publish locally with: cd packages/figma-agent-mcp && npm publish --access public"
+            exit 0
+          fi
+          npm publish --access public --provenance
+
+      - name: Write release notes
+        run: |
+          node packages/figma-agent-mcp/scripts/changelog-notes.mjs "${{ steps.meta.outputs.version }}" \
+            > "${{ runner.temp }}/release-notes.md"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.meta.outputs.tag }}
+          name: figma-agent-mcp v${{ steps.meta.outputs.version }}
+          body_path: ${{ runner.temp }}/release-notes.md
+          files: packages/figma-agent-mcp/${{ env.TARBALL }}
+
+  # Local `pnpm release:mcp:*` pushes tag → CI packs + Release (+ npm if secret exists)
+  publish-on-tag:
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/figma-agent-mcp-v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+
+      - run: pnpm install
+
+      - name: Build
+        run: pnpm build:mcp
+
+      - name: Resolve version
+        id: meta
+        run: |
+          VERSION=$(node -p "require('./packages/figma-agent-mcp/package.json').version")
+          TAG="figma-agent-mcp-v${VERSION}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Pack npm tarball
+        working-directory: packages/figma-agent-mcp
+        run: |
+          pnpm pack
+          echo "TARBALL=$(ls figma-agent-mcp-*.tgz | head -n1)" >> "$GITHUB_ENV"
+
+      - name: Publish to npm (optional)
+        working-directory: packages/figma-agent-mcp
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -z "$NODE_AUTH_TOKEN" ]; then
+            echo "NPM_TOKEN not set — skip npm publish (pack + GitHub Release only)."
+            exit 0
+          fi
+          npm publish --access public --provenance
+
+      - name: Write release notes
+        run: |
+          node packages/figma-agent-mcp/scripts/changelog-notes.mjs "${{ steps.meta.outputs.version }}" \
+            > "${{ runner.temp }}/release-notes.md"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.meta.outputs.tag }}
+          name: figma-agent-mcp v${{ steps.meta.outputs.version }}
+          body_path: ${{ runner.temp }}/release-notes.md
+          files: packages/figma-agent-mcp/${{ env.TARBALL }}

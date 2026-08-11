@@ -1,0 +1,54 @@
+name: Pack MCP
+
+# Build + pnpm pack only (no version bump, no npm publish, no git tag).
+# Use this to verify the GitHub Actions packaging path without secrets.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "packages/figma-agent-mcp/**"
+      - ".github/workflows/pack-mcp.yml"
+      - "package.json"
+      - "pnpm-lock.yaml"
+
+permissions:
+  contents: read
+
+jobs:
+  pack:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install
+
+      - name: Build
+        run: pnpm build:mcp
+
+      - name: Pack tarball
+        id: pack
+        working-directory: packages/figma-agent-mcp
+        run: |
+          pnpm pack
+          TARBALL=$(ls figma-agent-mcp-*.tgz | head -n1)
+          echo "tarball=$TARBALL" >> "$GITHUB_OUTPUT"
+          ls -lh "$TARBALL"
+          tar -tzf "$TARBALL" | head -n 40
+          # Sanity: published layout must include bin entrypoint
+          tar -tzf "$TARBALL" | grep -E 'package/dist/index\.js$'
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: figma-agent-mcp-pack
+          path: packages/figma-agent-mcp/${{ steps.pack.outputs.tarball }}
+          retention-days: 7

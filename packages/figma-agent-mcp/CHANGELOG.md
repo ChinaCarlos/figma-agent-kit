@@ -1,0 +1,26 @@
+# Changelog
+
+All notable changes to **figma-agent-mcp** are documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/).
+
+## [Unreleased]
+
+### Added
+
+### Changed
+
+### Fixed
+
+## [0.1.0] - 2026-08-11
+
+### Added
+
+- Initial open-source release
+- Local MCP bridge (WebSocket + leader/follower election)
+- MessagePack binary framing for bridge RPC and screenshots
+- Core read/write Figma tools via the companion plugin
+
+[Unreleased]: https://www.npmjs.com/package/figma-agent-mcp
+[0.1.0]: https://www.npmjs.com/package/figma-agent-mcp/v/0.1.0

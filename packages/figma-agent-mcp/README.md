@@ -74,6 +74,14 @@ Write: `set_node_visibility`, `set_text_content`, `set_text_properties`, `set_no
 
 Motion and animation tools (`get_motion_styles`, `get_node_motion`, `apply_animation_style`, etc.) are not included in this release. They can be added in a future version by registering additional bridge-forwarded tools.
 
+## Release
+
+From the monorepo root (see [docs/mcp-release.md](../../docs/mcp-release.md)):
+
+```bash
+pnpm release:mcp:patch   # bump → tag → CI publishes npm + GitHub Release
+```
+
 ## Development
 
 ```bash

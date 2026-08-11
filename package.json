@@ -15,7 +15,11 @@
     "dev:mcp": "pnpm sync:bridge && pnpm --filter figma-agent-mcp dev",
     "build:mcp": "pnpm sync:bridge && pnpm --filter figma-agent-mcp build",
     "build:all": "pnpm sync:bridge && pnpm -r --filter figma-agent-plugin --filter figma-agent-mcp run build",
-    "start:mcp": "pnpm --filter figma-agent-mcp start"
+    "start:mcp": "pnpm --filter figma-agent-mcp start",
+    "release:mcp": "pnpm --filter figma-agent-mcp release",
+    "release:mcp:patch": "pnpm --filter figma-agent-mcp release:patch",
+    "release:mcp:minor": "pnpm --filter figma-agent-mcp release:minor",
+    "release:mcp:major": "pnpm --filter figma-agent-mcp release:major"
   },
   "license": "MIT",
   "repository": {

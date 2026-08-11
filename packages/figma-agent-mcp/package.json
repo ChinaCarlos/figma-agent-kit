@@ -10,14 +10,24 @@
   "files": [
     "dist",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "prebuild": "node ../../scripts/sync-bridge-config.mjs",
     "build": "tsc",
     "predev": "node ../../scripts/sync-bridge-config.mjs",
     "dev": "tsc -w",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "prepublishOnly": "pnpm run build",
+    "version:patch": "node scripts/release.mjs patch --no-git",
+    "version:minor": "node scripts/release.mjs minor --no-git",
+    "version:major": "node scripts/release.mjs major --no-git",
+    "release": "node scripts/release.mjs",
+    "release:patch": "node scripts/release.mjs patch",
+    "release:minor": "node scripts/release.mjs minor",
+    "release:major": "node scripts/release.mjs major",
+    "publish:npm": "npm publish --access public --registry https://registry.npmjs.org/"
   },
   "keywords": [
     "figma",
@@ -27,6 +37,19 @@
     "agent"
   ],
   "license": "MIT",
+  "homepage": "https://github.com/ChinaCarlos/figma-agent-kit/tree/main/packages/figma-agent-mcp",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ChinaCarlos/figma-agent-kit.git",
+    "directory": "packages/figma-agent-mcp"
+  },
+  "bugs": {
+    "url": "https://github.com/ChinaCarlos/figma-agent-kit/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "engines": {
     "node": ">=18"
   },
