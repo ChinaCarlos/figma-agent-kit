@@ -92,12 +92,65 @@
   border-left-color: var(--rp-c-brand);
 }
 
-/* Hero art */
-.rp-home-hero__image img {
+/* Hero: keep tagline / copy away from the image */
+.rp-home-hero {
+  gap: 3rem;
+  align-items: center;
+}
+
+.rp-home-hero__container {
+  min-width: 0;
+  padding-right: 0.5rem;
+}
+
+.rp-home-hero__content {
+  max-width: 36rem;
+}
+
+.rp-home-hero__tagline {
+  max-width: 34rem;
+  line-height: 1.65;
+}
+
+.rp-home-hero__title-brand {
+  width: auto !important;
+  max-width: 100%;
+}
+
+.rp-home-hero__image {
+  flex-shrink: 0;
+  max-width: min(420px, 42%);
+  margin-left: 0.5rem;
+}
+
+.rp-home-hero__image img,
+.rp-home-hero__image-img {
+  width: 100%;
+  height: auto;
   border-radius: 20px;
   box-shadow:
     0 20px 50px rgba(30, 58, 138, 0.22),
     0 0 0 1px rgba(124, 58, 237, 0.12);
+}
+
+@media (width <= 1000px) {
+  .rp-home-hero {
+    gap: 2rem;
+  }
+
+  .rp-home-hero__container {
+    padding-right: 0;
+  }
+
+  .rp-home-hero__content,
+  .rp-home-hero__tagline {
+    max-width: none;
+  }
+
+  .rp-home-hero__image {
+    max-width: min(480px, 92vw);
+    margin-left: 0;
+  }
 }
 
 /* Feature icons — AI-generated tiles */

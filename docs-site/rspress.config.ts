@@ -1,6 +1,7 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from '@rspress/core';
+import mermaid from 'rspress-plugin-mermaid';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO = 'https://github.com/ChinaCarlos/figma-agent-kit';
@@ -32,6 +33,7 @@ export default defineConfig({
         'Open-source Figma Desktop plugin + local MCP bridge for AI agents',
     },
   ],
+  plugins: [mermaid()],
   globalStyles: path.join(__dirname, 'theme/index.css'),
   themeConfig: {
     socialLinks: [
