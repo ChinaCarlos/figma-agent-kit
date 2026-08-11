@@ -13,7 +13,7 @@ When `nodeIds` is omitted for screenshot / metadata / design context / zoom, the
 | Tool | Description |
 |------|-------------|
 | `list_files` | List Figma files currently connected to the bridge (works on leader and follower) |
-| `save_screenshots` | Call `get_screenshot` and write PNG files to disk (binary path, optional compress) |
+| `save_screenshots` | Export nodes to disk. PNG defaults to TinyPNG-style compression (`compress=true`). `scale` default **2**; use **`scale=3`** for slice assets matching the plugin UI export. Supports `format`: PNG / SVG / JPG / PDF, optional `clip` |
 
 ## Read
 
@@ -26,7 +26,7 @@ When `nodeIds` is omitted for screenshot / metadata / design context / zoom, the
 | `get_metadata` | Lightweight id/name/type/size |
 | `get_design_context` | Serialized nodes for agent context |
 | `get_variable_defs` | Local variable collections and variables |
-| `get_screenshot` | Raster export of node(s); wire uses raw PNG bytes (MsgPack bin), agent result is base64 |
+| `get_screenshot` | Raster/vector export; wire uses raw bytes (MsgPack bin), agent result is base64. Default `format=PNG`, `scale=2`. Uncompressed — prefer `save_screenshots` for compressed slices |
 
 ## Write / mutate
 
@@ -53,14 +53,24 @@ When `nodeIds` is omitted for screenshot / metadata / design context / zoom, the
 | `scroll_and_zoom_into_view` | Focus viewport |
 | `delete_nodes` | Delete nodes |
 
-## Not in v0.1
+## Motion (Figma Motion API beta)
 
-Motion / animation style APIs are intentionally omitted. They can be added in a later release without changing the bridge transport.
+Requires a Figma build that exposes `figma.motion` / `applyAnimationStyle` on nodes. Otherwise tools return a clear capability error.
+
+| Tool | Description |
+|------|-------------|
+| `get_motion_styles` | List available animation styles |
+| `get_node_motion` | Read node animation styles, keyframes, timelines |
+| `apply_animation_style` | Apply style (`styleId`, optional `animationStyleData`) |
+| `remove_animation_style` | Remove one style or all (`animationStyleId` optional) |
+| `apply_manual_keyframe_track` | Write a manual keyframe track (`field`, `track`) |
+| `remove_manual_keyframe_track` | Remove a manual keyframe track (`field`) |
+| `set_timeline_duration` | Set timeline duration (`timelineId`, `duration`) |
 
 ## Example agent flow
 
 1. `list_files`  
 2. `get_selection`  
-3. `get_screenshot` on the selected frame  
-4. Reason about the UI  
+3. `get_screenshot` on the selected frame (preview)  
+4. `save_screenshots` with `scale: 3`, `compress: true` for delivery slices  
 5. `set_text_content` / `set_node_properties` to apply edits  

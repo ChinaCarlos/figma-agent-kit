@@ -78,14 +78,14 @@ let uiHtml = readFileSync(resolve(__dirname, "src/ui/ui.html"), "utf-8");
 uiHtml = injectPromptTemplates(uiHtml);
 uiHtml = injectLocales(uiHtml);
 uiHtml = injectJsZip(uiHtml);
+// Function replacers avoid `$&` / `$n` corruption in minified vendor bundles
+// (msgpackr codec contains `$&`; same fix as injectJsZip).
+const codecScript = `<script>${bundleUiCodec()}</script>`;
 uiHtml = uiHtml
   .replaceAll("__PLUGIN_VERSION__", pkg.version)
   .replaceAll("__VERSION_CHECK_URL__", versionCheckUrl)
   .replaceAll("__BRIDGE_PORT__", String(bridgePort))
-  .replace(
-    "<!--FIGMA_AGENT_CODEC-->",
-    `<script>${bundleUiCodec()}</script>`,
-  );
+  .replace("<!--FIGMA_AGENT_CODEC-->", () => codecScript);
 
 export default defineConfig({
   source: {

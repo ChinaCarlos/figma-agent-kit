@@ -40,7 +40,14 @@ export type BridgeToolName =
   | "scroll_and_zoom_into_view"
   | "delete_nodes"
   | "get_styles"
-  | "get_variable_defs";
+  | "get_variable_defs"
+  | "get_motion_styles"
+  | "get_node_motion"
+  | "apply_animation_style"
+  | "remove_animation_style"
+  | "apply_manual_keyframe_track"
+  | "remove_manual_keyframe_track"
+  | "set_timeline_duration";
 
 export const CORE_BRIDGE_TOOLS: readonly BridgeToolName[] = [
   "get_document",
@@ -71,4 +78,11 @@ export const CORE_BRIDGE_TOOLS: readonly BridgeToolName[] = [
   "delete_nodes",
   "get_styles",
   "get_variable_defs",
+  "get_motion_styles",
+  "get_node_motion",
+  "apply_animation_style",
+  "remove_animation_style",
+  "apply_manual_keyframe_track",
+  "remove_manual_keyframe_track",
+  "set_timeline_duration",
 ] as const;

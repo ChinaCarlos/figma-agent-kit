@@ -3,7 +3,10 @@ import { join } from "node:path";
 import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { Node } from "./node.js";
-import { compressPng } from "./compress-png.js";
+import {
+  calcPngSavedPct,
+  compressPngLossless,
+} from "./compress-png.js";
 import * as schemas from "./schema.js";
 
 type ToolResult = {
@@ -135,16 +138,25 @@ export function registerTools(
   server.registerTool(
     "save_screenshots",
     {
-      description: "Capture screenshots of nodes and save them to disk.",
+      description:
+        "Export screenshots/slices to the local filesystem. PNG defaults to TinyPNG-style compression (compress=true). Use scale=3 for slice assets matching the plugin export; default scale is 2.",
       inputSchema: schemas.saveScreenshotsSchema,
     },
     async (args) => {
       const outDir = args.path ?? join(process.cwd(), "screenshots");
       await mkdir(outDir, { recursive: true });
+      const format = args.format ?? "PNG";
+      const scale = args.scale ?? 2;
+      const clip = args.clip === true;
+      const compress =
+        args.compress !== undefined ? args.compress : format === "PNG";
 
       const screenshots = await forwardTool(node, "get_screenshot", {
         fileKey: args.fileKey,
         nodeIds: args.nodeIds,
+        format,
+        scale,
+        clip,
       });
 
       const entries = normalizeScreenshotEntries(screenshots);
@@ -157,19 +169,66 @@ export function registerTools(
         });
       }
 
+      const ext = format.toLowerCase();
+      const files: Array<Record<string, unknown>> = [];
       const saved: string[] = [];
+
       for (const entry of entries) {
         const rawBuffer = toPngBuffer(entry.data);
-        const fileBuffer = args.compress
-          ? await compressPng(rawBuffer)
-          : rawBuffer;
+        const before = rawBuffer.length;
+        let fileBuffer: Buffer = rawBuffer;
+        let compressed = false;
+        let compressionMode: string | undefined;
+        let compressionNote: string | undefined;
+        let after = before;
+
+        if (compress && format === "PNG") {
+          const result = compressPngLossless(rawBuffer);
+          fileBuffer = Buffer.from(result.bytes);
+          after = result.after;
+          compressed = result.mode === "compressed";
+          compressionMode = result.mode;
+          compressionNote = result.note;
+        }
+
         const safeId = entry.nodeId.replace(/[^a-zA-Z0-9:_-]/g, "_");
-        const filePath = join(outDir, `${safeId}.png`);
+        const filePath = join(outDir, `${safeId}.${ext}`);
         await writeFile(filePath, fileBuffer);
         saved.push(filePath);
+
+        const savedPct =
+          format === "PNG" && compress
+            ? calcPngSavedPct(before, after)
+            : 0;
+        files.push({
+          nodeId: entry.nodeId,
+          path: filePath,
+          format,
+          scale,
+          bytesBefore: before,
+          bytesAfter: after,
+          savedPct,
+          compressed,
+          compressionMode,
+          compressionNote,
+          summary:
+            format === "PNG" && compress
+              ? compressed
+                ? `${(before / 1024).toFixed(1)} KB → ${(after / 1024).toFixed(1)} KB（节省 ${savedPct}%${compressionNote ? ` · ${compressionNote}` : ""}）`
+                : `${(after / 1024).toFixed(1)} KB · 未压缩（${compressionNote || compressionMode || "保留原图"}）`
+              : `${(after / 1024).toFixed(1)} KB · ${format}`,
+        });
       }
 
-      return textResult({ saved, count: saved.length, directory: outDir });
+      return textResult({
+        saved,
+        files,
+        count: saved.length,
+        directory: outDir,
+        format,
+        scale,
+        compress,
+      });
     },
   );
 
@@ -215,8 +274,46 @@ export function registerTools(
     },
     {
       name: "get_screenshot",
-      description: "Capture PNG screenshots of nodes (returns base64).",
+      description:
+        "Capture node screenshots (returns base64). Default format PNG, scale 2. Uncompressed — use save_screenshots for TinyPNG-style compression / scale=3 slices.",
       inputSchema: schemas.getScreenshotSchema,
+    },
+    {
+      name: "get_motion_styles",
+      description: "List available Figma motion/animation styles.",
+      inputSchema: schemas.getMotionStylesSchema,
+    },
+    {
+      name: "get_node_motion",
+      description:
+        "Get motion properties for a node (animation styles, keyframes, timelines).",
+      inputSchema: schemas.getNodeMotionSchema,
+    },
+    {
+      name: "apply_animation_style",
+      description: "Apply an animation style to a node.",
+      inputSchema: schemas.applyAnimationStyleSchema,
+    },
+    {
+      name: "remove_animation_style",
+      description:
+        "Remove an animation style from a node (or all styles if animationStyleId omitted).",
+      inputSchema: schemas.removeAnimationStyleSchema,
+    },
+    {
+      name: "apply_manual_keyframe_track",
+      description: "Apply a manual keyframe track to a node property.",
+      inputSchema: schemas.applyManualKeyframeTrackSchema,
+    },
+    {
+      name: "remove_manual_keyframe_track",
+      description: "Remove a manual keyframe track from a node property.",
+      inputSchema: schemas.removeManualKeyframeTrackSchema,
+    },
+    {
+      name: "set_timeline_duration",
+      description: "Set the duration of a node timeline.",
+      inputSchema: schemas.setTimelineDurationSchema,
     },
     {
       name: "set_node_visibility",

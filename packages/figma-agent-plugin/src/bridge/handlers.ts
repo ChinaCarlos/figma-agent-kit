@@ -42,17 +42,18 @@ function flattenParams(params: Record<string, unknown>): Record<string, unknown>
   return params;
 }
 
-function getNodeById(id: string): SceneNode | null {
-  const node = figma.getNodeById(id);
+/** dynamic-page plugins must use async node lookup. */
+async function getNodeById(id: string): Promise<SceneNode | null> {
+  const node = await figma.getNodeByIdAsync(id);
   if (!node || !("type" in node)) return null;
   return node as SceneNode;
 }
 
-function resolveNodes(
+async function resolveNodes(
   nodeIds: string[] | undefined,
   requestId: string,
   options?: { required?: boolean; fallbackSelection?: boolean },
-): SceneNode[] | BridgeResponse {
+): Promise<SceneNode[] | BridgeResponse> {
   const required = options?.required ?? true;
   const fallbackSelection = options?.fallbackSelection ?? false;
 
@@ -69,20 +70,20 @@ function resolveNodes(
 
   const nodes: SceneNode[] = [];
   for (const id of ids) {
-    const node = getNodeById(id);
+    const node = await getNodeById(id);
     if (!node) return fail(requestId, `Node not found: ${id}`);
     nodes.push(node);
   }
   return nodes;
 }
 
-function appendToParent(
+async function appendToParent(
   node: SceneNode,
   parentId: string | undefined,
   requestId: string,
-): BridgeResponse | null {
+): Promise<BridgeResponse | null> {
   if (parentId) {
-    const parent = getNodeById(parentId);
+    const parent = await getNodeById(parentId);
     if (!parent || !("appendChild" in parent)) {
       return fail(requestId, `Invalid parentId: ${parentId}`);
     }
@@ -122,8 +123,54 @@ function solidPaint(color: RGBA): SolidPaint {
   };
 }
 
-async function exportPngBytes(node: ExportMixin): Promise<Uint8Array> {
-  return node.exportAsync({ format: "PNG", constraint: { type: "SCALE", value: 1 } });
+type ExportFormat = "PNG" | "SVG" | "JPG" | "PDF";
+
+/** Motion API beta — duck-type until @figma/plugin-typings ships MotionNodeMixin. */
+function isMotionNode(
+  node: SceneNode,
+): node is SceneNode & {
+  animationStyles: ReadonlyArray<{ id: string }>;
+  animations: unknown;
+  manualKeyframeTracks: unknown;
+  timelines: ReadonlyArray<{ id: string }>;
+  applyAnimationStyle: (
+    styleId: string,
+    animationStyleData?: Record<string, unknown>,
+  ) => string;
+  removeAnimationStyle: (id: string) => void;
+  applyManualKeyframeTrack: (field: unknown, track: unknown) => void;
+  removeManualKeyframeTrack: (field: unknown) => void;
+  setTimelineDuration: (id: string, duration: number) => void;
+} {
+  return "applyAnimationStyle" in node;
+}
+
+async function exportNodeBytes(
+  node: ExportMixin & SceneNode,
+  format: ExportFormat,
+  scale: number,
+  clip: boolean,
+): Promise<Uint8Array> {
+  const common = clip
+    ? { contentsOnly: true, useAbsoluteBounds: true }
+    : {};
+  const settings: ExportSettings =
+    format === "SVG"
+      ? { format: "SVG", ...common }
+      : format === "PDF"
+        ? { format: "PDF", ...common }
+        : format === "JPG"
+          ? {
+              format: "JPG",
+              constraint: { type: "SCALE", value: scale },
+              ...common,
+            }
+          : {
+              format: "PNG",
+              constraint: { type: "SCALE", value: scale },
+              ...common,
+            };
+  return node.exportAsync(settings);
 }
 
 function decodeBase64Image(data: string): Uint8Array {
@@ -272,14 +319,14 @@ export async function handleBridgeRequest(req: BridgeRequest): Promise<BridgeRes
         });
 
       case "get_node": {
-        const nodes = resolveNodes(nodeIds, requestId);
+        const nodes = await resolveNodes(nodeIds, requestId);
         if (!Array.isArray(nodes)) return nodes;
         const depth = num(params.depth) ?? 2;
         return ok(requestId, { nodes: nodes.map((n) => serializeNode(n, 0, depth)) });
       }
 
       case "get_metadata": {
-        const nodes = resolveNodes(nodeIds, requestId, { fallbackSelection: true });
+        const nodes = await resolveNodes(nodeIds, requestId, { fallbackSelection: true });
         if (!Array.isArray(nodes)) return nodes;
         return ok(requestId, {
           nodes: nodes.map((n) => ({
@@ -293,7 +340,7 @@ export async function handleBridgeRequest(req: BridgeRequest): Promise<BridgeRes
       }
 
       case "get_design_context": {
-        const nodes = resolveNodes(nodeIds, requestId, { fallbackSelection: true });
+        const nodes = await resolveNodes(nodeIds, requestId, { fallbackSelection: true });
         if (!Array.isArray(nodes)) return nodes;
         return ok(requestId, {
           fileKey: getFileKey(),
@@ -303,22 +350,58 @@ export async function handleBridgeRequest(req: BridgeRequest): Promise<BridgeRes
       }
 
       case "get_screenshot": {
-        const nodes = resolveNodes(nodeIds, requestId, { fallbackSelection: true });
+        const nodes = await resolveNodes(nodeIds, requestId, {
+          fallbackSelection: true,
+        });
         if (!Array.isArray(nodes)) return nodes;
-        // `data` is raw PNG bytes — MsgPack encodes it as bin (no base64 inflation).
-        const images: { nodeId: string; format: string; data: Uint8Array }[] = [];
+        const formatRaw = str(params.format)?.toUpperCase();
+        const format: ExportFormat =
+          formatRaw === "SVG" ||
+          formatRaw === "PDF" ||
+          formatRaw === "JPG" ||
+          formatRaw === "PNG"
+            ? formatRaw
+            : "PNG";
+        const scale = num(params.scale) ?? 2;
+        const clip = bool(params.clip) === true;
+        // `data` is raw bytes — MsgPack encodes as bin (no base64 inflation).
+        const images: {
+          nodeId: string;
+          nodeName: string;
+          format: ExportFormat;
+          data: Uint8Array;
+          width?: number;
+          height?: number;
+          scale: number;
+        }[] = [];
         for (const node of nodes) {
           if (!("exportAsync" in node)) {
-            return fail(requestId, `Node ${node.id} (${node.type}) cannot be exported`);
+            return fail(
+              requestId,
+              `Node ${node.id} (${node.type}) cannot be exported`,
+            );
           }
-          const data = await exportPngBytes(node as ExportMixin);
-          images.push({ nodeId: node.id, format: "png", data });
+          const data = await exportNodeBytes(
+            node as ExportMixin & SceneNode,
+            format,
+            scale,
+            clip,
+          );
+          images.push({
+            nodeId: node.id,
+            nodeName: node.name,
+            format,
+            data,
+            width: "width" in node ? node.width : undefined,
+            height: "height" in node ? node.height : undefined,
+            scale,
+          });
         }
         return ok(requestId, { images });
       }
 
       case "set_node_visibility": {
-        const nodes = resolveNodes(nodeIds, requestId);
+        const nodes = await resolveNodes(nodeIds, requestId);
         if (!Array.isArray(nodes)) return nodes;
         const visible = bool(params.visible);
         if (visible === undefined) return fail(requestId, "params.visible (boolean) is required");
@@ -330,7 +413,7 @@ export async function handleBridgeRequest(req: BridgeRequest): Promise<BridgeRes
       }
 
       case "set_text_content": {
-        const nodes = resolveNodes(nodeIds, requestId);
+        const nodes = await resolveNodes(nodeIds, requestId);
         if (!Array.isArray(nodes)) return nodes;
         const text = str(params.text);
         if (text === undefined) return fail(requestId, "params.text (string) is required");
@@ -343,7 +426,7 @@ export async function handleBridgeRequest(req: BridgeRequest): Promise<BridgeRes
       }
 
       case "set_text_properties": {
-        const nodes = resolveNodes(nodeIds, requestId);
+        const nodes = await resolveNodes(nodeIds, requestId);
         if (!Array.isArray(nodes)) return nodes;
         for (const node of nodes) {
           if (node.type !== "TEXT") return fail(requestId, `Node ${node.id} is not TEXT`);
@@ -353,7 +436,7 @@ export async function handleBridgeRequest(req: BridgeRequest): Promise<BridgeRes
       }
 
       case "set_node_properties": {
-        const nodes = resolveNodes(nodeIds, requestId);
+        const nodes = await resolveNodes(nodeIds, requestId);
         if (!Array.isArray(nodes)) return nodes;
         for (const node of nodes) {
           const name = str(params.name);
@@ -367,7 +450,7 @@ export async function handleBridgeRequest(req: BridgeRequest): Promise<BridgeRes
       }
 
       case "set_solid_fill": {
-        const nodes = resolveNodes(nodeIds, requestId);
+        const nodes = await resolveNodes(nodeIds, requestId);
         if (!Array.isArray(nodes)) return nodes;
         const color = toRGBA(params.color);
         if (!color) return fail(requestId, "params.color {r,g,b,a?} is required");
@@ -382,7 +465,7 @@ export async function handleBridgeRequest(req: BridgeRequest): Promise<BridgeRes
       }
 
       case "set_gradient_fill": {
-        const nodes = resolveNodes(nodeIds, requestId);
+        const nodes = await resolveNodes(nodeIds, requestId);
         if (!Array.isArray(nodes)) return nodes;
 
         const nested =
@@ -432,7 +515,7 @@ export async function handleBridgeRequest(req: BridgeRequest): Promise<BridgeRes
       }
 
       case "set_effects": {
-        const nodes = resolveNodes(nodeIds, requestId);
+        const nodes = await resolveNodes(nodeIds, requestId);
         if (!Array.isArray(nodes)) return nodes;
         if (!Array.isArray(params.effects)) {
           return fail(requestId, "params.effects (array) is required");
@@ -454,7 +537,7 @@ export async function handleBridgeRequest(req: BridgeRequest): Promise<BridgeRes
       }
 
       case "set_stroke_properties": {
-        const nodes = resolveNodes(nodeIds, requestId);
+        const nodes = await resolveNodes(nodeIds, requestId);
         if (!Array.isArray(nodes)) return nodes;
         for (const node of nodes) {
           if (!("strokes" in node)) {
@@ -475,7 +558,7 @@ export async function handleBridgeRequest(req: BridgeRequest): Promise<BridgeRes
       }
 
       case "set_auto_layout": {
-        const nodes = resolveNodes(nodeIds, requestId);
+        const nodes = await resolveNodes(nodeIds, requestId);
         if (!Array.isArray(nodes)) return nodes;
         for (const node of nodes) {
           if (node.type !== "FRAME" && node.type !== "COMPONENT" && node.type !== "INSTANCE") {
@@ -522,7 +605,7 @@ export async function handleBridgeRequest(req: BridgeRequest): Promise<BridgeRes
         const name = str(params.name);
         if (name) frame.name = name;
         applyGeometry(frame, params);
-        const parentErr = appendToParent(frame, str(params.parentId), requestId);
+        const parentErr = await appendToParent(frame, str(params.parentId), requestId);
         if (parentErr) return parentErr;
         return ok(requestId, { node: serializeNode(frame, 0, 0) });
       }
@@ -538,7 +621,7 @@ export async function handleBridgeRequest(req: BridgeRequest): Promise<BridgeRes
         const name = str(params.name);
         if (name) textNode.name = name;
         applyGeometry(textNode, params);
-        const parentErr = appendToParent(textNode, str(params.parentId), requestId);
+        const parentErr = await appendToParent(textNode, str(params.parentId), requestId);
         if (parentErr) return parentErr;
         return ok(requestId, { node: serializeNode(textNode, 0, 0) });
       }
@@ -549,7 +632,7 @@ export async function handleBridgeRequest(req: BridgeRequest): Promise<BridgeRes
         const name = str(params.name);
         if (name) shape.name = name;
         if ("x" in shape) applyGeometry(shape as SceneNode & LayoutMixin, params);
-        const parentErr = appendToParent(shape, str(params.parentId), requestId);
+        const parentErr = await appendToParent(shape, str(params.parentId), requestId);
         if (parentErr) return parentErr;
         return ok(requestId, { node: serializeNode(shape, 0, 0) });
       }
@@ -574,13 +657,13 @@ export async function handleBridgeRequest(req: BridgeRequest): Promise<BridgeRes
             imageHash: image.hash,
           },
         ];
-        const parentErr = appendToParent(rect, str(params.parentId), requestId);
+        const parentErr = await appendToParent(rect, str(params.parentId), requestId);
         if (parentErr) return parentErr;
         return ok(requestId, { node: serializeNode(rect, 0, 0), imageHash: image.hash });
       }
 
       case "group_nodes": {
-        const nodes = resolveNodes(nodeIds, requestId);
+        const nodes = await resolveNodes(nodeIds, requestId);
         if (!Array.isArray(nodes)) return nodes;
         if (nodes.length < 1) return fail(requestId, "At least one node is required to group");
         const group = figma.group(nodes, nodes[0].parent as BaseNode & ChildrenMixin);
@@ -590,7 +673,7 @@ export async function handleBridgeRequest(req: BridgeRequest): Promise<BridgeRes
       }
 
       case "ungroup_node": {
-        const nodes = resolveNodes(nodeIds, requestId);
+        const nodes = await resolveNodes(nodeIds, requestId);
         if (!Array.isArray(nodes)) return nodes;
         const ungrouped: string[] = [];
         for (const node of nodes) {
@@ -610,7 +693,7 @@ export async function handleBridgeRequest(req: BridgeRequest): Promise<BridgeRes
       }
 
       case "duplicate_nodes": {
-        const nodes = resolveNodes(nodeIds, requestId);
+        const nodes = await resolveNodes(nodeIds, requestId);
         if (!Array.isArray(nodes)) return nodes;
         const copies: ReturnType<typeof serializeNode>[] = [];
         for (const node of nodes) {
@@ -627,11 +710,11 @@ export async function handleBridgeRequest(req: BridgeRequest): Promise<BridgeRes
       }
 
       case "reparent_nodes": {
-        const nodes = resolveNodes(nodeIds, requestId);
+        const nodes = await resolveNodes(nodeIds, requestId);
         if (!Array.isArray(nodes)) return nodes;
         const parentId = str(params.parentId);
         if (!parentId) return fail(requestId, "params.parentId is required");
-        const parent = getNodeById(parentId);
+        const parent = await getNodeById(parentId);
         if (!parent || !("appendChild" in parent)) {
           return fail(requestId, `Invalid parentId: ${parentId}`);
         }
@@ -647,25 +730,175 @@ export async function handleBridgeRequest(req: BridgeRequest): Promise<BridgeRes
       }
 
       case "set_selection": {
-        const nodes = resolveNodes(nodeIds, requestId, { required: false });
+        const nodes = await resolveNodes(nodeIds, requestId, { required: false });
         if (!Array.isArray(nodes)) return nodes;
         figma.currentPage.selection = nodes;
         return ok(requestId, { selection: nodes.map((n) => n.id) });
       }
 
       case "scroll_and_zoom_into_view": {
-        const nodes = resolveNodes(nodeIds, requestId, { fallbackSelection: true });
+        const nodes = await resolveNodes(nodeIds, requestId, { fallbackSelection: true });
         if (!Array.isArray(nodes)) return nodes;
         figma.viewport.scrollAndZoomIntoView(nodes);
         return ok(requestId, { focused: nodes.map((n) => n.id) });
       }
 
       case "delete_nodes": {
-        const nodes = resolveNodes(nodeIds, requestId);
+        const nodes = await resolveNodes(nodeIds, requestId);
         if (!Array.isArray(nodes)) return nodes;
         const deleted = nodes.map((n) => n.id);
         for (const node of nodes) node.remove();
         return ok(requestId, { deleted });
+      }
+
+      case "get_motion_styles": {
+        const motion = (
+          figma as { motion?: { figmaAnimationStyles?: () => unknown } }
+        ).motion;
+        if (!motion || typeof motion.figmaAnimationStyles !== "function") {
+          return fail(
+            requestId,
+            "figma.motion.figmaAnimationStyles is not available in this Figma version",
+          );
+        }
+        return ok(requestId, { styles: motion.figmaAnimationStyles() });
+      }
+
+      case "get_node_motion": {
+        const nodes = await resolveNodes(nodeIds, requestId);
+        if (!Array.isArray(nodes)) return nodes;
+        const node = nodes[0];
+        if (!node || !isMotionNode(node)) {
+          return fail(
+            requestId,
+            `Node does not support animations: ${node?.id ?? "?"}`,
+          );
+        }
+        return ok(requestId, {
+          animationStyles: node.animationStyles,
+          animations: node.animations,
+          manualKeyframeTracks: node.manualKeyframeTracks,
+          timelines: node.timelines,
+        });
+      }
+
+      case "apply_animation_style": {
+        const nodes = await resolveNodes(nodeIds, requestId);
+        if (!Array.isArray(nodes)) return nodes;
+        const node = nodes[0];
+        const styleId = str(params.styleId);
+        if (!styleId) return fail(requestId, "params.styleId is required");
+        if (!node || !isMotionNode(node)) {
+          return fail(
+            requestId,
+            `Node does not support applyAnimationStyle: ${node?.id ?? "?"}`,
+          );
+        }
+        const animationStyleData =
+          params.animationStyleData &&
+          typeof params.animationStyleData === "object" &&
+          !Array.isArray(params.animationStyleData)
+            ? (params.animationStyleData as Record<string, unknown>)
+            : undefined;
+        const appliedStyleId = node.applyAnimationStyle(
+          styleId,
+          animationStyleData,
+        );
+        return ok(requestId, {
+          nodeId: node.id,
+          appliedStyleId,
+          animationStyles: node.animationStyles,
+        });
+      }
+
+      case "remove_animation_style": {
+        const nodes = await resolveNodes(nodeIds, requestId);
+        if (!Array.isArray(nodes)) return nodes;
+        const node = nodes[0];
+        if (!node || !isMotionNode(node)) {
+          return fail(
+            requestId,
+            `Node does not support removeAnimationStyle: ${node?.id ?? "?"}`,
+          );
+        }
+        const animationStyleId = str(params.animationStyleId);
+        if (animationStyleId) {
+          node.removeAnimationStyle(animationStyleId);
+        } else {
+          for (const style of [...(node.animationStyles || [])]) {
+            node.removeAnimationStyle(style.id);
+          }
+        }
+        return ok(requestId, {
+          nodeId: node.id,
+          animationStyles: node.animationStyles,
+        });
+      }
+
+      case "apply_manual_keyframe_track": {
+        const nodes = await resolveNodes(nodeIds, requestId);
+        if (!Array.isArray(nodes)) return nodes;
+        const node = nodes[0];
+        const field = params.field;
+        const track = params.track;
+        if (!field || !track) {
+          return fail(requestId, "params.field and params.track are required");
+        }
+        if (!node || !isMotionNode(node)) {
+          return fail(
+            requestId,
+            `Node does not support applyManualKeyframeTrack: ${node?.id ?? "?"}`,
+          );
+        }
+        node.applyManualKeyframeTrack(field, track);
+        return ok(requestId, {
+          nodeId: node.id,
+          manualKeyframeTracks: node.manualKeyframeTracks,
+        });
+      }
+
+      case "remove_manual_keyframe_track": {
+        const nodes = await resolveNodes(nodeIds, requestId);
+        if (!Array.isArray(nodes)) return nodes;
+        const node = nodes[0];
+        const field = params.field;
+        if (!field) return fail(requestId, "params.field is required");
+        if (!node || !isMotionNode(node)) {
+          return fail(
+            requestId,
+            `Node does not support removeManualKeyframeTrack: ${node?.id ?? "?"}`,
+          );
+        }
+        node.removeManualKeyframeTrack(field);
+        return ok(requestId, {
+          nodeId: node.id,
+          manualKeyframeTracks: node.manualKeyframeTracks,
+        });
+      }
+
+      case "set_timeline_duration": {
+        const nodes = await resolveNodes(nodeIds, requestId);
+        if (!Array.isArray(nodes)) return nodes;
+        const node = nodes[0];
+        const timelineId = str(params.timelineId);
+        const duration = num(params.duration);
+        if (!timelineId || duration === undefined) {
+          return fail(
+            requestId,
+            "params.timelineId and params.duration are required",
+          );
+        }
+        if (!node || !isMotionNode(node)) {
+          return fail(
+            requestId,
+            `Node does not support setTimelineDuration: ${node?.id ?? "?"}`,
+          );
+        }
+        node.setTimelineDuration(timelineId, duration);
+        return ok(requestId, {
+          nodeId: node.id,
+          timelines: node.timelines,
+        });
       }
 
       case "get_styles": {

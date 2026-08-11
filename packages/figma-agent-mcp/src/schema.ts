@@ -10,11 +10,33 @@ export const listFilesSchema = z.object({
   fileKey: fileKeySchema,
 });
 
+export const exportFormatSchema = z.enum(["PNG", "SVG", "JPG", "PDF"]);
+
 export const saveScreenshotsSchema = z.object({
   fileKey: fileKeySchema,
   nodeIds: nodeIdsSchema,
-  path: z.string().optional(),
-  compress: z.boolean().optional(),
+  path: z.string().optional().describe("Output directory (default ./screenshots)"),
+  format: exportFormatSchema
+    .optional()
+    .describe("Export format: PNG (default), SVG, JPG, or PDF"),
+  scale: z
+    .number()
+    .optional()
+    .describe(
+      "Raster export scale (default 2). Use 3 for slice assets matching the plugin export.",
+    ),
+  clip: z
+    .boolean()
+    .optional()
+    .describe(
+      "When true, clip raster exports to the node's logical absolute bounds",
+    ),
+  compress: z
+    .boolean()
+    .optional()
+    .describe(
+      "When true (default for PNG), apply TinyPNG-style compression before writing. Ignored for SVG/JPG/PDF.",
+    ),
 });
 
 export const getDocumentSchema = z.object({
@@ -54,6 +76,61 @@ export const getVariableDefsSchema = z.object({
 export const getScreenshotSchema = z.object({
   fileKey: fileKeySchema,
   nodeIds: nodeIdsSchema,
+  format: exportFormatSchema
+    .optional()
+    .describe("Export format: PNG (default), SVG, JPG, or PDF"),
+  scale: z
+    .number()
+    .optional()
+    .describe("Raster export scale (default 2)"),
+  clip: z
+    .boolean()
+    .optional()
+    .describe(
+      "When true, clip raster exports to the node's logical absolute bounds",
+    ),
+});
+
+export const getMotionStylesSchema = z.object({
+  fileKey: fileKeySchema,
+});
+
+export const getNodeMotionSchema = z.object({
+  fileKey: fileKeySchema,
+  nodeIds: z.array(z.string()).min(1),
+});
+
+export const applyAnimationStyleSchema = z.object({
+  fileKey: fileKeySchema,
+  nodeIds: z.array(z.string()).min(1),
+  styleId: z.string(),
+  animationStyleData: z.record(z.unknown()).optional(),
+});
+
+export const removeAnimationStyleSchema = z.object({
+  fileKey: fileKeySchema,
+  nodeIds: z.array(z.string()).min(1),
+  animationStyleId: z.string().optional(),
+});
+
+export const applyManualKeyframeTrackSchema = z.object({
+  fileKey: fileKeySchema,
+  nodeIds: z.array(z.string()).min(1),
+  field: z.record(z.unknown()),
+  track: z.record(z.unknown()),
+});
+
+export const removeManualKeyframeTrackSchema = z.object({
+  fileKey: fileKeySchema,
+  nodeIds: z.array(z.string()).min(1),
+  field: z.record(z.unknown()),
+});
+
+export const setTimelineDurationSchema = z.object({
+  fileKey: fileKeySchema,
+  nodeIds: z.array(z.string()).min(1),
+  timelineId: z.string(),
+  duration: z.number().positive(),
 });
 
 export const setNodeVisibilitySchema = z.object({

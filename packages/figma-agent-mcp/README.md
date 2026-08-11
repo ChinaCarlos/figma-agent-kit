@@ -62,7 +62,7 @@ Default port is **1998**. Override with the `FIGMA_AGENT_MCP_PORT` environment v
 | Tool | Description |
 |------|-------------|
 | `list_files` | List connected Figma files |
-| `save_screenshots` | Capture and save PNG screenshots to disk |
+| `save_screenshots` | Export to disk; PNG TinyPNG-style compression by default; use `scale: 3` for slices |
 
 ### Bridge-forwarded (require plugin)
 
@@ -70,9 +70,9 @@ Read: `get_document`, `get_selection`, `get_node`, `get_styles`, `get_metadata`,
 
 Write: `set_node_visibility`, `set_text_content`, `set_text_properties`, `set_node_properties`, `set_solid_fill`, `set_gradient_fill`, `set_effects`, `set_stroke_properties`, `set_auto_layout`, `create_frame`, `create_text`, `create_shape`, `create_image`, `duplicate_nodes`, `reparent_nodes`, `group_nodes`, `ungroup_node`, `set_selection`, `scroll_and_zoom_into_view`, `delete_nodes`
 
-### Not included in v0.1
+Motion (Figma Motion API beta): `get_motion_styles`, `get_node_motion`, `apply_animation_style`, `remove_animation_style`, `apply_manual_keyframe_track`, `remove_manual_keyframe_track`, `set_timeline_duration`
 
-Motion and animation tools (`get_motion_styles`, `get_node_motion`, `apply_animation_style`, etc.) are not included in this release. They can be added in a future version by registering additional bridge-forwarded tools.
+Full list: [docs/tools.md](../../docs/tools.md) (37 tools).
 
 ## Release
 
