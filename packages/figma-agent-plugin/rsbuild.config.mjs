@@ -4,6 +4,10 @@ import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
+import {
+  getPromptRuntimeJs,
+  loadPromptTemplates,
+} from "./scripts/lib/prompts.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, "../..");
@@ -36,7 +40,19 @@ function bundleUiCodec() {
   return result.outputFiles[0].text;
 }
 
+function injectPromptTemplates(html) {
+  const marker = "/* __PROMPT_TEMPLATES__ */";
+  if (!html.includes(marker)) {
+    throw new Error("ui.html prompt templates marker not found");
+  }
+  const runtimeJs = getPromptRuntimeJs(
+    loadPromptTemplates(resolve(__dirname, "src/prompts")),
+  );
+  return html.replace(marker, () => `${runtimeJs}\n      ${marker}`);
+}
+
 let uiHtml = readFileSync(resolve(__dirname, "src/ui/ui.html"), "utf-8");
+uiHtml = injectPromptTemplates(uiHtml);
 uiHtml = uiHtml
   .replaceAll("__PLUGIN_VERSION__", pkg.version)
   .replaceAll("__VERSION_CHECK_URL__", versionCheckUrl)
@@ -56,6 +72,13 @@ export default defineConfig({
       __PLUGIN_VERSION__: JSON.stringify(pkg.version),
       __BRIDGE_PORT__: JSON.stringify(bridgePort),
     },
+  },
+  // Figma main-thread sandbox has no `self` / browser HMR client.
+  // `rsbuild build --watch` with NODE_ENV=development otherwise injects
+  // webpackHotUpdate onto `self` and crashes the plugin on load.
+  dev: {
+    hmr: false,
+    liveReload: false,
   },
   output: {
     distPath: {
@@ -78,6 +101,8 @@ export default defineConfig({
       target: "web",
       output: {
         iife: false,
+        // Figma sandbox has neither window nor self; prefer globalThis.
+        globalObject: "globalThis",
       },
     },
   },

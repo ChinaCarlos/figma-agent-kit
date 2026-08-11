@@ -107,8 +107,8 @@ Open **Settings** in the plugin, set `apiBaseUrl` / `model` / `apiKey`, then use
 
 - Bridge traffic stays on **localhost**
 - Do not commit API keys or `.env` files
-- Plugin `networkAccess` allows `ws://localhost:1998`, `https://raw.githubusercontent.com`, and `https://api.openai.com` by default
-- Other AI API hosts require editing `manifest.json` → `allowedDomains` and rebuilding
+- Plugin `networkAccess` allows the local MCP bridge, GitHub version checks, and common OpenAI-compatible LLM hosts (OpenAI / DashScope / DeepSeek / Moonshot / …)
+- Unlisted AI API hosts still need editing `manifest.json` → `allowedDomains` and rebuilding
 - API credentials are stored in Figma `clientStorage` for plugin AI features only
 
 ## License

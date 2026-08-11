@@ -63,7 +63,11 @@ const nextDomains = domains
 manifest.networkAccess = {
   ...manifest.networkAccess,
   allowedDomains: nextDomains,
-  reasoning: `Local MCP bridge (${wsOrigin}), GitHub release version checks (raw.githubusercontent.com), and default OpenAI-compatible API (api.openai.com). For other AI providers, add their host to allowedDomains in manifest.json and rebuild. Change the bridge port in /bridge.config.json then run pnpm sync:bridge (or any build).`,
+  reasoning:
+    `Local MCP bridge (${wsOrigin}), GitHub release checks (raw.githubusercontent.com), ` +
+    `and common OpenAI-compatible LLM APIs (OpenAI, DashScope/Qwen, DeepSeek, Moonshot, ` +
+    `SiliconFlow, Zhipu, Volcengine Ark, Yi, MiniMax, Groq, Together, OpenRouter, local proxies). ` +
+    `Add more hosts to allowedDomains and rebuild if needed.`,
 };
 
 writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);

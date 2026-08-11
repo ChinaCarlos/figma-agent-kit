@@ -1,1153 +1,3001 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Figma Agent Kit</title>
-  <style>
-    :root {
-      --bg: #f7f8fa;
-      --surface: #ffffff;
-      --border: #e2e5eb;
-      --text: #1a1d23;
-      --muted: #6b7280;
-      --accent: #2563eb;
-      --accent-hover: #1d4ed8;
-      --ok: #16a34a;
-      --err: #dc2626;
-      --warn: #d97706;
-      --radius: 8px;
-      --shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      font-size: 13px;
-      color: var(--text);
-    }
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Figma Agent Kit</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+      html,
+      body {
+        height: 100%;
+        overflow: hidden;
+      }
 
-    body {
-      background: var(--bg);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+        background: #f0f0f0;
+        color: #333;
+        user-select: none;
+      }
 
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      padding: 10px 12px;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
-    }
+      .app {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+      }
 
-    .brand {
-      font-weight: 600;
-      font-size: 14px;
-      letter-spacing: -0.01em;
-    }
+      .app-header {
+        flex-shrink: 0;
+        height: 44px;
+        padding: 0 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #fff;
+        border-bottom: 1px solid #e5e5e5;
+      }
 
-    .version-tag {
-      font-size: 10px;
-      color: var(--muted);
-      font-weight: 500;
-      margin-left: 6px;
-    }
+      .brand-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: #111;
+        letter-spacing: -0.2px;
+      }
 
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
+      .brand-sub {
+        font-size: 10px;
+        color: #999;
+        margin-top: 1px;
+      }
 
-    .status {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 11px;
-      color: var(--muted);
-    }
+      .brand-ver {
+        font-size: 11px;
+        font-weight: 500;
+        color: #888;
+        margin-left: 6px;
+      }
 
-    .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--err);
-      flex-shrink: 0;
-    }
+      .header-badge {
+        font-size: 10px;
+        color: #18a0fb;
+        background: #e8f4fe;
+        padding: 3px 8px;
+        border-radius: 10px;
+        font-weight: 500;
+        flex-shrink: 1;
+        min-width: 0;
+        max-width: 160px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
 
-    .dot.connected { background: var(--ok); }
+      .header-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+        flex-shrink: 1;
+      }
 
-    .update-dot {
-      display: none;
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--err);
-      position: absolute;
-      top: 2px;
-      right: 2px;
-    }
+      .btn-settings,
+      .btn-mini {
+        width: 28px;
+        height: 28px;
+        border: 1px solid #d6d6d6;
+        background: #fff;
+        border-radius: 6px;
+        cursor: pointer;
+        color: #666;
+        font-size: 14px;
+        line-height: 1;
+        transition: all 0.15s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        position: relative;
+        flex-shrink: 0;
+      }
 
-    .btn-wrap { position: relative; }
+      .btn-mini {
+        font-size: 12px;
+      }
 
-    .update-dot.visible { display: block; }
+      .btn-settings.has-update::after {
+        content: "";
+        position: absolute;
+        top: 3px;
+        right: 3px;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #e53e3e;
+        box-shadow: 0 0 0 1.5px #fff;
+      }
 
-    nav.tabs {
-      display: flex;
-      gap: 4px;
-      padding: 8px 12px 0;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
-    }
+      .btn-settings:hover,
+      .settings-menu-wrap.is-open .btn-settings,
+      .btn-mini:hover {
+        border-color: #18a0fb;
+        color: #18a0fb;
+        background: #f3f9ff;
+      }
 
-    nav.tabs button {
-      border: none;
-      border-bottom: 2px solid transparent;
-      border-radius: 6px 6px 0 0;
-      background: transparent;
-      padding: 8px 12px;
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--muted);
-      cursor: pointer;
-    }
+      .btn-mini .mini-icon-expand {
+        display: none;
+      }
 
-    nav.tabs button.active {
-      color: var(--accent);
-      border-bottom-color: var(--accent);
-      background: var(--bg);
-    }
+      body.mini-mode .btn-mini .mini-icon-collapse {
+        display: none;
+      }
 
-    button {
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--text);
-      border-radius: 6px;
-      padding: 5px 10px;
-      font-size: 12px;
-      cursor: pointer;
-      transition: background 0.15s, border-color 0.15s;
-    }
+      body.mini-mode .btn-mini .mini-icon-expand {
+        display: inline;
+      }
 
-    button:hover { background: #f0f2f5; }
-    button:disabled { opacity: 0.5; cursor: not-allowed; }
-    button.primary {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #fff;
-    }
-    button.primary:hover:not(:disabled) { background: var(--accent-hover); }
+      .settings-menu-wrap {
+        position: relative;
+        flex-shrink: 0;
+      }
 
-    main {
-      flex: 1;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      overflow: auto;
-    }
+      .settings-popover {
+        position: absolute;
+        top: calc(100% + 6px);
+        right: 0;
+        min-width: 148px;
+        background: #fff;
+        border: 1px solid #e5e5e5;
+        border-radius: 8px;
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.14);
+        padding: 4px;
+        display: none;
+        z-index: 45;
+      }
 
-    body.mini nav.tabs,
-    body.mini main { display: none; }
+      .settings-menu-wrap.is-open .settings-popover {
+        display: block;
+      }
 
-    .panel { display: none; flex-direction: column; gap: 10px; }
-    .panel.active { display: flex; }
+      .settings-popover-item {
+        width: 100%;
+        display: block;
+        text-align: left;
+        border: none;
+        background: transparent;
+        border-radius: 6px;
+        padding: 8px 10px;
+        position: relative;
+        font-size: 12px;
+        color: #333;
+        cursor: pointer;
+      }
 
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 12px;
-    }
+      .settings-popover-item:hover {
+        background: #f3f9ff;
+        color: #0b6cb8;
+      }
 
-    .card h2 {
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      color: var(--muted);
-      margin-bottom: 8px;
-    }
+      .settings-popover-item-desc {
+        display: block;
+        margin-top: 2px;
+        font-size: 10px;
+        color: #999;
+      }
 
-    .selection-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      max-height: 140px;
-      overflow: auto;
-    }
+      .settings-popover-item:hover .settings-popover-item-desc {
+        color: #6b9fc4;
+      }
 
-    .selection-list li {
-      display: flex;
-      justify-content: space-between;
-      gap: 8px;
-      padding: 6px 8px;
-      background: var(--bg);
-      border-radius: 6px;
-      font-size: 12px;
-    }
+      .settings-popover-item.has-update::after {
+        content: "";
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #e53e3e;
+      }
 
-    .selection-list .type {
-      color: var(--muted);
-      font-size: 11px;
-      flex-shrink: 0;
-    }
+      .btn-bridge-reconnect {
+        width: 18px;
+        height: 18px;
+        padding: 0;
+        border: none;
+        background: transparent;
+        border-radius: 4px;
+        cursor: pointer;
+        color: #888;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition:
+          color 0.15s ease,
+          background 0.15s ease;
+      }
 
-    .empty {
-      color: var(--muted);
-      font-size: 12px;
-      font-style: italic;
-    }
+      .mcp-bridge-panel.disconnected .btn-bridge-reconnect,
+      .mcp-bridge-panel.connecting .btn-bridge-reconnect.is-spinning {
+        display: inline-flex;
+      }
 
-    .help {
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.5;
-    }
+      .btn-bridge-reconnect:hover {
+        color: #18a0fb;
+        background: rgba(24, 160, 251, 0.1);
+      }
 
-    .help code {
-      background: #eef1f5;
-      padding: 1px 5px;
-      border-radius: 4px;
-      font-size: 11px;
-    }
+      .btn-bridge-reconnect:disabled {
+        opacity: 0.55;
+        cursor: wait;
+      }
 
-    .log {
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 11px;
-      color: var(--muted);
-      max-height: 120px;
-      overflow: auto;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
+      .btn-bridge-reconnect.is-spinning svg {
+        animation: bridge-refresh-spin 0.8s linear infinite;
+      }
 
-    .action-row {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
+      .btn-bridge-reconnect svg {
+        width: 13px;
+        height: 13px;
+        display: block;
+      }
 
-    .results-list {
-      list-style: none;
-      max-height: 160px;
-      overflow: auto;
-      font-size: 11px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    }
+      @keyframes bridge-refresh-spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
 
-    .results-list li {
-      padding: 4px 0;
-      border-bottom: 1px solid var(--border);
-    }
+      .bridge-toast {
+        position: fixed;
+        top: 46px;
+        left: 50%;
+        transform: translateX(-50%) translateY(-6px);
+        z-index: 1000;
+        max-width: min(320px, calc(100% - 24px));
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 12px;
+        line-height: 1.4;
+        color: #fff;
+        background: #333;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+        opacity: 0;
+        pointer-events: none;
+        transition:
+          opacity 0.18s ease,
+          transform 0.18s ease;
+      }
 
-    .results-list .old { color: var(--muted); text-decoration: line-through; }
-    .results-list .new { color: var(--ok); }
+      .bridge-toast.is-visible {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+        pointer-events: auto;
+      }
 
-    textarea.plan-editor {
-      width: 100%;
-      min-height: 180px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 11px;
-      padding: 8px;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      resize: vertical;
-      line-height: 1.4;
-    }
+      .bridge-toast.is-success {
+        background: #2f855a;
+      }
 
-    .overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.35);
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      z-index: 10;
-    }
+      .bridge-toast.is-error {
+        background: #c53030;
+      }
 
-    .overlay.open { display: flex; }
+      .mini-selection-bar {
+        display: none;
+        flex-shrink: 0;
+        padding: 8px 12px 10px;
+        background: #fff;
+        border-bottom: 1px solid #e5e5e5;
+        gap: 4px;
+        flex-direction: column;
+        min-height: 0;
+      }
 
-    .modal {
-      background: var(--surface);
-      border-radius: var(--radius);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-      width: 100%;
-      max-width: 360px;
-      max-height: 90vh;
-      overflow: auto;
-      padding: 16px;
-    }
+      body.mini-mode .mini-selection-bar {
+        display: flex;
+        flex: 1;
+      }
 
-    .modal h3 {
-      font-size: 14px;
-      margin-bottom: 4px;
-    }
+      .mini-selection-label {
+        font-size: 10px;
+        color: #999;
+        font-weight: 500;
+      }
 
-    .modal p, .modal li {
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.4;
-    }
+      #mini-selection-text {
+        font-size: 12px;
+        font-weight: 600;
+        color: #222;
+        line-height: 1.35;
+        word-break: break-word;
+      }
 
-    .modal p { margin-bottom: 10px; }
+      #mini-selection-hint {
+        font-size: 10px;
+        color: #888;
+        line-height: 1.35;
+        word-break: break-word;
+      }
 
-    .modal ul {
-      margin: 0 0 12px 18px;
-    }
+      body.mini-mode .app-header {
+        height: auto;
+        min-height: 40px;
+        padding: 6px 10px;
+        gap: 8px;
+      }
 
-    label {
-      display: block;
-      font-size: 12px;
-      font-weight: 500;
-      margin-bottom: 4px;
-    }
+      body.mini-mode .brand-block,
+      body.mini-mode .brand-sub,
+      body.mini-mode .header-badge,
+      body.mini-mode .settings-menu-wrap,
+      body.mini-mode .app-body,
+      body.mini-mode .console-panel,
+      body.mini-mode .window-resize-handle {
+        display: none !important;
+      }
 
-    input, select {
-      width: 100%;
-      padding: 7px 10px;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      font-size: 12px;
-      margin-bottom: 10px;
-    }
+      body.mini-mode .mcp-bridge-panel.disconnected .btn-bridge-reconnect,
+      body.mini-mode
+        .mcp-bridge-panel.connecting
+        .btn-bridge-reconnect.is-spinning {
+        display: inline-flex !important;
+      }
 
-    .modal-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-      margin-top: 8px;
-      flex-wrap: wrap;
-    }
+      body.mini-mode .header-right {
+        flex: 1;
+        min-width: 0;
+      }
 
-    .settings-section {
-      margin-bottom: 12px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--border);
-    }
+      body.mini-mode .mcp-bridge-panel {
+        flex: 1;
+        max-width: none;
+        padding: 4px 8px;
+      }
 
-    .settings-section:last-child {
-      border-bottom: none;
-      margin-bottom: 0;
-      padding-bottom: 0;
-    }
+      body.mini-mode .app {
+        background: #fff;
+      }
 
-    .hint {
-      font-size: 11px;
-      color: var(--muted);
-      margin: -6px 0 10px;
-      line-height: 1.4;
-    }
+      .mcp-bridge-panel {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        min-width: 0;
+        max-width: 420px;
+        padding: 4px 10px;
+        border-radius: 8px;
+        border: 1px solid #e8e8e8;
+        background: #fafafa;
+        font-size: 10px;
+        line-height: 1.35;
+        color: #555;
+      }
 
-    .test-result {
-      font-size: 11px;
-      margin-bottom: 8px;
-      min-height: 16px;
-    }
+      .bridge-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        background: #cbd5e0;
+      }
 
-    .test-result.ok { color: var(--ok); }
-    .test-result.err { color: var(--err); }
-  </style>
-</head>
-<body>
-  <header>
-    <div>
-      <span class="brand">Figma Agent Kit</span>
-      <span class="version-tag" id="versionTag">v__PLUGIN_VERSION__</span>
-    </div>
-    <div class="header-right">
-      <div class="status" title="MCP bridge connection">
-        <span class="dot" id="statusDot"></span>
-        <span id="statusText">Disconnected</span>
-      </div>
-      <div class="btn-wrap">
-        <button id="settingsBtn" type="button">Settings</button>
-        <span class="update-dot" id="updateDot"></span>
-      </div>
-      <button id="miniBtn" type="button">Mini</button>
-    </div>
-  </header>
+      .mcp-bridge-panel.connected .bridge-dot {
+        background: #38a169;
+        box-shadow: 0 0 0 2px rgba(56, 161, 105, 0.2);
+      }
 
-  <nav class="tabs" role="tablist">
-    <button type="button" class="tab active" data-tab="bridge">Bridge</button>
-    <button type="button" class="tab" data-tab="rename">Rename</button>
-    <button type="button" class="tab" data-tab="group">Group</button>
-  </nav>
+      .mcp-bridge-panel.connecting .bridge-dot {
+        background: #d69e2e;
+        animation: bridge-pulse 1.2s ease-in-out infinite;
+      }
 
-  <main>
-    <section class="panel active" id="panel-bridge" data-panel="bridge">
-      <section class="card">
-        <h2>Selection</h2>
-        <ul class="selection-list" id="selectionList">
-          <li class="empty">No layers selected</li>
-        </ul>
-      </section>
-      <section class="card help">
-        <p>Run <code>figma-agent-mcp</code> locally, then connect your AI agent via MCP.</p>
-        <p style="margin-top:6px">Bridge: <code id="bridgeUrl">ws://localhost:__BRIDGE_PORT__/ws</code></p>
-      </section>
-      <section class="card">
-        <h2>Activity</h2>
-        <div class="log" id="bridgeLog">Waiting for bridge…</div>
-      </section>
-    </section>
+      .mcp-bridge-panel.disconnected .bridge-dot {
+        background: #e53e3e;
+      }
 
-    <section class="panel" id="panel-rename" data-panel="rename">
-      <section class="card help">
-        <p>Select one <strong>Frame</strong> or <strong>Group</strong>. The plugin clones it to the right, sends a screenshot + layer list to your AI API, and renames layers on the clone.</p>
-      </section>
-      <section class="card">
-        <div class="action-row">
-          <button type="button" class="primary" id="startRenameBtn">Start rename</button>
+      @keyframes bridge-pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.35;
+        }
+      }
+
+      .bridge-status-text {
+        flex-shrink: 0;
+        font-weight: 600;
+        color: #444;
+      }
+
+      .mcp-bridge-panel.connected .bridge-status-text {
+        color: #276749;
+      }
+
+      .mcp-bridge-panel.disconnected .bridge-status-text {
+        color: #c53030;
+      }
+
+      .bridge-meta {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: #666;
+      }
+
+      .bridge-meta strong {
+        color: #333;
+        font-weight: 600;
+      }
+
+      .app-body {
+        flex: 1;
+        display: flex;
+        min-height: 0;
+      }
+
+      .sidebar {
+        width: 220px;
+        flex-shrink: 0;
+        background: #fafafa;
+        border-right: 1px solid #e5e5e5;
+        display: flex;
+        flex-direction: column;
+        padding: 12px;
+        gap: 12px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        transition:
+          width 0.18s ease,
+          padding 0.18s ease;
+      }
+
+      .sidebar.is-collapsed {
+        width: 48px;
+        padding: 8px 6px;
+        gap: 8px;
+        align-items: center;
+        overflow: hidden;
+      }
+
+      .sidebar-expanded {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        min-width: 0;
+      }
+
+      .sidebar.is-collapsed .sidebar-expanded {
+        display: none;
+      }
+
+      .sidebar-rail {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        width: 100%;
+      }
+
+      .sidebar.is-collapsed .sidebar-rail {
+        display: flex;
+      }
+
+      .sidebar-section-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 6px;
+      }
+
+      .sidebar-section-head .sidebar-section-label {
+        margin-bottom: 0;
+      }
+
+      .btn-sidebar-collapse,
+      .btn-sidebar-expand {
+        width: 22px;
+        height: 22px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background: #fff;
+        color: #666;
+        font-size: 12px;
+        line-height: 1;
+        cursor: pointer;
+        flex-shrink: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+      }
+
+      .btn-sidebar-collapse:hover,
+      .btn-sidebar-expand:hover {
+        border-color: #18a0fb;
+        color: #18a0fb;
+        background: #f3f9ff;
+      }
+
+      .btn-sidebar-expand {
+        width: 32px;
+        height: 28px;
+        margin-bottom: 2px;
+      }
+
+      .rail-btn {
+        width: 32px;
+        height: 32px;
+        border: 1px solid #e8e8e8;
+        border-radius: 8px;
+        background: #fff;
+        cursor: pointer;
+        font-size: 15px;
+        line-height: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+      }
+
+      .rail-btn:hover {
+        border-color: #b3d9f9;
+        background: #f8fbff;
+      }
+
+      .rail-btn.active {
+        border-color: #18a0fb;
+        background: #e8f4fe;
+        box-shadow: 0 0 0 1px #18a0fb;
+      }
+
+      .sidebar-section-label {
+        font-size: 10px;
+        font-weight: 600;
+        color: #999;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 6px;
+      }
+
+      .selection-card {
+        background: #fff;
+        border: 1px solid #e8e8e8;
+        border-radius: 8px;
+        padding: 10px 12px;
+      }
+
+      .selection-card.ready {
+        border-color: #b3d9f9;
+        background: #f8fbff;
+      }
+
+      #selection-text {
+        font-size: 12px;
+        font-weight: 600;
+        color: #111;
+        word-break: break-all;
+        line-height: 1.4;
+      }
+
+      #selection-hint {
+        font-size: 10px;
+        color: #888;
+        margin-top: 4px;
+        line-height: 1.45;
+      }
+
+      .nav-list {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #e8e8e8;
+        border-radius: 8px;
+        background: #fff;
+        cursor: pointer;
+        text-align: left;
+        transition:
+          border-color 0.15s,
+          background 0.15s,
+          box-shadow 0.15s;
+      }
+
+      .nav-item:hover {
+        border-color: #b3d9f9;
+        background: #f8fbff;
+      }
+
+      .nav-item.active {
+        border-color: #18a0fb;
+        background: #e8f4fe;
+        box-shadow: 0 0 0 1px #18a0fb;
+      }
+
+      .nav-icon {
+        font-size: 16px;
+        line-height: 1;
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+
+      .nav-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: #111;
+        display: block;
+      }
+
+      .nav-desc {
+        font-size: 10px;
+        color: #888;
+        margin-top: 2px;
+        display: block;
+        line-height: 1.4;
+      }
+
+      .main-panel {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        background: #fff;
+      }
+
+      .panel-header {
+        flex-shrink: 0;
+        padding: 14px 20px 10px;
+        border-bottom: 1px solid #f0f0f0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .panel-header-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
+      }
+
+      #panel-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: #111;
+      }
+
+      .panel-count {
+        font-size: 11px;
+        color: #999;
+        background: #f5f5f5;
+        padding: 2px 8px;
+        border-radius: 10px;
+      }
+
+      .btn-run-task {
+        border: none;
+        background: #18a0fb;
+        color: #fff;
+        border-radius: 8px;
+        height: 30px;
+        padding: 0 14px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .btn-run-task:hover:not(:disabled) {
+        background: #0d8de0;
+      }
+
+      .btn-run-task:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .btn-run-task.hidden {
+        display: none;
+      }
+
+      .panel-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 16px 20px;
+        min-height: 0;
+      }
+
+      .view {
+        display: none;
+      }
+
+      .view.active {
+        display: block;
+        height: 100%;
+      }
+
+      .idle-hero {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        min-height: 240px;
+        text-align: center;
+        color: #999;
+        padding: 24px;
+      }
+
+      .idle-icon {
+        font-size: 40px;
+        margin-bottom: 12px;
+        opacity: 0.5;
+      }
+
+      .idle-hero h3 {
+        font-size: 14px;
+        color: #555;
+        font-weight: 600;
+        margin-bottom: 6px;
+      }
+
+      .idle-hero p {
+        font-size: 12px;
+        line-height: 1.6;
+        max-width: 360px;
+      }
+
+      .idle-hero code {
+        font-size: 11px;
+        background: #f0f2f5;
+        padding: 1px 5px;
+        border-radius: 4px;
+        color: #555;
+      }
+
+      .summary-card {
+        background: #f8f9fa;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        padding: 12px 14px;
+        font-size: 12px;
+        line-height: 1.65;
+        color: #555;
+        margin-bottom: 12px;
+      }
+
+      .summary-card strong {
+        color: #111;
+      }
+
+      .scroll-list {
+        border: 1px solid #e8e8e8;
+        border-radius: 8px;
+        background: #fafafa;
+        overflow-y: auto;
+        max-height: calc(100vh - 280px);
+      }
+
+      .list-item {
+        padding: 10px 14px;
+        border-bottom: 1px solid #eee;
+        font-size: 12px;
+        line-height: 1.5;
+      }
+
+      .list-item:last-child {
+        border-bottom: none;
+      }
+
+      .list-item.empty {
+        color: #999;
+        font-style: italic;
+      }
+
+      .change-old {
+        color: #999;
+        text-decoration: line-through;
+        word-break: break-all;
+      }
+
+      .change-arrow {
+        color: #bbb;
+        margin: 0 6px;
+      }
+
+      .change-new {
+        color: #276749;
+        font-weight: 600;
+        word-break: break-all;
+      }
+
+      .plan-editor {
+        width: 100%;
+        min-height: 220px;
+        font-family:
+          ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 11px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        resize: vertical;
+        line-height: 1.45;
+        color: #222;
+        background: #fafafa;
+      }
+
+      .plan-editor:focus {
+        outline: none;
+        border-color: #18a0fb;
+        background: #fff;
+        box-shadow: 0 0 0 2px rgba(24, 160, 251, 0.15);
+      }
+
+      .panel-footer {
+        flex-shrink: 0;
+        padding: 12px 20px;
+        border-top: 1px solid #f0f0f0;
+        background: #fafafa;
+      }
+
+      .panel-footer.hidden {
+        display: none;
+      }
+
+      .btn-apply {
+        width: 100%;
+        padding: 11px;
+        background: #276749;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .btn-apply:hover:not(:disabled) {
+        background: #1e4f3a;
+      }
+
+      .btn-apply:disabled {
+        background: #9ae6b4;
+        cursor: not-allowed;
+      }
+
+      .console-panel {
+        flex-shrink: 0;
+        height: 140px;
+        min-height: 36px;
+        display: flex;
+        flex-direction: column;
+        background: #fff;
+        border-top: 1px solid #e5e5e5;
+        position: relative;
+      }
+
+      .console-panel.collapsed {
+        height: 36px !important;
+      }
+
+      .console-panel.collapsed .console-body {
+        display: none;
+      }
+
+      .console-panel.collapsed .console-resize-handle {
+        display: none;
+      }
+
+      .console-resize-handle {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        cursor: ns-resize;
+        z-index: 2;
+      }
+
+      .console-resize-handle::after {
+        content: "";
+        position: absolute;
+        top: 1px;
+        left: 50%;
+        width: 28px;
+        height: 3px;
+        margin-left: -14px;
+        border-radius: 2px;
+        background: #ddd;
+      }
+
+      .console-header {
+        flex-shrink: 0;
+        height: 36px;
+        padding: 0 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid #f0f0f0;
+      }
+
+      .console-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #444;
+      }
+
+      .console-actions {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .btn-console-toggle,
+      .btn-console-clear {
+        border: 1px solid #e0e0e0;
+        background: #fff;
+        border-radius: 6px;
+        height: 24px;
+        padding: 0 8px;
+        font-size: 11px;
+        color: #555;
+        cursor: pointer;
+      }
+
+      .btn-console-toggle:hover,
+      .btn-console-clear:hover {
+        border-color: #18a0fb;
+        color: #18a0fb;
+        background: #f3f9ff;
+      }
+
+      .console-body {
+        flex: 1;
+        overflow: auto;
+        padding: 8px 12px;
+        font-family:
+          ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 11px;
+        line-height: 1.45;
+        color: #555;
+        white-space: pre-wrap;
+        word-break: break-word;
+        user-select: text;
+      }
+
+      .spinner {
+        width: 12px;
+        height: 12px;
+        border: 2px solid #e5e5e5;
+        border-top-color: #18a0fb;
+        border-radius: 50%;
+        opacity: 0;
+      }
+
+      .spinner.active {
+        opacity: 1;
+        animation: bridge-refresh-spin 0.7s linear infinite;
+      }
+
+      .window-resize-handle {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        width: 16px;
+        height: 16px;
+        cursor: nwse-resize;
+        z-index: 30;
+        background: linear-gradient(
+          135deg,
+          transparent 50%,
+          #c5c5c5 50%,
+          #c5c5c5 58%,
+          transparent 58%,
+          transparent 66%,
+          #c5c5c5 66%,
+          #c5c5c5 74%,
+          transparent 74%
+        );
+      }
+
+      .window-resize-handle:hover {
+        background: linear-gradient(
+          135deg,
+          transparent 50%,
+          #18a0fb 50%,
+          #18a0fb 58%,
+          transparent 58%,
+          transparent 66%,
+          #18a0fb 66%,
+          #18a0fb 74%,
+          transparent 74%
+        );
+      }
+
+      .settings-modal-mask,
+      .update-modal-mask {
+        position: fixed;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.35);
+        z-index: 40;
+        padding: 20px;
+      }
+
+      .update-modal-mask {
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 55;
+      }
+
+      .settings-modal-mask.show,
+      .update-modal-mask.show {
+        display: flex;
+      }
+
+      .settings-modal,
+      .update-modal {
+        width: 100%;
+        max-width: 480px;
+        background: #fff;
+        border-radius: 12px;
+        border: 1px solid #e5e5e5;
+        box-shadow: 0 14px 44px rgba(0, 0, 0, 0.18);
+        overflow: hidden;
+      }
+
+      .update-modal {
+        max-width: 420px;
+      }
+
+      .settings-modal-header,
+      .update-modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 14px;
+        border-bottom: 1px solid #efefef;
+      }
+
+      .settings-modal-title,
+      .update-modal-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: #111;
+      }
+
+      .settings-modal-close {
+        border: none;
+        background: transparent;
+        font-size: 18px;
+        color: #888;
+        cursor: pointer;
+        width: 24px;
+        height: 24px;
+        line-height: 1;
+      }
+
+      .settings-modal-body,
+      .update-modal-body {
+        padding: 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .settings-field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .settings-field label {
+        font-size: 11px;
+        color: #666;
+        font-weight: 600;
+      }
+
+      .settings-input {
+        width: 100%;
+        border: 1px solid #dcdcdc;
+        border-radius: 8px;
+        height: 32px;
+        padding: 0 10px;
+        font-size: 12px;
+        color: #222;
+        background: #fff;
+      }
+
+      .settings-input:focus {
+        outline: none;
+        border-color: #18a0fb;
+        box-shadow: 0 0 0 2px rgba(24, 160, 251, 0.15);
+      }
+
+      .settings-hint {
+        font-size: 10px;
+        color: #888;
+        line-height: 1.45;
+      }
+
+      .settings-hint code {
+        font-size: 10px;
+        background: #f0f2f5;
+        padding: 0 4px;
+        border-radius: 3px;
+      }
+
+      .settings-test-row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin-top: 2px;
+      }
+
+      .settings-test-result {
+        font-size: 11px;
+        color: #666;
+        min-height: 16px;
+      }
+
+      .settings-test-result.ok {
+        color: #276749;
+      }
+
+      .settings-test-result.err {
+        color: #c53030;
+      }
+
+      .settings-modal-footer,
+      .update-modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        border-top: 1px solid #efefef;
+        padding: 10px 14px;
+        background: #fafafa;
+      }
+
+      .update-modal-current {
+        font-size: 12px;
+        color: #666;
+      }
+
+      .update-modal-notes {
+        margin: 0;
+        padding-left: 18px;
+        font-size: 12px;
+        color: #333;
+        line-height: 1.55;
+      }
+
+      .update-modal-notes li + li {
+        margin-top: 4px;
+      }
+
+      .update-modal-hint {
+        font-size: 11px;
+        color: #888;
+        line-height: 1.45;
+        background: #f7f7f7;
+        border-radius: 8px;
+        padding: 8px 10px;
+      }
+
+      .btn-secondary,
+      .btn-primary {
+        border-radius: 8px;
+        height: 30px;
+        padding: 0 12px;
+        border: 1px solid transparent;
+        font-size: 12px;
+        cursor: pointer;
+      }
+
+      .btn-secondary {
+        border-color: #dcdcdc;
+        color: #444;
+        background: #fff;
+      }
+
+      .btn-secondary:hover {
+        border-color: #18a0fb;
+        color: #18a0fb;
+        background: #f3f9ff;
+      }
+
+      .btn-primary {
+        background: #18a0fb;
+        color: #fff;
+      }
+
+      .btn-primary:hover {
+        background: #0d8de0;
+      }
+
+      .prompt-modal-mask {
+        position: fixed;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.45);
+        z-index: 50;
+        padding: 16px;
+      }
+
+      .prompt-modal-mask.show {
+        display: flex;
+      }
+
+      .prompt-modal {
+        width: 100%;
+        max-width: 640px;
+        max-height: calc(100vh - 32px);
+        background: #fff;
+        border-radius: 12px;
+        border: 1px solid #e5e5e5;
+        box-shadow: 0 16px 48px rgba(0, 0, 0, 0.22);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .prompt-modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 14px;
+        border-bottom: 1px solid #efefef;
+        flex-shrink: 0;
+      }
+
+      .prompt-modal-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: #111;
+      }
+
+      .prompt-tabs {
+        display: flex;
+        gap: 6px;
+        padding: 10px 14px 0;
+        flex-shrink: 0;
+      }
+
+      .prompt-tab {
+        font-size: 11px;
+        padding: 5px 10px;
+        border-radius: 999px;
+        border: 1px solid #ddd;
+        background: #fff;
+        color: #555;
+        cursor: pointer;
+      }
+
+      .prompt-tab.active {
+        border-color: #18a0fb;
+        background: #e8f4fe;
+        color: #0b6cb8;
+        font-weight: 600;
+      }
+
+      .prompt-modal-body {
+        padding: 10px 14px 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        min-height: 0;
+        flex: 1;
+      }
+
+      .prompt-hint {
+        font-size: 10px;
+        color: #888;
+        line-height: 1.45;
+      }
+
+      .prompt-editor {
+        width: 100%;
+        min-height: 220px;
+        flex: 1;
+        box-sizing: border-box;
+        resize: vertical;
+        font-size: 11px;
+        line-height: 1.5;
+        font-family:
+          ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        color: #222;
+        background: #fafafa;
+        user-select: text;
+      }
+
+      .prompt-editor:focus {
+        outline: none;
+        border-color: #18a0fb;
+        background: #fff;
+        box-shadow: 0 0 0 2px rgba(24, 160, 251, 0.15);
+      }
+
+      .prompt-modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        padding: 10px 14px 12px;
+        border-top: 1px solid #efefef;
+        flex-shrink: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <header class="app-header">
+        <div class="brand-block">
+          <div class="brand-title">
+            Figma Agent Kit
+            <span class="brand-ver" id="versionTag">v__PLUGIN_VERSION__</span>
+          </div>
+          <div class="brand-sub">AI 图层重命名 · 视觉分组 · MCP</div>
         </div>
-      </section>
-      <section class="card">
-        <h2>Progress</h2>
-        <div class="log" id="renameLog">Ready.</div>
-      </section>
-      <section class="card">
-        <h2>Results</h2>
-        <ul class="results-list" id="renameResults">
-          <li class="empty">No results yet</li>
-        </ul>
-      </section>
-    </section>
-
-    <section class="panel" id="panel-group" data-panel="group">
-      <section class="card help">
-        <p>Select one <strong>Frame</strong>, <strong>Group</strong>, or <strong>Section</strong>. AI suggests visual groups for direct children on a clone. Edit the JSON plan, then Apply.</p>
-      </section>
-      <section class="card">
-        <div class="action-row">
-          <button type="button" class="primary" id="startGroupBtn">Start group</button>
-          <button type="button" id="applyGroupBtn" disabled>Apply groups</button>
+        <div class="header-right">
+          <div
+            class="mcp-bridge-panel connecting"
+            id="mcp-bridge-panel"
+            title="figma-agent-mcp · ws://localhost:__BRIDGE_PORT__"
+          >
+            <button
+              id="btn-bridge-reconnect"
+              class="btn-bridge-reconnect"
+              type="button"
+              title="重新连接 MCP Bridge"
+              aria-label="重新连接 MCP Bridge"
+            >
+              <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                <path
+                  fill="currentColor"
+                  d="M13.65 2.35A7.96 7.96 0 0 0 8 0C3.58 0 0 3.58 0 8s3.58 8 8 8a7.96 7.96 0 0 0 5.65-2.35l-1.41-1.41A6 6 0 1 1 8 2c1.6 0 3.05.63 4.12 1.65L9.5 6.27H16V0l-2.35 2.35z"
+                />
+              </svg>
+            </button>
+            <span class="bridge-dot" id="bridge-dot"></span>
+            <span class="bridge-status-text" id="bridge-status-text"
+              >MCP Bridge 连接中</span
+            >
+            <span class="bridge-meta" id="bridge-meta">等待文件信息…</span>
+          </div>
+          <span class="header-badge" id="modelBadge" title="当前模型">gpt-4o</span>
+          <div class="settings-menu-wrap" id="settings-menu-wrap">
+            <button
+              id="btn-settings"
+              class="btn-settings"
+              type="button"
+              title="设置"
+              aria-haspopup="menu"
+              aria-expanded="false"
+            >
+              ⚙
+            </button>
+            <div class="settings-popover" id="settings-popover" role="menu">
+              <button
+                type="button"
+                class="settings-popover-item"
+                id="settings-menu-model"
+                role="menuitem"
+              >
+                模型设置
+                <span class="settings-popover-item-desc"
+                  >API · Model · 连通性</span
+                >
+              </button>
+              <button
+                type="button"
+                class="settings-popover-item"
+                id="settings-menu-prompt"
+                role="menuitem"
+              >
+                提示词设置
+                <span class="settings-popover-item-desc">自定义 AI 提示词</span>
+              </button>
+              <button
+                type="button"
+                class="settings-popover-item"
+                id="settings-menu-update"
+                role="menuitem"
+              >
+                检查更新
+                <span class="settings-popover-item-desc" id="settings-update-desc"
+                  >暂无更新</span
+                >
+              </button>
+            </div>
+          </div>
+          <button
+            id="btn-mini"
+            class="btn-mini"
+            type="button"
+            title="切换 Mini 模式（仅 MCP 与选区）"
+            aria-pressed="false"
+          >
+            <span class="mini-icon-collapse" aria-hidden="true">▁</span>
+            <span class="mini-icon-expand" aria-hidden="true">⤢</span>
+          </button>
         </div>
-      </section>
-      <section class="card">
-        <h2>Group plan (JSON)</h2>
-        <textarea class="plan-editor" id="groupPlanEditor" placeholder='{"groups":[{"name":"Header","nodeIds":["…"],"subGroups":[]}]}'></textarea>
-      </section>
-      <section class="card">
-        <h2>Progress</h2>
-        <div class="log" id="groupLog">Ready.</div>
-      </section>
-    </section>
-  </main>
+      </header>
 
-  <div class="overlay" id="settingsOverlay">
-    <div class="modal">
-      <h3>Settings</h3>
+      <div
+        id="bridge-toast"
+        class="bridge-toast"
+        role="status"
+        aria-live="polite"
+      ></div>
 
-      <div class="settings-section">
-        <label for="apiBaseUrl">API base URL</label>
-        <input id="apiBaseUrl" type="url" placeholder="https://api.openai.com/v1" autocomplete="off" />
-        <p class="hint">OpenAI-compatible endpoint. Other hosts must be added to <code>manifest.json</code> → <code>networkAccess.allowedDomains</code>, then rebuild.</p>
-
-        <label for="model">Model</label>
-        <input id="model" type="text" placeholder="gpt-4o" autocomplete="off" />
-
-        <label for="apiKey">API key</label>
-        <input id="apiKey" type="password" placeholder="sk-…" autocomplete="off" />
-
-        <div class="test-result" id="testResult"></div>
-        <div class="modal-actions" style="justify-content:flex-start;margin-top:0">
-          <button type="button" id="testConnectionBtn">Test connection</button>
-        </div>
+      <div class="mini-selection-bar" id="mini-selection-bar">
+        <div class="mini-selection-label">当前选区</div>
+        <div id="mini-selection-text">正在同步...</div>
+        <div id="mini-selection-hint"></div>
       </div>
 
-      <div class="settings-section">
-        <p style="margin-bottom:8px">Updates are published via <code>releases/version.json</code> on GitHub (no CDN).</p>
-        <div class="modal-actions" style="justify-content:flex-start;margin-top:0">
-          <button type="button" id="checkUpdatesBtn">Check for updates</button>
-        </div>
+      <div class="app-body">
+        <aside class="sidebar" id="sidebar">
+          <div class="sidebar-expanded">
+            <div>
+              <div class="sidebar-section-head">
+                <div class="sidebar-section-label">当前选区</div>
+                <button
+                  id="btn-sidebar-collapse"
+                  class="btn-sidebar-collapse"
+                  type="button"
+                  title="收起侧栏"
+                  aria-label="收起侧栏"
+                >
+                  ‹
+                </button>
+              </div>
+              <div id="selection-box" class="selection-card empty">
+                <div id="selection-text">正在同步...</div>
+                <div id="selection-hint"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="sidebar-section-label">功能</div>
+              <div class="nav-list">
+                <button
+                  id="btn-nav-bridge"
+                  class="nav-item active"
+                  type="button"
+                  data-view="bridge"
+                >
+                  <span class="nav-icon">🔌</span>
+                  <span>
+                    <span class="nav-label">MCP Bridge</span>
+                    <span class="nav-desc">Agent 读写当前文件</span>
+                  </span>
+                </button>
+                <button
+                  id="btn-nav-rename"
+                  class="nav-item"
+                  type="button"
+                  data-view="rename"
+                >
+                  <span class="nav-icon">✏️</span>
+                  <span>
+                    <span class="nav-label">图层重命名</span>
+                    <span class="nav-desc">复制副本 · 语义化命名</span>
+                  </span>
+                </button>
+                <button
+                  id="btn-nav-group"
+                  class="nav-item"
+                  type="button"
+                  data-view="group"
+                >
+                  <span class="nav-icon">🗂️</span>
+                  <span>
+                    <span class="nav-label">视觉分组</span>
+                    <span class="nav-desc">复制副本 · 分组整理</span>
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="sidebar-rail" aria-label="功能快捷栏">
+            <button
+              id="btn-sidebar-expand"
+              class="btn-sidebar-expand"
+              type="button"
+              title="展开侧栏"
+              aria-label="展开侧栏"
+            >
+              ›
+            </button>
+            <button
+              class="rail-btn active"
+              type="button"
+              data-view="bridge"
+              title="MCP Bridge"
+            >
+              🔌
+            </button>
+            <button
+              class="rail-btn"
+              type="button"
+              data-view="rename"
+              title="图层重命名"
+            >
+              ✏️
+            </button>
+            <button
+              class="rail-btn"
+              type="button"
+              data-view="group"
+              title="视觉分组"
+            >
+              🗂️
+            </button>
+          </div>
+        </aside>
+
+        <main class="main-panel">
+          <div class="panel-header">
+            <div class="panel-header-left">
+              <h2 id="panel-title">MCP Bridge</h2>
+              <span id="panel-count" class="panel-count" style="display: none"></span>
+            </div>
+            <button
+              id="btn-run-task"
+              class="btn-run-task hidden"
+              type="button"
+              disabled
+            >
+              开始执行
+            </button>
+          </div>
+
+          <div class="panel-body">
+            <div id="view-bridge" class="view active">
+              <div class="idle-hero">
+                <div class="idle-icon">🔌</div>
+                <h3>连接 AI Agent</h3>
+                <p>
+                  本地启动 <code>figma-agent-mcp</code>，在 Cursor / Claude Code /
+                  Codex 中配置 MCP。Bridge：
+                  <code id="bridgeUrl">ws://localhost:__BRIDGE_PORT__/ws</code>
+                </p>
+                <p style="margin-top: 10px">
+                  选中图层后，Agent 可调用
+                  <strong>list_files / get_selection / get_node</strong> 等工具读写当前文件。
+                </p>
+              </div>
+            </div>
+
+            <div id="view-rename" class="view">
+              <div class="summary-card">
+                选中一个 <strong>Frame</strong> 或 <strong>Group</strong>，点击右上角
+                <strong>开始执行</strong>。插件会在原稿右侧创建副本，发送截图与图层列表给
+                AI，并在副本上重命名（原稿不变）。
+              </div>
+              <div class="scroll-list" id="rename-list">
+                <div class="list-item empty">尚未执行，结果将显示在这里</div>
+              </div>
+            </div>
+
+            <div id="view-group" class="view">
+              <div class="summary-card">
+                选中一个 <strong>Frame / Group / Section</strong>，点击
+                <strong>开始执行</strong>。AI 会给出视觉分组计划（JSON），可编辑后点击底部
+                <strong>应用分组计划到副本</strong>。
+              </div>
+              <textarea
+                class="plan-editor"
+                id="groupPlanEditor"
+                placeholder='{"groups":[{"name":"Header","nodeIds":["…"],"subGroups":[]}]}'
+              ></textarea>
+            </div>
+          </div>
+
+          <div id="panel-footer" class="panel-footer hidden">
+            <button id="applyGroupBtn" class="btn-apply" disabled>
+              应用分组计划到副本
+            </button>
+          </div>
+        </main>
       </div>
 
-      <div class="modal-actions">
-        <button type="button" id="settingsCancel">Cancel</button>
-        <button type="button" class="primary" id="settingsSave">Save</button>
+      <div class="console-panel collapsed" id="console-panel">
+        <div
+          class="console-resize-handle"
+          id="console-resize-handle"
+          title="向上拖动拉高日志区域"
+        ></div>
+        <div class="console-header">
+          <div class="console-title">
+            <div class="spinner" id="spinner"></div>
+            <span>运行日志</span>
+          </div>
+          <div class="console-actions">
+            <button
+              id="btn-console-toggle"
+              class="btn-console-toggle"
+              type="button"
+            >
+              展开
+            </button>
+            <button id="btn-clear-log" class="btn-console-clear" type="button">
+              清空
+            </button>
+          </div>
+        </div>
+        <div class="console-body" id="console-body">Waiting for bridge…</div>
       </div>
     </div>
-  </div>
 
-  <div class="overlay" id="updateOverlay">
-    <div class="modal">
-      <h3>Update available</h3>
-      <p id="updateVersionText">A new version is available.</p>
-      <ul id="updateNotes"></ul>
-      <div class="modal-actions">
-        <button type="button" id="updateLater">Later</button>
-        <button type="button" class="primary" id="updateDownload">Download</button>
+    <div
+      class="window-resize-handle"
+      id="window-resize-handle"
+      title="拖动右下角放大插件窗口"
+    ></div>
+
+    <div id="settings-modal-mask" class="settings-modal-mask">
+      <div
+        class="settings-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="settings-title"
+      >
+        <div class="settings-modal-header">
+          <div id="settings-title" class="settings-modal-title">模型设置</div>
+          <button
+            id="settings-close"
+            class="settings-modal-close"
+            type="button"
+            title="关闭"
+            tabindex="-1"
+          >
+            ×
+          </button>
+        </div>
+        <div class="settings-modal-body">
+          <div class="settings-field">
+            <label for="apiBaseUrl">API base URL</label>
+            <input
+              id="apiBaseUrl"
+              class="settings-input"
+              type="url"
+              placeholder="https://api.openai.com/v1"
+              autocomplete="off"
+            />
+            <div class="settings-hint">
+              OpenAI-compatible endpoint。已预置 OpenAI / 通义 / DeepSeek / Moonshot /
+              SiliconFlow / 智谱 / 火山方舟 / OpenRouter 等；自定义域名需加入
+              <code>manifest.json</code> →
+              <code>networkAccess.allowedDomains</code> 后重新构建。
+            </div>
+          </div>
+          <div class="settings-field">
+            <label for="model">Model</label>
+            <input
+              id="model"
+              class="settings-input"
+              type="text"
+              placeholder="gpt-4o"
+              autocomplete="off"
+            />
+          </div>
+          <div class="settings-field">
+            <label for="apiKey">API key</label>
+            <input
+              id="apiKey"
+              class="settings-input"
+              type="password"
+              placeholder="sk-…"
+              autocomplete="off"
+            />
+          </div>
+          <div class="settings-test-row">
+            <button id="testConnectionBtn" class="btn-secondary" type="button">
+              Test connection
+            </button>
+            <div id="testResult" class="settings-test-result"></div>
+          </div>
+        </div>
+        <div class="settings-modal-footer">
+          <button id="settingsCancel" class="btn-secondary" type="button">
+            Cancel
+          </button>
+          <button id="settingsSave" class="btn-primary" type="button">Save</button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!--FIGMA_AGENT_CODEC-->
-  <script>
-    const PLUGIN_VERSION = "__PLUGIN_VERSION__";
-    const VERSION_CHECK_URL = "__VERSION_CHECK_URL__";
-    // Build-time default from /bridge.config.json; overridden by main `bridgeConfig` (constants.BRIDGE_PORT).
-    let BRIDGE_PORT = Number("__BRIDGE_PORT__");
-    let bridgePortReady = false;
-    const DEFAULT_API_BASE = "https://api.openai.com/v1";
-    const DEFAULT_MODEL = "gpt-4o";
-    const VERSION_CHECK_DELAY_MS = 1000;
+    <div id="update-modal-mask" class="update-modal-mask">
+      <div
+        class="update-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="update-modal-title"
+      >
+        <div class="update-modal-header">
+          <div id="update-modal-title" class="update-modal-title">发现新版本</div>
+          <button
+            id="update-modal-close"
+            class="settings-modal-close"
+            type="button"
+            title="关闭"
+          >
+            ×
+          </button>
+        </div>
+        <div class="update-modal-body">
+          <div id="updateVersionText" class="update-modal-current">
+            有新版本可用。
+          </div>
+          <ul id="updateNotes" class="update-modal-notes"></ul>
+          <div class="update-modal-hint">
+            更新通过 GitHub <code>releases/version.json</code> 发布（无 CDN）。
+          </div>
+        </div>
+        <div class="update-modal-footer">
+          <button id="updateLater" class="btn-secondary" type="button">Later</button>
+          <button id="updateDownload" class="btn-primary" type="button">
+            Download
+          </button>
+        </div>
+      </div>
+    </div>
 
-    const UI_SIZE = {
-      normal: { width: 440, height: 640 },
-      mini: { width: 300, height: 120 },
-    };
+    <div id="prompt-modal-mask" class="prompt-modal-mask">
+      <div
+        class="prompt-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="prompt-modal-title"
+      >
+        <div class="prompt-modal-header">
+          <div id="prompt-modal-title" class="prompt-modal-title">AI 提示词</div>
+          <button
+            id="prompt-modal-close"
+            class="settings-modal-close"
+            type="button"
+            title="关闭"
+            tabindex="-1"
+          >
+            ×
+          </button>
+        </div>
+        <div class="prompt-tabs" id="prompt-tabs">
+          <button
+            type="button"
+            class="prompt-tab active"
+            data-prompt-key="rename"
+          >
+            图层重命名
+          </button>
+          <button type="button" class="prompt-tab" data-prompt-key="group">
+            视觉分组
+          </button>
+        </div>
+        <div class="prompt-modal-body">
+          <div class="prompt-hint" id="prompt-hint">
+            用于图层重命名识图。占位符：{{candidates}}（候选节点 JSON）。
+          </div>
+          <textarea
+            id="prompt-editor"
+            class="prompt-editor"
+            spellcheck="false"
+          ></textarea>
+        </div>
+        <div class="prompt-modal-footer">
+          <button id="prompt-reset-btn" class="btn-secondary" type="button">
+            恢复默认
+          </button>
+          <button id="prompt-cancel-btn" class="btn-secondary" type="button">
+            取消
+          </button>
+          <button id="prompt-save-btn" class="btn-primary" type="button">
+            保存提示词
+          </button>
+        </div>
+      </div>
+    </div>
 
-    const statusDot = document.getElementById("statusDot");
-    const statusText = document.getElementById("statusText");
-    const selectionList = document.getElementById("selectionList");
-    const bridgeLog = document.getElementById("bridgeLog");
-    const renameLog = document.getElementById("renameLog");
-    const groupLog = document.getElementById("groupLog");
-    const bridgeUrlEl = document.getElementById("bridgeUrl");
-    const miniBtn = document.getElementById("miniBtn");
-    const settingsBtn = document.getElementById("settingsBtn");
-    const updateDot = document.getElementById("updateDot");
-    const settingsOverlay = document.getElementById("settingsOverlay");
-    const updateOverlay = document.getElementById("updateOverlay");
-    const apiBaseUrlInput = document.getElementById("apiBaseUrl");
-    const modelInput = document.getElementById("model");
-    const apiKeyInput = document.getElementById("apiKey");
-    const testResult = document.getElementById("testResult");
-    const testConnectionBtn = document.getElementById("testConnectionBtn");
-    const checkUpdatesBtn = document.getElementById("checkUpdatesBtn");
-    const settingsCancel = document.getElementById("settingsCancel");
-    const settingsSave = document.getElementById("settingsSave");
-    const updateLater = document.getElementById("updateLater");
-    const updateDownload = document.getElementById("updateDownload");
-    const updateVersionText = document.getElementById("updateVersionText");
-    const updateNotes = document.getElementById("updateNotes");
-    const startRenameBtn = document.getElementById("startRenameBtn");
-    const startGroupBtn = document.getElementById("startGroupBtn");
-    const applyGroupBtn = document.getElementById("applyGroupBtn");
-    const groupPlanEditor = document.getElementById("groupPlanEditor");
-    const renameResults = document.getElementById("renameResults");
+    <!--FIGMA_AGENT_CODEC-->
+    <script>
+      /* __PROMPT_TEMPLATES__ */
+      const PLUGIN_VERSION = "__PLUGIN_VERSION__";
+      const VERSION_CHECK_URL = "__VERSION_CHECK_URL__";
+      let BRIDGE_PORT = Number("__BRIDGE_PORT__");
+      let bridgePortReady = false;
+      const DEFAULT_API_BASE = "https://api.openai.com/v1";
+      const DEFAULT_MODEL = "gpt-4o";
+      const VERSION_CHECK_DELAY_MS = 1000;
+      const AI_SYSTEM =
+        "You are a Figma design assistant. Follow the user instructions and reply with valid JSON only (no markdown).";
 
-    let fileKey = "";
-    let fileName = "";
-    let miniMode = false;
-    let socket = null;
-    let reconnectTimer = null;
-    let reconnectDelay = 1000;
-
-    let settings = {
-      apiBaseUrl: DEFAULT_API_BASE,
-      apiKey: "",
-      model: DEFAULT_MODEL,
-      dismissedVersion: "",
-    };
-
-    let pendingCloneRootId = "";
-    let pendingGroupCloneRootId = "";
-    let remoteVersionInfo = null;
-    let updateAvailable = false;
-
-    function post(msg) {
-      parent.postMessage({ pluginMessage: msg }, "*");
-    }
-
-    function appendLog(el, line) {
-      const ts = new Date().toLocaleTimeString();
-      el.textContent = `[${ts}] ${line}\n` + el.textContent.slice(0, 3000);
-    }
-
-    function logBridge(line) { appendLog(bridgeLog, line); }
-    function logRename(line) { appendLog(renameLog, line); }
-    function logGroup(line) { appendLog(groupLog, line); }
-
-    function setConnected(connected) {
-      statusDot.classList.toggle("connected", connected);
-      statusText.textContent = connected ? "Connected" : "Disconnected";
-      post({ type: connected ? "bridge-connected" : "bridge-disconnected" });
-    }
-
-    function normalizeBaseUrl(url) {
-      return (url || DEFAULT_API_BASE).replace(/\/+$/, "");
-    }
-
-    function getSettingsForApi() {
-      return {
-        apiBaseUrl: normalizeBaseUrl(settings.apiBaseUrl || apiBaseUrlInput.value),
-        apiKey: (settings.apiKey || apiKeyInput.value || "").trim(),
-        model: (settings.model || modelInput.value || DEFAULT_MODEL).trim() || DEFAULT_MODEL,
+      const UI_SIZE = {
+        normal: { width: 732, height: 580 },
+        mini: { width: 300, height: 118 },
+        min: { width: 560, height: 420 },
+        max: { width: 1200, height: 900 },
       };
-    }
 
-    function pngBytesToBase64(png) {
-      const bytes = new Uint8Array(png);
-      let binary = "";
-      const chunk = 0x8000;
-      for (let i = 0; i < bytes.length; i += chunk) {
-        binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
-      }
-      return btoa(binary);
-    }
-
-    async function callChatJson({ system, userText, png }) {
-      const cfg = getSettingsForApi();
-      if (!cfg.apiKey) throw new Error("API key is required");
-
-      const content = [{ type: "text", text: userText }];
-      if (png?.length) {
-        content.push({
-          type: "image_url",
-          image_url: { url: `data:image/png;base64,${pngBytesToBase64(png)}` },
-        });
-      }
-
-      const res = await fetch(`${cfg.apiBaseUrl}/chat/completions`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${cfg.apiKey}`,
+      const VIEW_META = {
+        bridge: {
+          title: "MCP Bridge",
+          runLabel: "",
+          showRun: false,
+          showFooter: false,
         },
-        body: JSON.stringify({
-          model: cfg.model,
-          response_format: { type: "json_object" },
-          messages: [
-            { role: "system", content: system },
-            { role: "user", content },
-          ],
-          temperature: 0.2,
-        }),
-      });
+        rename: {
+          title: "图层重命名",
+          runLabel: "开始执行",
+          showRun: true,
+          showFooter: false,
+        },
+        group: {
+          title: "视觉分组",
+          runLabel: "开始执行",
+          showRun: true,
+          showFooter: true,
+        },
+      };
 
-      if (!res.ok) {
-        const body = await res.text().catch(() => "");
-        throw new Error(`API ${res.status}: ${body.slice(0, 200)}`);
+      const bridgePanel = document.getElementById("mcp-bridge-panel");
+      const bridgeStatusText = document.getElementById("bridge-status-text");
+      const bridgeMeta = document.getElementById("bridge-meta");
+      const btnBridgeReconnect = document.getElementById("btn-bridge-reconnect");
+      const bridgeToast = document.getElementById("bridge-toast");
+      const selectionBox = document.getElementById("selection-box");
+      const selectionText = document.getElementById("selection-text");
+      const selectionHint = document.getElementById("selection-hint");
+      const miniSelectionText = document.getElementById("mini-selection-text");
+      const miniSelectionHint = document.getElementById("mini-selection-hint");
+      const bridgeUrlEl = document.getElementById("bridgeUrl");
+      const consoleBody = document.getElementById("console-body");
+      const consolePanel = document.getElementById("console-panel");
+      const spinner = document.getElementById("spinner");
+      const btnConsoleToggle = document.getElementById("btn-console-toggle");
+      const btnClearLog = document.getElementById("btn-clear-log");
+      const btnMini = document.getElementById("btn-mini");
+      const btnSettings = document.getElementById("btn-settings");
+      const settingsMenuWrap = document.getElementById("settings-menu-wrap");
+      const settingsMenuModel = document.getElementById("settings-menu-model");
+      const settingsMenuPrompt = document.getElementById("settings-menu-prompt");
+      const settingsMenuUpdate = document.getElementById("settings-menu-update");
+      const settingsUpdateDesc = document.getElementById("settings-update-desc");
+      const modelBadge = document.getElementById("modelBadge");
+      const settingsMask = document.getElementById("settings-modal-mask");
+      const updateMask = document.getElementById("update-modal-mask");
+      const promptModalMask = document.getElementById("prompt-modal-mask");
+      const promptModalClose = document.getElementById("prompt-modal-close");
+      const promptTabs = document.getElementById("prompt-tabs");
+      const promptHint = document.getElementById("prompt-hint");
+      const promptEditor = document.getElementById("prompt-editor");
+      const promptResetBtn = document.getElementById("prompt-reset-btn");
+      const promptCancelBtn = document.getElementById("prompt-cancel-btn");
+      const promptSaveBtn = document.getElementById("prompt-save-btn");
+      const apiBaseUrlInput = document.getElementById("apiBaseUrl");
+      const modelInput = document.getElementById("model");
+      const apiKeyInput = document.getElementById("apiKey");
+      const testResult = document.getElementById("testResult");
+      const testConnectionBtn = document.getElementById("testConnectionBtn");
+      const settingsCancel = document.getElementById("settingsCancel");
+      const settingsSave = document.getElementById("settingsSave");
+      const settingsClose = document.getElementById("settings-close");
+      const updateLater = document.getElementById("updateLater");
+      const updateDownload = document.getElementById("updateDownload");
+      const updateClose = document.getElementById("update-modal-close");
+      const updateVersionText = document.getElementById("updateVersionText");
+      const updateNotes = document.getElementById("updateNotes");
+      const btnRunTask = document.getElementById("btn-run-task");
+      const applyGroupBtn = document.getElementById("applyGroupBtn");
+      const groupPlanEditor = document.getElementById("groupPlanEditor");
+      const renameList = document.getElementById("rename-list");
+      const panelTitle = document.getElementById("panel-title");
+      const panelCount = document.getElementById("panel-count");
+      const panelFooter = document.getElementById("panel-footer");
+      const sidebar = document.getElementById("sidebar");
+      const btnSidebarCollapse = document.getElementById("btn-sidebar-collapse");
+      const btnSidebarExpand = document.getElementById("btn-sidebar-expand");
+
+      let fileKey = "";
+      let fileName = "";
+      let miniMode = false;
+      let currentView = "bridge";
+      let socket = null;
+      let reconnectTimer = null;
+      let reconnectDelay = 1000;
+      let busy = false;
+      let toastTimer = null;
+
+      let settings = {
+        apiBaseUrl: DEFAULT_API_BASE,
+        apiKey: "",
+        model: DEFAULT_MODEL,
+        dismissedVersion: "",
+      };
+
+      let pendingGroupCloneRootId = "";
+      let remoteVersionInfo = null;
+      let updateAvailable = false;
+      let lastSelection = [];
+      let promptOverrides = {};
+      let activePromptKey = "rename";
+      let promptDraftDirty = false;
+
+      const PROMPT_TAB_META = {
+        rename: {
+          label: "图层重命名",
+          hint: "用于图层重命名识图。占位符：{{candidates}}（候选节点 JSON）。",
+        },
+        group: {
+          label: "视觉分组",
+          hint: "用于视觉分组识图。占位符：{{candidates}}、{{suggestedClusters}}。",
+        },
+      };
+
+      function post(msg) {
+        parent.postMessage({ pluginMessage: msg }, "*");
       }
 
-      const data = await res.json();
-      const raw = data.choices?.[0]?.message?.content;
-      if (!raw) throw new Error("Empty model response");
-      return JSON.parse(raw);
-    }
-
-    const RENAME_SYSTEM = `You rename Figma layers for clarity. Return JSON only:
-{"rename":[{"id":"node-id","newName":"semantic-name"}]}
-Use kebab-case English names describing visual role (e.g. hero-title, nav-bar). Only use ids from the candidate list. Skip unchanged generic names when a better name is obvious.`;
-
-    const GROUP_SYSTEM = `You group Figma layers by visual regions. Return JSON only:
-{"groups":[{"name":"group-name","nodeIds":["id1","id2"],"subGroups":[]}]}
-Use kebab-case English group names. Each nodeId must appear at most once. Prefer 2-8 top-level groups. Nest with subGroups when needed (depth-first). Only use ids from candidates.`;
-
-    function compareVersions(a, b) {
-      const pa = String(a).split(".").map((n) => parseInt(n, 10) || 0);
-      const pb = String(b).split(".").map((n) => parseInt(n, 10) || 0);
-      const len = Math.max(pa.length, pb.length);
-      for (let i = 0; i < len; i++) {
-        const da = pa[i] || 0;
-        const db = pb[i] || 0;
-        if (da > db) return 1;
-        if (da < db) return -1;
+      function appendLog(line) {
+        const ts = new Date().toLocaleTimeString();
+        const next = `[${ts}] ${line}\n` + (consoleBody.textContent || "");
+        consoleBody.textContent = next.slice(0, 8000);
       }
-      return 0;
-    }
 
-    function setUpdateBadge(visible) {
-      updateAvailable = visible;
-      updateDot.classList.toggle("visible", visible);
-    }
-
-    function showUpdateModal(info) {
-      remoteVersionInfo = info;
-      updateVersionText.textContent = `Version ${info.latest} is available (you have ${PLUGIN_VERSION}).`;
-      updateNotes.innerHTML = "";
-      for (const note of info.notes || []) {
-        const li = document.createElement("li");
-        li.textContent = note;
-        updateNotes.appendChild(li);
+      function setBusy(next) {
+        busy = next;
+        spinner.classList.toggle("active", busy);
+        syncRunButton();
       }
-      updateOverlay.classList.add("open");
-    }
 
-    async function fetchVersionInfo() {
-      const url = `${VERSION_CHECK_URL}?_t=${Date.now()}`;
-      const res = await fetch(url);
-      if (!res.ok) throw new Error(`Version check failed (${res.status})`);
-      return res.json();
-    }
+      function showToast(message, kind) {
+        bridgeToast.textContent = message;
+        bridgeToast.classList.remove("is-success", "is-error", "is-visible");
+        if (kind === "success") bridgeToast.classList.add("is-success");
+        if (kind === "error") bridgeToast.classList.add("is-error");
+        requestAnimationFrame(() => bridgeToast.classList.add("is-visible"));
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          bridgeToast.classList.remove("is-visible");
+        }, 2200);
+      }
 
-    async function checkForUpdates({ showModal = false, force = false } = {}) {
-      try {
-        const info = await fetchVersionInfo();
-        const newer = compareVersions(info.latest, PLUGIN_VERSION) > 0;
-        setUpdateBadge(newer);
-        if (newer && (showModal || force) && settings.dismissedVersion !== info.latest) {
-          showUpdateModal(info);
-        } else if (!newer && force) {
-          logBridge(`You are on the latest version (${PLUGIN_VERSION}).`);
+      function setConnected(connected) {
+        bridgePanel.classList.remove("connecting", "connected", "disconnected");
+        bridgePanel.classList.add(connected ? "connected" : "disconnected");
+        bridgeStatusText.textContent = connected ? "MCP Bridge 已连接" : "MCP Bridge 未连接";
+        btnBridgeReconnect.classList.remove("is-spinning");
+        btnBridgeReconnect.disabled = false;
+        post({ type: connected ? "bridge-connected" : "bridge-disconnected" });
+      }
+
+      function setConnecting() {
+        bridgePanel.classList.remove("connected", "disconnected");
+        bridgePanel.classList.add("connecting");
+        bridgeStatusText.textContent = "MCP Bridge 连接中";
+      }
+
+      function updateBridgeMeta() {
+        const name = fileName || "Untitled";
+        const key = fileKey ? String(fileKey).slice(0, 10) : "—";
+        bridgeMeta.innerHTML = `<strong>${escapeHtml(name)}</strong> · ${escapeHtml(key)}`;
+        bridgePanel.title = `figma-agent-mcp · ${buildWsUrl()}`;
+      }
+
+      function updateModelBadge() {
+        const model = (settings.model || DEFAULT_MODEL).trim() || DEFAULT_MODEL;
+        modelBadge.textContent = model;
+        modelBadge.title = `当前模型：${model}`;
+      }
+
+      function normalizeBaseUrl(url) {
+        return (url || DEFAULT_API_BASE).replace(/\/+$/, "");
+      }
+
+      function getSettingsForApi() {
+        return {
+          apiBaseUrl: normalizeBaseUrl(settings.apiBaseUrl || apiBaseUrlInput.value),
+          apiKey: (settings.apiKey || apiKeyInput.value || "").trim(),
+          model:
+            (settings.model || modelInput.value || DEFAULT_MODEL).trim() ||
+            DEFAULT_MODEL,
+        };
+      }
+
+      function pngBytesToBase64(png) {
+        const bytes = new Uint8Array(png);
+        let binary = "";
+        const chunk = 0x8000;
+        for (let i = 0; i < bytes.length; i += chunk) {
+          binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
         }
-        return info;
-      } catch (err) {
-        if (force) logBridge("Update check failed: " + err.message);
-        return null;
-      }
-    }
-
-    function buildWsUrl() {
-      const params = new URLSearchParams({
-        fileKey: fileKey || "unknown",
-        fileName: fileName || "Untitled",
-      });
-      return `ws://localhost:${BRIDGE_PORT}/ws?${params.toString()}`;
-    }
-
-    function renderSelection(items) {
-      selectionList.innerHTML = "";
-      if (!items || items.length === 0) {
-        const li = document.createElement("li");
-        li.className = "empty";
-        li.textContent = "No layers selected";
-        selectionList.appendChild(li);
-        return;
-      }
-      for (const item of items) {
-        const li = document.createElement("li");
-        const name = document.createElement("span");
-        name.textContent = item.name;
-        const type = document.createElement("span");
-        type.className = "type";
-        type.textContent = item.type;
-        li.appendChild(name);
-        li.appendChild(type);
-        selectionList.appendChild(li);
-      }
-    }
-
-    function renderRenameResults(items, candidates) {
-      renameResults.innerHTML = "";
-      if (!items?.length) {
-        const li = document.createElement("li");
-        li.className = "empty";
-        li.textContent = "No results yet";
-        renameResults.appendChild(li);
-        return;
-      }
-      const byId = new Map((candidates || []).map((c) => [c.id, c.name]));
-      for (const item of items) {
-        const li = document.createElement("li");
-        const oldName = byId.get(item.id) || item.id;
-        li.innerHTML = `<span class="old">${escapeHtml(oldName)}</span> → <span class="new">${escapeHtml(item.newName)}</span>`;
-        renameResults.appendChild(li);
-      }
-    }
-
-    function escapeHtml(s) {
-      return String(s)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;");
-    }
-
-    function scheduleReconnect() {
-      if (reconnectTimer) return;
-      reconnectTimer = setTimeout(() => {
-        reconnectTimer = null;
-        connectBridge();
-        reconnectDelay = Math.min(reconnectDelay * 1.5, 15000);
-      }, reconnectDelay);
-    }
-
-    function connectBridge() {
-      if (socket && (socket.readyState === WebSocket.OPEN || socket.readyState === WebSocket.CONNECTING)) {
-        return;
+        return btoa(binary);
       }
 
-      const url = buildWsUrl();
-      bridgeUrlEl.textContent = url;
-      logBridge("Connecting to bridge…");
+      async function callChatJson({ system, userText, png }) {
+        const cfg = getSettingsForApi();
+        if (!cfg.apiKey) throw new Error("API key is required");
 
-      try {
-        socket = new WebSocket(url);
-        socket.binaryType = "arraybuffer";
-      } catch (err) {
-        logBridge("WebSocket error: " + err.message);
-        setConnected(false);
-        scheduleReconnect();
-        return;
+        const content = [{ type: "text", text: userText }];
+        if (png?.length) {
+          content.push({
+            type: "image_url",
+            image_url: { url: `data:image/png;base64,${pngBytesToBase64(png)}` },
+          });
+        }
+
+        const res = await fetch(`${cfg.apiBaseUrl}/chat/completions`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${cfg.apiKey}`,
+          },
+          body: JSON.stringify({
+            model: cfg.model,
+            response_format: { type: "json_object" },
+            messages: [
+              { role: "system", content: system },
+              { role: "user", content },
+            ],
+            temperature: 0.2,
+          }),
+        });
+
+        if (!res.ok) {
+          const body = await res.text().catch(() => "");
+          throw new Error(`API ${res.status}: ${body.slice(0, 200)}`);
+        }
+
+        const data = await res.json();
+        const raw = data.choices?.[0]?.message?.content;
+        if (!raw) throw new Error("Empty model response");
+        return JSON.parse(raw);
       }
 
-      socket.onopen = () => {
-        reconnectDelay = 1000;
-        setConnected(true);
-        logBridge("Bridge connected (msgpack)");
-      };
+      function getDefaultPromptTemplate(key) {
+        return (typeof PROMPT_TEMPLATES !== "undefined" && PROMPT_TEMPLATES[key]) || "";
+      }
 
-      socket.onclose = () => {
-        setConnected(false);
-        logBridge("Bridge disconnected");
-        scheduleReconnect();
-      };
+      function getEffectivePromptTemplate(key) {
+        const custom = promptOverrides && promptOverrides[key];
+        if (typeof custom === "string" && custom.trim()) return custom;
+        return getDefaultPromptTemplate(key);
+      }
 
-      socket.onerror = () => {
-        logBridge("Bridge connection failed");
-      };
+      function normalizePromptOverrides(raw) {
+        const next = {};
+        if (!raw || typeof raw !== "object") return next;
+        if (typeof raw.rename === "string") next.rename = raw.rename;
+        if (typeof raw.group === "string") next.group = raw.group;
+        return next;
+      }
 
-      socket.onmessage = (event) => {
-        let msg;
+      function applyPromptOverrides(raw) {
+        promptOverrides = normalizePromptOverrides(raw);
+      }
+
+      function savePromptOverrides(overrides) {
+        promptOverrides = normalizePromptOverrides(overrides);
+        post({ type: "setPromptOverrides", overrides: promptOverrides });
+      }
+
+      function syncPromptTabs() {
+        if (!promptTabs) return;
+        promptTabs.querySelectorAll(".prompt-tab").forEach((btn) => {
+          btn.classList.toggle(
+            "active",
+            btn.getAttribute("data-prompt-key") === activePromptKey,
+          );
+        });
+      }
+
+      function loadPromptEditor(key) {
+        activePromptKey = key || activePromptKey || "rename";
+        syncPromptTabs();
+        const meta = PROMPT_TAB_META[activePromptKey] || PROMPT_TAB_META.rename;
+        if (promptHint) promptHint.textContent = meta.hint;
+        if (promptEditor) {
+          promptEditor.value = getEffectivePromptTemplate(activePromptKey);
+          promptDraftDirty = false;
+        }
+      }
+
+      function openPromptModal() {
+        closeSettingsMenu();
+        closeSettings();
+        loadPromptEditor(activePromptKey);
+        promptModalMask.classList.add("show");
+        requestAnimationFrame(() => {
+          try {
+            promptEditor.focus({ preventScroll: true });
+          } catch (_) {
+            promptEditor.focus();
+          }
+        });
+      }
+
+      function closePromptModal() {
+        promptModalMask.classList.remove("show");
+        promptDraftDirty = false;
+      }
+
+      function buildRenamePrompt(candidates) {
+        return renderPrompt(getEffectivePromptTemplate("rename"), {
+          candidates: JSON.stringify(candidates, null, 2),
+        });
+      }
+
+      function buildGroupPrompt(candidates, suggestedClusters) {
+        return renderPrompt(getEffectivePromptTemplate("group"), {
+          candidates: JSON.stringify(candidates, null, 2),
+          suggestedClusters: JSON.stringify(suggestedClusters || [], null, 2),
+        });
+      }
+
+      function compareVersions(a, b) {
+        const pa = String(a).split(".").map((n) => parseInt(n, 10) || 0);
+        const pb = String(b).split(".").map((n) => parseInt(n, 10) || 0);
+        const len = Math.max(pa.length, pb.length);
+        for (let i = 0; i < len; i++) {
+          const da = pa[i] || 0;
+          const db = pb[i] || 0;
+          if (da > db) return 1;
+          if (da < db) return -1;
+        }
+        return 0;
+      }
+
+      function setUpdateBadge(visible) {
+        updateAvailable = visible;
+        btnSettings.classList.toggle("has-update", visible);
+        settingsMenuUpdate.classList.toggle("has-update", visible);
+        settingsUpdateDesc.textContent = visible
+          ? `有新版本 ${remoteVersionInfo?.latest || ""}`.trim()
+          : "暂无更新";
+      }
+
+      function showUpdateModal(info) {
+        remoteVersionInfo = info;
+        updateVersionText.textContent = `版本 ${info.latest} 可用（当前 ${PLUGIN_VERSION}）。`;
+        updateNotes.innerHTML = "";
+        for (const note of info.notes || []) {
+          const li = document.createElement("li");
+          li.textContent = note;
+          updateNotes.appendChild(li);
+        }
+        updateMask.classList.add("show");
+      }
+
+      async function fetchVersionInfo() {
+        const url = `${VERSION_CHECK_URL}?_t=${Date.now()}`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`Version check failed (${res.status})`);
+        return res.json();
+      }
+
+      async function checkForUpdates({ showModal = false, force = false } = {}) {
         try {
-          msg = decodeBridgeMessage(event.data);
+          const info = await fetchVersionInfo();
+          remoteVersionInfo = info;
+          const newer = compareVersions(info.latest, PLUGIN_VERSION) > 0;
+          setUpdateBadge(newer);
+          if (
+            newer &&
+            (showModal || force) &&
+            settings.dismissedVersion !== info.latest
+          ) {
+            showUpdateModal(info);
+          } else if (!newer && force) {
+            appendLog(`已是最新版本（${PLUGIN_VERSION}）。`);
+            showToast(`已是最新版本 ${PLUGIN_VERSION}`, "success");
+          }
+          return info;
         } catch (err) {
-          logBridge("Invalid bridge message: " + (err && err.message ? err.message : err));
+          if (force) {
+            appendLog("检查更新失败: " + err.message);
+            showToast("检查更新失败", "error");
+          }
+          return null;
+        }
+      }
+
+      function buildWsUrl() {
+        const params = new URLSearchParams({
+          fileKey: fileKey || "unknown",
+          fileName: fileName || "Untitled",
+        });
+        return `ws://localhost:${BRIDGE_PORT}/ws?${params.toString()}`;
+      }
+
+      function renderSelection(items) {
+        lastSelection = items || [];
+        const count = lastSelection.length;
+        if (!count) {
+          selectionBox.className = "selection-card empty";
+          selectionText.textContent = "未选中图层";
+          selectionHint.textContent = "在画布中选择 Frame / Group / Section";
+          miniSelectionText.textContent = "未选中图层";
+          miniSelectionHint.textContent = "在画布中选择图层";
+          panelCount.style.display = "none";
+          syncRunButton();
           return;
         }
 
-        // Control frames (heartbeat) — never forward to the plugin main thread.
-        if (msg.type === "ping") {
-          sendBridgeEncoded({ type: "pong" });
+        selectionBox.className = "selection-card ready";
+        if (count === 1) {
+          selectionText.textContent = lastSelection[0].name;
+          selectionHint.textContent = lastSelection[0].type;
+          miniSelectionText.textContent = lastSelection[0].name;
+          miniSelectionHint.textContent = lastSelection[0].type;
+        } else {
+          selectionText.textContent = `${count} 个图层`;
+          selectionHint.textContent = lastSelection
+            .slice(0, 3)
+            .map((i) => i.name)
+            .join(" · ");
+          miniSelectionText.textContent = `${count} 个图层`;
+          miniSelectionHint.textContent = selectionHint.textContent;
+        }
+        panelCount.style.display = "";
+        panelCount.textContent = `${count} 选中`;
+        syncRunButton();
+      }
+
+      function renderRenameResults(items, candidates) {
+        renameList.innerHTML = "";
+        if (!items?.length) {
+          const empty = document.createElement("div");
+          empty.className = "list-item empty";
+          empty.textContent = "无重命名结果";
+          renameList.appendChild(empty);
           return;
         }
-        if (msg.type === "pong") return;
-
-        if (msg.requestId && (msg.tool || msg.type)) {
-          const tool = msg.tool || msg.type;
-          post({
-            type: "server-request",
-            requestId: msg.requestId,
-            tool,
-            nodeIds: msg.nodeIds,
-            params: msg.params,
-          });
+        const byId = new Map((candidates || []).map((c) => [c.id, c.name]));
+        for (const item of items) {
+          const row = document.createElement("div");
+          row.className = "list-item";
+          const oldName = byId.get(item.id) || item.id;
+          row.innerHTML =
+            `<span class="change-old">${escapeHtml(oldName)}</span>` +
+            `<span class="change-arrow">→</span>` +
+            `<span class="change-new">${escapeHtml(item.newName)}</span>`;
+          renameList.appendChild(row);
         }
-      };
-    }
-
-    function getBridgeCodec() {
-      return window.__figmaAgentCodec;
-    }
-
-    function decodeBridgeMessage(data) {
-      const codec = getBridgeCodec();
-      if (typeof data === "string") {
-        return JSON.parse(data);
       }
-      if (!codec) throw new Error("MsgPack codec not loaded");
-      return codec.decode(data);
-    }
 
-    function sendBridgeEncoded(value) {
-      if (!socket || socket.readyState !== WebSocket.OPEN) return;
-      const codec = getBridgeCodec();
-      if (!codec) {
-        logBridge("MsgPack codec not loaded — cannot send");
-        return;
+      function escapeHtml(s) {
+        return String(s)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
       }
-      socket.send(codec.encode(value));
-    }
 
-    function sendBridgeResponse(response) {
-      sendBridgeEncoded(response);
-    }
-
-    function switchTab(name) {
-      document.querySelectorAll(".tab").forEach((btn) => {
-        btn.classList.toggle("active", btn.dataset.tab === name);
-      });
-      document.querySelectorAll(".panel").forEach((panel) => {
-        panel.classList.toggle("active", panel.dataset.panel === name);
-      });
-    }
-
-    function toggleMini() {
-      miniMode = !miniMode;
-      document.body.classList.toggle("mini", miniMode);
-      miniBtn.textContent = miniMode ? "Expand" : "Mini";
-      const size = miniMode ? UI_SIZE.mini : UI_SIZE.normal;
-      post({ type: "resizeWindow", width: size.width, height: size.height });
-    }
-
-    function openSettings() {
-      settingsOverlay.classList.add("open");
-      apiBaseUrlInput.value = settings.apiBaseUrl || DEFAULT_API_BASE;
-      modelInput.value = settings.model || DEFAULT_MODEL;
-      apiKeyInput.value = settings.apiKey || "";
-      testResult.textContent = "";
-      testResult.className = "test-result";
-      post({ type: "getSettings" });
-    }
-
-    function closeSettings() {
-      settingsOverlay.classList.remove("open");
-    }
-
-    function saveSettings() {
-      settings = {
-        ...settings,
-        apiBaseUrl: apiBaseUrlInput.value.trim() || DEFAULT_API_BASE,
-        model: modelInput.value.trim() || DEFAULT_MODEL,
-        apiKey: apiKeyInput.value.trim(),
-      };
-      post({ type: "setSettings", settings });
-      closeSettings();
-      logBridge("Settings saved");
-    }
-
-    async function testConnection() {
-      testResult.textContent = "Testing…";
-      testResult.className = "test-result";
-      const prev = { ...settings };
-      settings = {
-        ...settings,
-        apiBaseUrl: apiBaseUrlInput.value.trim() || DEFAULT_API_BASE,
-        model: modelInput.value.trim() || DEFAULT_MODEL,
-        apiKey: apiKeyInput.value.trim(),
-      };
-      try {
-        await callChatJson({
-          system: "Reply with JSON: {\"ok\":true}",
-          userText: "ping",
-        });
-        testResult.textContent = "Connection OK";
-        testResult.className = "test-result ok";
-      } catch (err) {
-        testResult.textContent = err.message;
-        testResult.className = "test-result err";
+      function scheduleReconnect() {
+        if (reconnectTimer) return;
+        reconnectTimer = setTimeout(() => {
+          reconnectTimer = null;
+          connectBridge();
+          reconnectDelay = Math.min(reconnectDelay * 1.5, 15000);
+        }, reconnectDelay);
       }
-      settings = prev;
-    }
 
-    async function handleAiRename(msg) {
-      pendingCloneRootId = msg.cloneRootId;
-      startRenameBtn.disabled = true;
-      logRename(`AI rename: ${msg.candidates.length} candidates…`);
-      try {
-        const userText = `Candidates JSON:\n${JSON.stringify(msg.candidates, null, 2)}\n\nRename layers to meaningful semantic names based on the screenshot.`;
-        const result = await callChatJson({
-          system: RENAME_SYSTEM,
-          userText,
-          png: msg.png,
-        });
-        const items = result.rename || [];
-        if (!items.length) throw new Error("Model returned no rename items");
-        renderRenameResults(items, msg.candidates);
-        logRename(`Applying ${items.length} names…`);
-        post({ type: "renameResult", items, cloneRootId: msg.cloneRootId });
-      } catch (err) {
-        logRename("Error: " + err.message);
-        post({ type: "error", message: err.message });
-      } finally {
-        startRenameBtn.disabled = false;
-      }
-    }
-
-    async function handleAiGroup(msg) {
-      pendingGroupCloneRootId = msg.cloneRootId;
-      startGroupBtn.disabled = true;
-      applyGroupBtn.disabled = true;
-      logGroup(`AI group: ${msg.candidates.length} children…`);
-      try {
-        const clusterHint = msg.suggestedClusters?.length
-          ? `\nSuggested proximity clusters (optional hint):\n${JSON.stringify(msg.suggestedClusters, null, 2)}`
-          : "";
-        const userText = `Direct children JSON:\n${JSON.stringify(msg.candidates, null, 2)}${clusterHint}\n\nPropose visual grouping for the screenshot.`;
-        const result = await callChatJson({
-          system: GROUP_SYSTEM,
-          userText,
-          png: msg.png,
-        });
-        const plan = { groups: result.groups || [] };
-        if (!plan.groups.length) throw new Error("Model returned no groups");
-        groupPlanEditor.value = JSON.stringify(plan, null, 2);
-        applyGroupBtn.disabled = false;
-        logGroup(`Plan ready (${plan.groups.length} top-level groups). Review and click Apply.`);
-      } catch (err) {
-        logGroup("Error: " + err.message);
-        post({ type: "error", message: err.message });
-      } finally {
-        startGroupBtn.disabled = false;
-      }
-    }
-
-    function applyGroupPlan() {
-      let plan;
-      try {
-        plan = JSON.parse(groupPlanEditor.value);
-      } catch {
-        logGroup("Invalid JSON in plan editor");
-        return;
-      }
-      if (!pendingGroupCloneRootId) {
-        logGroup("No clone in progress. Run Start group first.");
-        return;
-      }
-      applyGroupBtn.disabled = true;
-      logGroup("Applying groups on clone…");
-      post({
-        type: "groupApply",
-        plan,
-        cloneRootId: pendingGroupCloneRootId,
-      });
-    }
-
-    document.querySelectorAll(".tab").forEach((btn) => {
-      btn.addEventListener("click", () => switchTab(btn.dataset.tab));
-    });
-
-    miniBtn.addEventListener("click", toggleMini);
-    settingsBtn.addEventListener("click", openSettings);
-    settingsCancel.addEventListener("click", closeSettings);
-    settingsSave.addEventListener("click", saveSettings);
-    testConnectionBtn.addEventListener("click", testConnection);
-    checkUpdatesBtn.addEventListener("click", () => checkForUpdates({ force: true, showModal: true }));
-    settingsOverlay.addEventListener("click", (e) => {
-      if (e.target === settingsOverlay) closeSettings();
-    });
-
-    updateLater.addEventListener("click", () => {
-      if (remoteVersionInfo?.latest) {
-        settings.dismissedVersion = remoteVersionInfo.latest;
-        post({ type: "setSettings", settings });
-      }
-      updateOverlay.classList.remove("open");
-    });
-
-    updateDownload.addEventListener("click", () => {
-      const base = remoteVersionInfo?.downloadUrl ||
-        "https://github.com/ChinaCarlos/figma-agent-kit/archive/refs/heads/main.zip";
-      post({ type: "openExternal", url: `${base}?_t=${Date.now()}` });
-      if (remoteVersionInfo?.latest) {
-        settings.dismissedVersion = remoteVersionInfo.latest;
-        post({ type: "setSettings", settings });
-      }
-      updateOverlay.classList.remove("open");
-    });
-
-    updateOverlay.addEventListener("click", (e) => {
-      if (e.target === updateOverlay) updateOverlay.classList.remove("open");
-    });
-
-    startRenameBtn.addEventListener("click", () => {
-      logRename("Starting rename workflow…");
-      post({ type: "startRename" });
-    });
-
-    startGroupBtn.addEventListener("click", () => {
-      logGroup("Starting group workflow…");
-      post({ type: "startGroup" });
-    });
-
-    applyGroupBtn.addEventListener("click", applyGroupPlan);
-
-    window.onmessage = (event) => {
-      const msg = event.data.pluginMessage;
-      if (!msg) return;
-
-      switch (msg.type) {
-        case "selectionChange":
-          fileKey = msg.fileKey;
-          fileName = msg.fileName;
-          renderSelection(msg.selection);
-          if (!socket || socket.readyState !== WebSocket.OPEN) connectBridge();
-          break;
-
-        case "bridgeStatus":
-          fileKey = msg.fileKey;
-          fileName = msg.fileName;
-          break;
-
-        case "server-response":
-          sendBridgeResponse({
-            requestId: msg.requestId,
-            ok: msg.ok,
-            data: msg.data,
-            error: msg.error,
-          });
-          logBridge(`${msg.ok ? "OK" : "ERR"} ${msg.requestId.slice(0, 8)}…`);
-          break;
-
-        case "settings":
-          settings = {
-            apiBaseUrl: msg.settings.apiBaseUrl || DEFAULT_API_BASE,
-            apiKey: msg.settings.apiKey || "",
-            model: msg.settings.model || DEFAULT_MODEL,
-            dismissedVersion: msg.settings.dismissedVersion || "",
-          };
-          apiBaseUrlInput.value = settings.apiBaseUrl;
-          modelInput.value = settings.model;
-          apiKeyInput.value = settings.apiKey;
-          if (remoteVersionInfo && settings.dismissedVersion === remoteVersionInfo.latest) {
-            updateOverlay.classList.remove("open");
-          }
-          break;
-
-        case "pluginVersion":
-          break;
-
-        case "bridgeConfig": {
-          const nextPort = Number(msg.port);
-          if (!Number.isInteger(nextPort) || nextPort < 1) break;
-          const changed = nextPort !== BRIDGE_PORT;
-          BRIDGE_PORT = nextPort;
-          bridgePortReady = true;
-          if (changed && socket) {
-            try { socket.close(); } catch (_) { /* ignore */ }
-            socket = null;
-          }
-          if (!socket || socket.readyState !== WebSocket.OPEN) {
-            connectBridge();
-          } else {
-            bridgeUrlEl.textContent = buildWsUrl();
-          }
-          break;
+      function connectBridge({ manual = false } = {}) {
+        if (
+          socket &&
+          (socket.readyState === WebSocket.OPEN ||
+            socket.readyState === WebSocket.CONNECTING)
+        ) {
+          if (manual) showToast("已在连接中", "success");
+          return;
         }
 
-        case "aiRenameRequest":
-          handleAiRename(msg);
-          break;
+        const url = buildWsUrl();
+        bridgeUrlEl.textContent = url;
+        setConnecting();
+        if (manual) {
+          btnBridgeReconnect.classList.add("is-spinning");
+          btnBridgeReconnect.disabled = true;
+        }
+        appendLog(manual ? "手动重连 bridge…" : "Connecting to bridge…");
 
-        case "aiGroupRequest":
-          handleAiGroup(msg);
-          break;
+        try {
+          socket = new WebSocket(url);
+          socket.binaryType = "arraybuffer";
+        } catch (err) {
+          appendLog("WebSocket error: " + err.message);
+          setConnected(false);
+          scheduleReconnect();
+          if (manual) showToast("连接失败", "error");
+          return;
+        }
 
-        case "renameDone":
-          logRename(`Done. Renamed ${msg.items.length} layer(s) on clone.`);
-          break;
+        socket.onopen = () => {
+          reconnectDelay = 1000;
+          setConnected(true);
+          appendLog("Bridge connected (msgpack)");
+          if (manual) showToast("Bridge 已连接", "success");
+        };
 
-        case "groupDone":
+        socket.onclose = () => {
+          setConnected(false);
+          appendLog("Bridge disconnected");
+          scheduleReconnect();
+        };
+
+        socket.onerror = () => {
+          appendLog("Bridge connection failed");
+          if (manual) showToast("连接失败", "error");
+        };
+
+        socket.onmessage = (event) => {
+          let msg;
+          try {
+            msg = decodeBridgeMessage(event.data);
+          } catch (err) {
+            appendLog(
+              "Invalid bridge message: " +
+                (err && err.message ? err.message : err),
+            );
+            return;
+          }
+
+          if (msg.type === "ping") {
+            sendBridgeEncoded({ type: "pong" });
+            return;
+          }
+          if (msg.type === "pong") return;
+
+          if (msg.requestId && (msg.tool || msg.type)) {
+            const tool = msg.tool || msg.type;
+            post({
+              type: "server-request",
+              requestId: msg.requestId,
+              tool,
+              nodeIds: msg.nodeIds,
+              params: msg.params,
+            });
+          }
+        };
+      }
+
+      function getBridgeCodec() {
+        return window.__figmaAgentCodec;
+      }
+
+      function decodeBridgeMessage(data) {
+        const codec = getBridgeCodec();
+        if (typeof data === "string") {
+          return JSON.parse(data);
+        }
+        if (!codec) throw new Error("MsgPack codec not loaded");
+        return codec.decode(data);
+      }
+
+      function sendBridgeEncoded(value) {
+        if (!socket || socket.readyState !== WebSocket.OPEN) return;
+        const codec = getBridgeCodec();
+        if (!codec) {
+          appendLog("MsgPack codec not loaded — cannot send");
+          return;
+        }
+        socket.send(codec.encode(value));
+      }
+
+      function sendBridgeResponse(response) {
+        sendBridgeEncoded(response);
+      }
+
+      function syncRunButton() {
+        const meta = VIEW_META[currentView];
+        btnRunTask.classList.toggle("hidden", !meta.showRun);
+        btnRunTask.textContent = meta.runLabel || "开始执行";
+        const canRun =
+          !busy &&
+          lastSelection.length > 0 &&
+          (currentView === "rename" || currentView === "group");
+        btnRunTask.disabled = !canRun;
+      }
+
+      function switchView(name) {
+        currentView = name;
+        const meta = VIEW_META[name] || VIEW_META.bridge;
+        panelTitle.textContent = meta.title;
+        panelFooter.classList.toggle("hidden", !meta.showFooter);
+
+        document.querySelectorAll(".nav-item, .rail-btn").forEach((el) => {
+          el.classList.toggle("active", el.dataset.view === name);
+        });
+        document.querySelectorAll(".view").forEach((view) => {
+          view.classList.toggle("active", view.id === `view-${name}`);
+        });
+        syncRunButton();
+      }
+
+      function toggleMini() {
+        miniMode = !miniMode;
+        document.body.classList.toggle("mini-mode", miniMode);
+        btnMini.setAttribute("aria-pressed", miniMode ? "true" : "false");
+        const size = miniMode ? UI_SIZE.mini : UI_SIZE.normal;
+        post({
+          type: "resizeWindow",
+          width: size.width,
+          height: size.height,
+          mini: miniMode,
+        });
+      }
+
+      let settingsBackdropIgnoreUntil = 0;
+      let settingsBackdropPointerDown = false;
+
+      function closeSettingsMenu() {
+        settingsMenuWrap.classList.remove("is-open");
+        btnSettings.setAttribute("aria-expanded", "false");
+      }
+
+      function openSettings() {
+        closeSettingsMenu();
+        // 打开瞬间的同一次点击/回车可能落到全屏 mask 上，短时间内忽略点遮罩关闭
+        settingsBackdropIgnoreUntil = Date.now() + 350;
+        settingsBackdropPointerDown = false;
+        settingsMask.classList.add("show");
+        apiBaseUrlInput.value = settings.apiBaseUrl || DEFAULT_API_BASE;
+        modelInput.value = settings.model || DEFAULT_MODEL;
+        apiKeyInput.value = settings.apiKey || "";
+        testResult.textContent = "";
+        testResult.className = "settings-test-result";
+        post({ type: "getSettings" });
+        // 把焦点收进输入框，避免空格/回车激活背后的 ⚙ / 菜单按钮导致误关
+        requestAnimationFrame(() => {
+          try {
+            apiBaseUrlInput.focus({ preventScroll: true });
+            apiBaseUrlInput.select();
+          } catch (_) {
+            apiBaseUrlInput.focus();
+          }
+        });
+      }
+
+      function closeSettings() {
+        settingsBackdropPointerDown = false;
+        settingsMask.classList.remove("show");
+      }
+
+      function shouldIgnoreSettingsBackdropClose() {
+        return Date.now() < settingsBackdropIgnoreUntil;
+      }
+
+      function saveSettings() {
+        settings = {
+          ...settings,
+          apiBaseUrl: apiBaseUrlInput.value.trim() || DEFAULT_API_BASE,
+          model: modelInput.value.trim() || DEFAULT_MODEL,
+          apiKey: apiKeyInput.value.trim(),
+        };
+        post({ type: "setSettings", settings });
+        updateModelBadge();
+        closeSettings();
+        appendLog("Settings saved");
+        showToast("设置已保存", "success");
+      }
+
+      async function testConnection() {
+        testResult.textContent = "Testing…";
+        testResult.className = "settings-test-result";
+        const prev = { ...settings };
+        settings = {
+          ...settings,
+          apiBaseUrl: apiBaseUrlInput.value.trim() || DEFAULT_API_BASE,
+          model: modelInput.value.trim() || DEFAULT_MODEL,
+          apiKey: apiKeyInput.value.trim(),
+        };
+        try {
+          await callChatJson({
+            system: 'Reply with JSON: {"ok":true}',
+            userText: "ping",
+          });
+          testResult.textContent = "Connection OK";
+          testResult.className = "settings-test-result ok";
+        } catch (err) {
+          testResult.textContent = err.message;
+          testResult.className = "settings-test-result err";
+        }
+        settings = prev;
+      }
+
+      async function handleAiRename(msg) {
+        setBusy(true);
+        switchView("rename");
+        appendLog(`AI rename: ${msg.candidates.length} candidates…`);
+        try {
+          const result = await callChatJson({
+            system: AI_SYSTEM,
+            userText: buildRenamePrompt(msg.candidates),
+            png: msg.png,
+          });
+          const items = result.rename || [];
+          if (!items.length) throw new Error("Model returned no rename items");
+          renderRenameResults(items, msg.candidates);
+          appendLog(`Applying ${items.length} names…`);
+          post({ type: "renameResult", items, cloneRootId: msg.cloneRootId });
+        } catch (err) {
+          appendLog("Error: " + err.message);
+          post({ type: "error", message: err.message });
+        } finally {
+          setBusy(false);
+        }
+      }
+
+      async function handleAiGroup(msg) {
+        pendingGroupCloneRootId = msg.cloneRootId;
+        setBusy(true);
+        switchView("group");
+        applyGroupBtn.disabled = true;
+        appendLog(`AI group: ${msg.candidates.length} children…`);
+        try {
+          const result = await callChatJson({
+            system: AI_SYSTEM,
+            userText: buildGroupPrompt(msg.candidates, msg.suggestedClusters),
+            png: msg.png,
+          });
+          const plan = { groups: result.groups || [] };
+          if (!plan.groups.length) throw new Error("Model returned no groups");
+          groupPlanEditor.value = JSON.stringify(plan, null, 2);
           applyGroupBtn.disabled = false;
-          logGroup(`Done. Applied grouping on clone.`);
-          break;
-
-        case "log":
-          logBridge(`[${msg.level}] ${msg.message}`);
-          break;
-
-        case "status":
-          logBridge(msg.message);
-          logRename(msg.message);
-          logGroup(msg.message);
-          break;
-
-        case "error":
-          logBridge("Error: " + msg.message);
-          logRename("Error: " + msg.message);
-          logGroup("Error: " + msg.message);
-          break;
+          appendLog(
+            `Plan ready (${plan.groups.length} top-level groups). Review and apply.`,
+          );
+        } catch (err) {
+          appendLog("Error: " + err.message);
+          post({ type: "error", message: err.message });
+        } finally {
+          setBusy(false);
+        }
       }
-    };
 
-    post({ type: "ui-ready" });
-    // Prefer port from plugin main (constants.BRIDGE_PORT). Fallback to build inject.
-    setTimeout(() => {
-      if (!bridgePortReady) connectBridge();
-    }, 300);
+      function applyGroupPlan() {
+        let plan;
+        try {
+          plan = JSON.parse(groupPlanEditor.value);
+        } catch {
+          appendLog("Invalid JSON in plan editor");
+          showToast("分组计划 JSON 无效", "error");
+          return;
+        }
+        if (!pendingGroupCloneRootId) {
+          appendLog("No clone in progress. Run Start group first.");
+          showToast("请先开始视觉分组", "error");
+          return;
+        }
+        applyGroupBtn.disabled = true;
+        setBusy(true);
+        appendLog("Applying groups on clone…");
+        post({
+          type: "groupApply",
+          plan,
+          cloneRootId: pendingGroupCloneRootId,
+        });
+      }
 
-    setTimeout(() => {
-      checkForUpdates({ showModal: true });
-    }, VERSION_CHECK_DELAY_MS);
-  </script>
-</body>
+      function runCurrentTask() {
+        if (currentView === "rename") {
+          appendLog("Starting rename workflow…");
+          setBusy(true);
+          post({ type: "startRename" });
+          return;
+        }
+        if (currentView === "group") {
+          appendLog("Starting group workflow…");
+          setBusy(true);
+          post({ type: "startGroup" });
+        }
+      }
+
+      // Navigation
+      document.querySelectorAll("[data-view]").forEach((el) => {
+        el.addEventListener("click", () => switchView(el.dataset.view));
+      });
+
+      btnSidebarCollapse.addEventListener("click", () => {
+        sidebar.classList.add("is-collapsed");
+      });
+      btnSidebarExpand.addEventListener("click", () => {
+        sidebar.classList.remove("is-collapsed");
+      });
+
+      btnMini.addEventListener("click", toggleMini);
+
+      btnSettings.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        // 设置弹窗打开时，不要让 ⚙ 的空格/回车再去切换菜单
+        if (settingsMask.classList.contains("show")) return;
+        const open = settingsMenuWrap.classList.toggle("is-open");
+        btnSettings.setAttribute("aria-expanded", open ? "true" : "false");
+      });
+      settingsMenuModel.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        openSettings();
+      });
+      settingsMenuPrompt.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        openPromptModal();
+      });
+      settingsMenuUpdate.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        closeSettingsMenu();
+        checkForUpdates({ force: true, showModal: true });
+      });
+      document.addEventListener("click", (e) => {
+        if (!settingsMenuWrap.classList.contains("is-open")) return;
+        if (settingsMenuWrap.contains(e.target)) return;
+        closeSettingsMenu();
+      });
+
+      settingsCancel.addEventListener("click", closeSettings);
+      settingsClose.addEventListener("click", closeSettings);
+      settingsSave.addEventListener("click", saveSettings);
+      testConnectionBtn.addEventListener("click", testConnection);
+
+      // 仅当在遮罩上完整按下并抬起时才关闭，避免拖选/误触；弹窗内点击不冒泡到 mask
+      const settingsModalEl = settingsMask.querySelector(".settings-modal");
+      if (settingsModalEl) {
+        settingsModalEl.addEventListener("mousedown", (e) => e.stopPropagation());
+        settingsModalEl.addEventListener("click", (e) => e.stopPropagation());
+      }
+      settingsMask.addEventListener("mousedown", (e) => {
+        settingsBackdropPointerDown =
+          e.target === settingsMask && !shouldIgnoreSettingsBackdropClose();
+      });
+      settingsMask.addEventListener("mouseup", (e) => {
+        const shouldClose =
+          settingsBackdropPointerDown &&
+          e.target === settingsMask &&
+          !shouldIgnoreSettingsBackdropClose();
+        settingsBackdropPointerDown = false;
+        if (shouldClose) closeSettings();
+      });
+      settingsMask.addEventListener("click", (e) => {
+        // 兜底：忽略打开后极短时间内的 click（含键盘激活菜单项后的合成 click）
+        if (e.target === settingsMask && shouldIgnoreSettingsBackdropClose()) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      });
+      if (promptTabs) {
+        promptTabs.addEventListener("click", (event) => {
+          const btn = event.target.closest(".prompt-tab");
+          if (!btn) return;
+          const key = btn.getAttribute("data-prompt-key");
+          if (!key || key === activePromptKey) return;
+          if (promptDraftDirty && promptEditor) {
+            const ok = window.confirm(
+              "当前提示词有未保存修改，切换标签将丢弃修改，是否继续？",
+            );
+            if (!ok) return;
+          }
+          loadPromptEditor(key);
+        });
+      }
+      if (promptEditor) {
+        promptEditor.addEventListener("input", () => {
+          promptDraftDirty = true;
+        });
+      }
+      promptModalClose.addEventListener("click", closePromptModal);
+      promptCancelBtn.addEventListener("click", closePromptModal);
+      promptModalMask.addEventListener("click", (e) => {
+        if (e.target === promptModalMask) closePromptModal();
+      });
+      promptResetBtn.addEventListener("click", () => {
+        if (!promptEditor) return;
+        promptEditor.value = getDefaultPromptTemplate(activePromptKey);
+        promptDraftDirty = true;
+        appendLog("已载入默认提示词（尚未保存）：" + activePromptKey);
+      });
+      promptSaveBtn.addEventListener("click", () => {
+        if (!promptEditor) return;
+        const text = promptEditor.value;
+        const next = { ...promptOverrides };
+        const defaults = getDefaultPromptTemplate(activePromptKey);
+        if (!text.trim() || text === defaults) {
+          delete next[activePromptKey];
+        } else {
+          next[activePromptKey] = text;
+        }
+        savePromptOverrides(next);
+        promptDraftDirty = false;
+        appendLog(
+          "提示词已保存：" +
+            ((PROMPT_TAB_META[activePromptKey] || {}).label || activePromptKey),
+        );
+        showToast("提示词已保存", "success");
+        closePromptModal();
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key !== "Escape") return;
+        if (promptModalMask.classList.contains("show")) {
+          closePromptModal();
+          e.preventDefault();
+          return;
+        }
+        if (settingsMask.classList.contains("show")) {
+          closeSettings();
+          e.preventDefault();
+          return;
+        }
+        if (settingsMenuWrap.classList.contains("is-open")) {
+          closeSettingsMenu();
+          e.preventDefault();
+        }
+      });
+
+      function closeUpdateModal() {
+        updateMask.classList.remove("show");
+      }
+
+      updateLater.addEventListener("click", () => {
+        if (remoteVersionInfo?.latest) {
+          settings.dismissedVersion = remoteVersionInfo.latest;
+          post({ type: "setSettings", settings });
+        }
+        closeUpdateModal();
+      });
+      updateClose.addEventListener("click", closeUpdateModal);
+      updateDownload.addEventListener("click", () => {
+        const base =
+          remoteVersionInfo?.downloadUrl ||
+          "https://github.com/ChinaCarlos/figma-agent-kit/archive/refs/heads/main.zip";
+        post({ type: "openExternal", url: `${base}?_t=${Date.now()}` });
+        if (remoteVersionInfo?.latest) {
+          settings.dismissedVersion = remoteVersionInfo.latest;
+          post({ type: "setSettings", settings });
+        }
+        closeUpdateModal();
+      });
+      updateMask.addEventListener("click", (e) => {
+        if (e.target === updateMask) closeUpdateModal();
+      });
+
+      btnRunTask.addEventListener("click", runCurrentTask);
+      applyGroupBtn.addEventListener("click", applyGroupPlan);
+      btnBridgeReconnect.addEventListener("click", () => {
+        if (reconnectTimer) {
+          clearTimeout(reconnectTimer);
+          reconnectTimer = null;
+        }
+        if (socket) {
+          try {
+            socket.onclose = null;
+            socket.close();
+          } catch (_) {
+            /* ignore */
+          }
+          socket = null;
+        }
+        reconnectDelay = 1000;
+        connectBridge({ manual: true });
+      });
+
+      btnConsoleToggle.addEventListener("click", () => {
+        const collapsed = consolePanel.classList.toggle("collapsed");
+        btnConsoleToggle.textContent = collapsed ? "展开" : "收起";
+      });
+      btnClearLog.addEventListener("click", () => {
+        consoleBody.textContent = "";
+      });
+
+      // Console resize
+      (() => {
+        const handle = document.getElementById("console-resize-handle");
+        let dragging = false;
+        let startY = 0;
+        let startH = 0;
+        handle.addEventListener("mousedown", (e) => {
+          if (consolePanel.classList.contains("collapsed")) return;
+          dragging = true;
+          startY = e.clientY;
+          startH = consolePanel.getBoundingClientRect().height;
+          e.preventDefault();
+        });
+        window.addEventListener("mousemove", (e) => {
+          if (!dragging) return;
+          const next = Math.min(320, Math.max(80, startH + (startY - e.clientY)));
+          consolePanel.style.height = `${next}px`;
+        });
+        window.addEventListener("mouseup", () => {
+          dragging = false;
+        });
+      })();
+
+      // Window resize handle
+      (() => {
+        const handle = document.getElementById("window-resize-handle");
+        let dragging = false;
+        let startX = 0;
+        let startY = 0;
+        let startW = 0;
+        let startH = 0;
+        handle.addEventListener("mousedown", (e) => {
+          if (miniMode) return;
+          dragging = true;
+          startX = e.screenX;
+          startY = e.screenY;
+          startW = window.innerWidth;
+          startH = window.innerHeight;
+          e.preventDefault();
+        });
+        window.addEventListener("mousemove", (e) => {
+          if (!dragging) return;
+          const width = Math.round(startW + (e.screenX - startX));
+          const height = Math.round(startH + (e.screenY - startY));
+          post({ type: "resizeWindow", width, height, mini: false });
+        });
+        window.addEventListener("mouseup", () => {
+          dragging = false;
+        });
+      })();
+
+      window.onmessage = (event) => {
+        const msg = event.data.pluginMessage;
+        if (!msg) return;
+
+        switch (msg.type) {
+          case "selectionChange":
+            fileKey = msg.fileKey;
+            fileName = msg.fileName;
+            updateBridgeMeta();
+            renderSelection(msg.selection);
+            if (!socket || socket.readyState !== WebSocket.OPEN) connectBridge();
+            break;
+
+          case "bridgeStatus":
+            fileKey = msg.fileKey;
+            fileName = msg.fileName;
+            updateBridgeMeta();
+            break;
+
+          case "server-response":
+            sendBridgeResponse({
+              requestId: msg.requestId,
+              ok: msg.ok,
+              data: msg.data,
+              error: msg.error,
+            });
+            appendLog(`${msg.ok ? "OK" : "ERR"} ${msg.requestId.slice(0, 8)}…`);
+            break;
+
+          case "settings":
+            settings = {
+              apiBaseUrl: msg.settings.apiBaseUrl || DEFAULT_API_BASE,
+              apiKey: msg.settings.apiKey || "",
+              model: msg.settings.model || DEFAULT_MODEL,
+              dismissedVersion: msg.settings.dismissedVersion || "",
+            };
+            apiBaseUrlInput.value = settings.apiBaseUrl;
+            modelInput.value = settings.model;
+            apiKeyInput.value = settings.apiKey;
+            updateModelBadge();
+            if (
+              remoteVersionInfo &&
+              settings.dismissedVersion === remoteVersionInfo.latest
+            ) {
+              closeUpdateModal();
+            }
+            break;
+
+          case "promptOverrides":
+            applyPromptOverrides(msg.overrides);
+            if (promptModalMask.classList.contains("show")) {
+              loadPromptEditor(activePromptKey);
+            }
+            break;
+
+          case "pluginVersion":
+            break;
+
+          case "bridgeConfig": {
+            const nextPort = Number(msg.port);
+            if (!Number.isInteger(nextPort) || nextPort < 1) break;
+            const changed = nextPort !== BRIDGE_PORT;
+            BRIDGE_PORT = nextPort;
+            bridgePortReady = true;
+            if (changed && socket) {
+              try {
+                socket.close();
+              } catch (_) {
+                /* ignore */
+              }
+              socket = null;
+            }
+            if (!socket || socket.readyState !== WebSocket.OPEN) {
+              connectBridge();
+            } else {
+              bridgeUrlEl.textContent = buildWsUrl();
+              updateBridgeMeta();
+            }
+            break;
+          }
+
+          case "aiRenameRequest":
+            handleAiRename(msg);
+            break;
+
+          case "aiGroupRequest":
+            handleAiGroup(msg);
+            break;
+
+          case "renameDone":
+            setBusy(false);
+            appendLog(`Done. Renamed ${msg.items.length} layer(s) on clone.`);
+            showToast(`已重命名 ${msg.items.length} 层`, "success");
+            break;
+
+          case "groupDone":
+            setBusy(false);
+            applyGroupBtn.disabled = false;
+            appendLog("Done. Applied grouping on clone.");
+            showToast("分组已应用到副本", "success");
+            break;
+
+          case "log":
+            appendLog(`[${msg.level}] ${msg.message}`);
+            break;
+
+          case "status":
+            appendLog(msg.message);
+            break;
+
+          case "error":
+            setBusy(false);
+            appendLog("Error: " + msg.message);
+            showToast(msg.message, "error");
+            break;
+        }
+      };
+
+      updateModelBadge();
+      switchView("bridge");
+      post({ type: "ui-ready" });
+      setTimeout(() => {
+        if (!bridgePortReady) connectBridge();
+      }, 300);
+      setTimeout(() => {
+        checkForUpdates({ showModal: true });
+      }, VERSION_CHECK_DELAY_MS);
+    </script>
+  </body>
 </html>

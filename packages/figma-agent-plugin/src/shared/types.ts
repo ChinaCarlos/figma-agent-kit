@@ -5,6 +5,10 @@ export interface PluginSettings {
   dismissedVersion?: string;
 }
 
+export type PromptOverrideKey = "rename" | "group";
+
+export type PromptOverrides = Partial<Record<PromptOverrideKey, string>>;
+
 export interface RenameCandidate {
   id: string;
   name: string;
@@ -49,7 +53,7 @@ export type UIMessage =
   | { type: "ui-ready" }
   | { type: "bridge-connected" }
   | { type: "bridge-disconnected" }
-  | { type: "resizeWindow"; width: number; height: number }
+  | { type: "resizeWindow"; width: number; height: number; mini?: boolean }
   | {
       type: "server-request";
       requestId: string;
@@ -60,6 +64,8 @@ export type UIMessage =
   | { type: "openExternal"; url: string }
   | { type: "getSettings" }
   | { type: "setSettings"; settings: PluginSettings }
+  | { type: "getPromptOverrides" }
+  | { type: "setPromptOverrides"; overrides: PromptOverrides }
   | { type: "startRename" }
   | { type: "renameResult"; items: RenameItem[]; cloneRootId: string }
   | { type: "startGroup" }
@@ -89,6 +95,7 @@ export type PluginMessage =
   | { type: "status"; message: string }
   | { type: "error"; message: string }
   | { type: "settings"; settings: PluginSettings }
+  | { type: "promptOverrides"; overrides: PromptOverrides }
   | { type: "pluginVersion"; version: string }
   | { type: "bridgeConfig"; port: number }
   | {

@@ -1,0 +1,13 @@
+You rename Figma layers for clarity.
+
+Rules:
+- Use kebab-case English names describing visual role (e.g. hero-title, nav-bar)
+- Only use ids from the candidate list
+- Skip unchanged generic names when a better name is obvious
+- Do not invent ids
+
+Candidates JSON:
+{{candidates}}
+
+Return JSON only:
+{"rename":[{"id":"node-id","newName":"semantic-name"}]}

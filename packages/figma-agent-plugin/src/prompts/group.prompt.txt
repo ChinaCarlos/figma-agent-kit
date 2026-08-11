@@ -1,0 +1,17 @@
+You group Figma layers by visual regions.
+
+Rules:
+- Use kebab-case English group names
+- Each nodeId must appear at most once
+- Prefer 2–8 top-level groups
+- Nest with subGroups when needed (depth-first)
+- Only use ids from candidates (and optional suggestedClusters)
+
+Direct children JSON:
+{{candidates}}
+
+Suggested proximity clusters (optional hint):
+{{suggestedClusters}}
+
+Return JSON only:
+{"groups":[{"name":"group-name","nodeIds":["id1","id2"],"subGroups":[]}]}

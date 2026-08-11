@@ -4,7 +4,7 @@ Figma Agent Kit includes optional **AI layer rename** and **visual grouping** wo
 
 ## Setup
 
-1. Open the plugin → **Settings**
+1. Open the plugin → ⚙ → **模型设置**
 2. Set **API base URL** (default `https://api.openai.com/v1`)
 3. Set **Model** (default `gpt-4o`; `gpt-4o-mini` also works)
 4. Paste your **API key**
@@ -12,14 +12,30 @@ Figma Agent Kit includes optional **AI layer rename** and **visual grouping** wo
 
 Credentials are stored in Figma `clientStorage` on your machine only.
 
+### Prompt templates
+
+⚙ → **提示词设置** 可分别编辑「图层重命名」「视觉分组」系统提示词。
+
+- 默认模板在 `packages/figma-agent-plugin/src/prompts/*.prompt.txt`，构建时注入 UI
+- 支持占位符：`{{candidates}}`、`{{suggestedClusters}}`（分组）
+- **恢复默认** 会载入仓库默认文案；**保存提示词** 后写入本地 `clientStorage`（仅覆盖有改动的项）
+
 ### Custom AI providers
 
-Figma plugins must declare allowed network domains in `manifest.json`. This repo includes:
+Figma plugins must declare allowed network domains in `manifest.json`. This repo already allowlists common OpenAI-compatible hosts, including:
 
-- `https://api.openai.com` (default)
-- `https://raw.githubusercontent.com` (version checks)
+- `https://api.openai.com`（默认）
+- `https://dashscope.aliyuncs.com` / `https://dashscope-intl.aliyuncs.com`（通义 / 百炼）
+- `https://api.deepseek.com`
+- `https://api.moonshot.cn`
+- `https://api.siliconflow.cn`
+- `https://open.bigmodel.cn`（智谱）
+- `https://ark.cn-beijing.volces.com`（火山方舟）
+- `https://openrouter.ai`、`https://api.groq.com`、`https://api.together.xyz`
+- `http://localhost`（本地代理）
+- `https://raw.githubusercontent.com`（版本检查）
 
-For other hosts (Azure OpenAI, local LiteLLM, etc.), add the API host to `networkAccess.allowedDomains` in `packages/figma-agent-plugin/manifest.json`, rebuild, and re-import the plugin.
+若使用 Azure OpenAI 等自定义域名，把对应 host 加进 `packages/figma-agent-plugin/manifest.json` → `networkAccess.allowedDomains`，重建并重新 Import 插件。
 
 ## AI rename
 

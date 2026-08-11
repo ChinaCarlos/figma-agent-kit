@@ -11,9 +11,23 @@
   "networkAccess": {
     "allowedDomains": [
       "https://raw.githubusercontent.com",
+      "http://localhost",
       "https://api.openai.com",
+      "https://dashscope.aliyuncs.com",
+      "https://dashscope-intl.aliyuncs.com",
+      "https://api.deepseek.com",
+      "https://api.moonshot.cn",
+      "https://api.siliconflow.cn",
+      "https://api.siliconflow.com",
+      "https://open.bigmodel.cn",
+      "https://ark.cn-beijing.volces.com",
+      "https://api.lingyiwanwu.com",
+      "https://api.minimax.chat",
+      "https://api.groq.com",
+      "https://api.together.xyz",
+      "https://openrouter.ai",
       "ws://localhost:1998"
     ],
-    "reasoning": "Local MCP bridge (ws://localhost:1998), GitHub release version checks (raw.githubusercontent.com), and default OpenAI-compatible API (api.openai.com). For other AI providers, add their host to allowedDomains in manifest.json and rebuild. Change the bridge port in /bridge.config.json then run pnpm sync:bridge (or any build)."
+    "reasoning": "Local MCP bridge (ws://localhost:1998), GitHub release checks (raw.githubusercontent.com), and common OpenAI-compatible LLM APIs (OpenAI, DashScope/Qwen, DeepSeek, Moonshot, SiliconFlow, Zhipu, Volcengine Ark, Yi, MiniMax, Groq, Together, OpenRouter, local proxies). Add more hosts to allowedDomains and rebuild if needed."
   }
 }

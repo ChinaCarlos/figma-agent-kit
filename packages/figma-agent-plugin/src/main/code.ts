@@ -3,11 +3,17 @@ import { applyGroupPlan } from "../group/apply";
 import { collectGroupCandidates } from "../group/collect";
 import { applyRenames } from "../rename/apply";
 import { collectRenameCandidates } from "../rename/collect";
-import { BRIDGE_PORT, SETTINGS_STORAGE_KEY, UI_SIZE } from "../shared/constants";
+import {
+  BRIDGE_PORT,
+  PROMPT_OVERRIDES_STORAGE_KEY,
+  SETTINGS_STORAGE_KEY,
+  UI_SIZE,
+} from "../shared/constants";
 import type {
   GroupPlan,
   PluginMessage,
   PluginSettings,
+  PromptOverrides,
   SerializedSelectionItem,
   UIMessage,
 } from "../shared/types";
@@ -73,6 +79,23 @@ async function sendSettings(): Promise<void> {
   } satisfies PluginMessage);
 }
 
+function normalizePromptOverrides(raw: unknown): PromptOverrides {
+  const next: PromptOverrides = {};
+  if (!raw || typeof raw !== "object") return next;
+  const obj = raw as Record<string, unknown>;
+  if (typeof obj.rename === "string") next.rename = obj.rename;
+  if (typeof obj.group === "string") next.group = obj.group;
+  return next;
+}
+
+async function sendPromptOverrides(): Promise<void> {
+  const raw = await figma.clientStorage.getAsync(PROMPT_OVERRIDES_STORAGE_KEY);
+  figma.ui.postMessage({
+    type: "promptOverrides",
+    overrides: normalizePromptOverrides(raw),
+  } satisfies PluginMessage);
+}
+
 function isRenameRoot(node: SceneNode): node is FrameNode | GroupNode {
   return node.type === "FRAME" || node.type === "GROUP";
 }
@@ -121,12 +144,15 @@ figma.ui.onmessage = async (raw: UIMessage) => {
         version: __PLUGIN_VERSION__,
       } satisfies PluginMessage);
       await sendSettings();
+      await sendPromptOverrides();
       break;
     }
 
     case "resizeWindow": {
-      const width = Math.min(UI_SIZE.max.width, Math.max(UI_SIZE.min.width, raw.width));
-      const height = Math.min(UI_SIZE.max.height, Math.max(UI_SIZE.min.height, raw.height));
+      const minW = raw.mini ? UI_SIZE.mini.width : UI_SIZE.min.width;
+      const minH = raw.mini ? UI_SIZE.mini.height : UI_SIZE.min.height;
+      const width = Math.min(UI_SIZE.max.width, Math.max(minW, raw.width));
+      const height = Math.min(UI_SIZE.max.height, Math.max(minH, raw.height));
       figma.ui.resize(width, height);
       break;
     }
@@ -144,6 +170,18 @@ figma.ui.onmessage = async (raw: UIMessage) => {
     case "setSettings": {
       await figma.clientStorage.setAsync(SETTINGS_STORAGE_KEY, raw.settings);
       await sendSettings();
+      break;
+    }
+
+    case "getPromptOverrides": {
+      await sendPromptOverrides();
+      break;
+    }
+
+    case "setPromptOverrides": {
+      const overrides = normalizePromptOverrides(raw.overrides);
+      await figma.clientStorage.setAsync(PROMPT_OVERRIDES_STORAGE_KEY, overrides);
+      await sendPromptOverrides();
       break;
     }
 
