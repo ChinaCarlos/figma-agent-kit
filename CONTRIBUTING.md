@@ -5,63 +5,61 @@ Thanks for helping improve **Figma Agent Kit**.
 ## Development setup
 
 ```bash
+git clone https://github.com/ChinaCarlos/figma-agent-kit.git
+cd figma-agent-kit
 pnpm install
 pnpm build:all
 ```
 
-| Task | Command |
-|------|---------|
-| Sync bridge port | `pnpm sync:bridge` |
-| Plugin watch | `pnpm dev` |
-| Plugin production build | `pnpm build` |
-| MCP watch | `pnpm dev:mcp` |
-| MCP build | `pnpm build:mcp` |
-| Start MCP | `pnpm start:mcp` |
-| Release MCP (npm) | `pnpm release:mcp:patch` 等 |
-| Release plugin (GitHub ZIP) | `pnpm release:plugin:patch` 等 |
-| Pack plugin ZIP only | `pnpm pack:plugin` |
+Requirements: Node.js ≥ 20, pnpm ≥ 9, Figma Desktop.
 
-After plugin changes, **Reload plugin** in Figma Desktop.
+| Script | Purpose |
+|--------|---------|
+| `pnpm dev` | Plugin watch build |
+| `pnpm dev:mcp` | MCP TypeScript watch |
+| `pnpm build:all` | Production build both packages |
+| `pnpm start:mcp` | Run built MCP on the bridge port |
+| `pnpm sync:bridge` | Sync `bridge.config.json` → MCP + plugin + manifest |
 
-## Bridge port (single source of truth)
+Import the plugin from `packages/figma-agent-plugin/manifest.json` (Development). Reload after UI/bridge changes.
 
-Edit **`/bridge.config.json`** → `defaultPort`, then run any build (`pnpm build:all` / `pnpm sync:bridge`).
+## Bridge port
 
-That syncs:
+Single source of truth: [`bridge.config.json`](./bridge.config.json).
+
+Do **not** hand-edit generated files such as:
 
 - `packages/figma-agent-mcp/src/default-port.ts`
-- `packages/figma-agent-plugin/src/shared/bridge-port.generated.ts` (exported as `BRIDGE_PORT` from `constants.ts`)
-- `packages/figma-agent-plugin/manifest.json` (`ws://localhost:<port>`)
-- Plugin UI (`__BRIDGE_PORT__` injected into `ui.html` at rsbuild time)
+- `packages/figma-agent-plugin/src/shared/bridge-port.generated.ts`
+- baked `ws://localhost:…` in `manifest.json` (written by sync)
 
-Do **not** hand-edit those generated files or hardcode `1998` in the UI.
+Change `defaultPort` → `pnpm sync:bridge` → rebuild → reload plugin → restart MCP.
 
 ## Project layout
 
 ```text
-bridge.config.json      # default MCP / plugin bridge port
-packages/
-  figma-agent-plugin/   # Figma plugin
-  figma-agent-mcp/      # MCP server + bridge
-docs/                   # User & protocol docs
-scripts/                # sync-bridge-config.mjs, …
+packages/figma-agent-mcp/     # MCP + bridge server
+packages/figma-agent-plugin/  # Figma plugin
+docs/                         # User & architecture docs (English)
+scripts/                      # sync-bridge, release-kit
 ```
 
-## Guidelines
+Read [docs/architecture.md](./docs/architecture.md) (or [中文](./docs/zh/architecture.md)) before large changes.
 
-1. **No secrets** in commits (tokens, private registries, internal hosts).
-2. Prefer small, focused PRs.
-3. Keep bridge tool names stable when possible (agents depend on them).
-4. Use `console.error` for MCP server logs (stdout is reserved for MCP stdio).
-5. Document new tools in `docs/tools.md`.
-6. Change the bridge port only via `bridge.config.json`.
+Docs are bilingual: English under `docs/`, Chinese under `docs/zh/`, with `README.md` / `README.zh-CN.md` language switchers. Prefer GitHub raw URLs for screenshots (`https://raw.githubusercontent.com/ChinaCarlos/figma-agent-kit/main/docs/images/...`).
 
 ## Pull requests
 
-1. Fork / branch from `main`
-2. Make changes + build locally
-3. Open a PR with a short summary and test notes
+1. Open an issue for large features / breaking protocol changes when possible
+2. Keep PRs focused; update docs when behavior changes
+3. Ensure `pnpm build:all` passes
+4. Follow the [Code of Conduct](./CODE_OF_CONDUCT.md)
+5. Do not commit secrets, `.env`, or `releases/*.zip`
 
-## Code of conduct
+## Releases
 
-Be respectful. Assume good intent. Harassment is not allowed.
+Maintainers: see [docs/mcp-release.md](./docs/mcp-release.md) and [docs/plugin-release.md](./docs/plugin-release.md). Prefer `pnpm release:kit:*` so MCP and plugin stay version-aligned.
+
+## Questions
+
+Use GitHub Discussions/Issues for product questions. Security issues: [SECURITY.md](./SECURITY.md).

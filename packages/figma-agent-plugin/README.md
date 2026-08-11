@@ -1,53 +1,38 @@
-# figma-agent-plugin
+# Figma Agent Kit (plugin)
 
-Figma Agent Kit plugin — connects Figma Desktop to a local MCP bridge so AI agents can read and modify the current file.
+Figma Desktop plugin for [figma-agent-kit](https://github.com/ChinaCarlos/figma-agent-kit): local MCP bridge client, optional AI rename/group, and 3× slice export.
 
-## Prerequisites
+Distributed as a **ZIP** on [GitHub Releases](https://github.com/ChinaCarlos/figma-agent-kit/releases) (not npm). Keep the version aligned with [`figma-agent-mcp`](https://www.npmjs.com/package/figma-agent-mcp).
 
-- [Figma Desktop](https://www.figma.com/downloads/)
-- Node.js 20+ and [pnpm](https://pnpm.io/)
-- [`figma-agent-mcp`](../figma-agent-mcp) running locally (WebSocket on port `1998`)
+## Install (release ZIP)
 
-## Build
+1. Download `figma-agent-plugin-vX.Y.Z.zip`
+2. Unzip
+3. Figma Desktop → **Plugins → Development → Import plugin from manifest…**
+4. Select `manifest.json`
+5. Run **Figma Agent Kit** and start MCP (`npx -y figma-agent-mcp`)
 
-From the monorepo root:
+## Develop from the monorepo
 
 ```bash
+# from repo root
 pnpm install
 pnpm --filter figma-agent-plugin build
+# Import packages/figma-agent-plugin/manifest.json
+pnpm --filter figma-agent-plugin dev   # watch
 ```
 
-Development watch mode:
+Bridge port is synced from root `bridge.config.json` via `pnpm sync:bridge`.
 
-```bash
-pnpm --filter figma-agent-plugin dev
-```
+## Features
 
-Output: `dist/code.js`
-
-## Import in Figma
-
-1. Open **Figma Desktop** → **Plugins** → **Development** → **Import plugin from manifest…**
-2. Select `packages/figma-agent-plugin/manifest.json`
-3. Run **Figma Agent Kit** from **Plugins** → **Development**
-
-## Usage
-
-1. Start the MCP bridge: `pnpm --filter figma-agent-mcp start` (from repo root)
-2. Open a Figma file and run the plugin
-3. Configure your agent to use the `figma-agent-mcp` MCP server
-4. The plugin UI shows bridge status and current selection
-
-**Mini mode** collapses the panel to a compact header. **Settings** stores OpenAI-compatible API credentials for **Rename** and **Group** tabs. **Version checks** pull from `releases/version.json` on GitHub.
-
-## Architecture
-
-```
-AI Agent  ←→  figma-agent-mcp (stdio MCP + WS :1998)  ←→  Plugin UI  ←→  Plugin main (Figma API)
-```
-
-See the [figma-agent-kit](https://github.com/ChinaCarlos/figma-agent-kit) monorepo README for full documentation.
+| Area | Docs |
+|------|------|
+| MCP bridge (MsgPack WS) | [Bridge protocol](https://github.com/ChinaCarlos/figma-agent-kit/blob/main/docs/bridge-protocol.md) |
+| AI rename / group | [AI features](https://github.com/ChinaCarlos/figma-agent-kit/blob/main/docs/ai-features.md) |
+| Slice export | [Exporting slices](https://github.com/ChinaCarlos/figma-agent-kit/blob/main/docs/exporting-slices.md) |
+| Getting started | [Getting started](https://github.com/ChinaCarlos/figma-agent-kit/blob/main/docs/getting-started.md) |
 
 ## License
 
-MIT
+MIT (see repository root `LICENSE`)

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/ChinaCarlos/figma-agent-kit/security/advisories/new
+    about: Please report security issues privately (see SECURITY.md).
+  - name: Documentation
+    url: https://github.com/ChinaCarlos/figma-agent-kit/blob/main/docs/README.md
+    about: Read the docs and FAQ before filing a bug.

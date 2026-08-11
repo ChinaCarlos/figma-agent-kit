@@ -1,0 +1,66 @@
+name: Bug report
+description: Something is broken in the MCP server or Figma plugin
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. Check [FAQ](https://github.com/ChinaCarlos/figma-agent-kit/blob/main/docs/faq.md) first.
+        For security issues use [SECURITY.md](https://github.com/ChinaCarlos/figma-agent-kit/blob/main/SECURITY.md).
+  - type: input
+    id: mcp_version
+    attributes:
+      label: figma-agent-mcp version
+      placeholder: "0.1.3"
+    validations:
+      required: true
+  - type: input
+    id: plugin_version
+    attributes:
+      label: Plugin version
+      description: Shown in the plugin UI / release ZIP name
+      placeholder: "0.1.3"
+    validations:
+      required: true
+  - type: input
+    id: figma_version
+    attributes:
+      label: Figma Desktop version
+      placeholder: "e.g. 125.x"
+    validations:
+      required: false
+  - type: dropdown
+    id: os
+    attributes:
+      label: OS
+      options:
+        - macOS
+        - Windows
+        - Linux
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: what_happened
+    attributes:
+      label: What happened?
+      description: Expected vs actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Run plugin…
+        2. Call list_files…
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / screenshots
+      description: MCP stderr, plugin console, bridge status (redact secrets)
+    validations:
+      required: false

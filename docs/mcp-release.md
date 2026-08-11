@@ -1,103 +1,81 @@
-# figma-agent-mcp 发版指南
+# Releasing figma-agent-mcp
 
-公开 npm 包：[`figma-agent-mcp`](https://www.npmjs.com/package/figma-agent-mcp)
+**English** | [简体中文](./zh/mcp-release.md)
 
-推荐分工：
+Public npm package: [`figma-agent-mcp`](https://www.npmjs.com/package/figma-agent-mcp)
 
-| 步骤 | 在哪做 |
+## Responsibilities
+
+| Step | Where |
 |------|--------|
-| bump / CHANGELOG / tag / push | 本地 `pnpm release:mcp:*` 或 Actions **Release MCP** |
-| `pnpm pack` + GitHub Release（附 `.tgz`） | GitHub Actions |
-| `npm publish`（npmjs） | **本地**（`npm login` + `--publish`），或 Secret `NPM_TOKEN` |
-| GitHub Packages（仓库侧栏 Packages） | Actions 用 `GITHUB_TOKEN` 自动发布 `@<owner>/figma-agent-mcp` |
+| Bump / CHANGELOG / tag / push | Local `pnpm release:mcp:*` or Actions **Release MCP** |
+| `pnpm pack` + GitHub Release (`.tgz`) | GitHub Actions |
+| `npm publish` (npmjs) | Local (`npm login` + `--publish`) or Secret `NPM_TOKEN` |
+| GitHub Packages (repo sidebar) | Actions publishes `@<owner>/figma-agent-mcp` with `GITHUB_TOKEN` |
 
-仓库首页 **Packages** 只展示 [GitHub Packages](https://docs.github.com/packages)（`npm.pkg.github.com`），**不是** GitHub Releases，也不是 npmjs。发版时 CI 会同步发布；补发可用 Actions → **Publish GitHub Packages**。
+The repository **Packages** sidebar shows [GitHub Packages](https://docs.github.com/packages) (`npm.pkg.github.com`), not npmjs and not GitHub Releases. Re-run Actions → **Publish GitHub Packages** to backfill.
 
-若配置了可选 Secret `NPM_TOKEN`，Actions 也会尝试 `npm publish` 到 npmjs；未配置则跳过，不影响 GitHub Release / GitHub Packages。
+If `NPM_TOKEN` is set, Actions also tries `npm publish` to npmjs; if unset, npmjs publish is skipped without failing GitHub Release / Packages.
 
-## 一次性准备（本地 npm）
+## One-time npm login
 
 ```bash
 npm login --registry https://registry.npmjs.org/
 npm whoami --registry https://registry.npmjs.org/
 ```
 
-## 日常发版（推荐：与插件同版本）
+## Recommended: co-release with the plugin
 
-MCP 与插件版本应对齐。一键发两边：
+Keep MCP and plugin versions aligned:
 
 ```bash
-pnpm release:kit:patch   # 或 minor / major
+pnpm release:kit:patch   # or minor / major
 ```
 
-会 bump **root + mcp + plugin** 到同一版本，打两个 tag，触发：
+This bumps **root + mcp + plugin**, pushes two tags, and triggers:
 
-- **Release MCP** → `npm publish`（需 Secret `NPM_TOKEN`）+ 可选 GitHub Release  
-- **Release Plugin** → 插件 ZIP GitHub Release  
+- **Release MCP** → npm (if `NPM_TOKEN`) + GitHub Release
+- **Release Plugin** → plugin ZIP GitHub Release
 
-只发 MCP（可能造成版本不一致，不推荐）：
+MCP-only (can drift versions — not recommended):
 
 ```bash
 pnpm release:mcp:patch
 ```
 
-本地一并发布到 npm：
+Publish to npm locally:
 
 ```bash
 cd packages/figma-agent-mcp && node scripts/release.mjs patch --publish
-# 或发版后：
+# or after tagging:
 cd packages/figma-agent-mcp && npm publish --access public --registry https://registry.npmjs.org/
 ```
 
-只改版本文件、不提交：
+Bump without git:
 
 ```bash
 cd packages/figma-agent-mcp && node scripts/release.mjs patch --no-git
 ```
 
-## 测试 CI 打包（不 bump、不发 npm）
-
-Actions → **Pack MCP** → Run workflow  
-
-或：
+## CI pack only (no bump / no publish)
 
 ```bash
 gh workflow run pack-mcp.yml
 ```
 
-成功后可在该次 run 的 Artifacts 下载 `figma-agent-mcp-pack`（`.tgz`）。
+Artifact: `figma-agent-mcp-pack` (`.tgz`).
 
-## 从 GitHub Actions 完整发版
-
-Actions → **Release MCP** → 选择 `patch|minor|major`。  
-
-同一 job：bump、推送 tag、pack、创建 Release；有 `NPM_TOKEN` 才 publish。
-
-## Tag 约定
+## Tag convention
 
 ```text
-figma-agent-mcp-v0.1.1
+figma-agent-mcp-v0.1.3
 ```
 
-## 发布后客户端配置
+## CHANGELOG
 
-```json
-{
-  "mcpServers": {
-    "figma-agent-mcp": {
-      "command": "npx",
-      "args": ["-y", "figma-agent-mcp"]
-    }
-  }
-}
-```
+[`packages/figma-agent-mcp/CHANGELOG.md`](../packages/figma-agent-mcp/CHANGELOG.md) must keep a `## [Unreleased]` section — the release script requires it (Keep a Changelog).
 
-## 相关文件
+## Related
 
-| 路径 | 说明 |
-|------|------|
-| `packages/figma-agent-mcp/scripts/release.mjs` | 发版脚手架 |
-| `packages/figma-agent-mcp/CHANGELOG.md` | Keep a Changelog |
-| `.github/workflows/release-mcp.yml` | tag / dispatch 发版 |
-| `.github/workflows/pack-mcp.yml` | 仅验证 pack |
-| `releases/version.json` | **插件**版本检查（与 MCP npm 独立） |
+- [Plugin release](./plugin-release.md)
+- [Getting started](./getting-started.md)

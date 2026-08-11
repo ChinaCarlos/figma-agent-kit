@@ -1,38 +1,50 @@
 # MCP tools
 
-Tools exposed by **figma-agent-mcp**. Unless noted, calls are forwarded to the open Figma plugin over the bridge.
+**English** | [简体中文](./zh/tools.md)
 
-Optional common argument: `fileKey` — select which connected file to use.
+Tools exposed by **figma-agent-mcp** (37 total). Unless noted, calls are forwarded to the open Figma plugin over the bridge.
 
-Many write tools accept either **flat** fields (`name`, `x`, `visible`, …) or a nested `properties` object (merged into flat params on the plugin side).
+## Conventions
 
-When `nodeIds` is omitted for screenshot / metadata / design context / zoom, the plugin falls back to the **current selection**.
+| Convention | Detail |
+|------------|--------|
+| `fileKey` | Optional on almost all tools — select which connected file to use |
+| Flat vs `properties` | Many write tools accept flat fields (`name`, `x`, …) **or** a nested `properties` object (merged on the plugin side) |
+| Selection fallback | When `nodeIds` is omitted for screenshot / metadata / design context / zoom, the plugin uses the **current selection** |
+| Motion | Requires a Figma build that exposes motion APIs; otherwise a clear capability error is returned |
 
-## Meta
+```mermaid
+flowchart LR
+  Meta[Meta_2] --> Read[Read_8]
+  Read --> Write[Write_20]
+  Write --> Motion[Motion_7]
+```
+
+## Meta (MCP-local)
 
 | Tool | Description |
 |------|-------------|
-| `list_files` | List Figma files currently connected to the bridge (works on leader and follower) |
-| `save_screenshots` | Export nodes to disk. PNG defaults to TinyPNG-style compression (`compress=true`). `scale` default **2**; use **`scale=3`** for slice assets matching the plugin UI export. Supports `format`: PNG / SVG / JPG / PDF, optional `clip` |
+| `list_files` | List Figma files currently connected to the bridge (leader local / follower via `/files`) |
+| `save_screenshots` | Export nodes to disk. PNG defaults to TinyPNG-style compression (`compress=true`). `scale` default **2**; use **`scale=3`** for slice assets matching the plugin UI export. Supports `format`: PNG / SVG / JPG / PDF, optional `clip`, `path` |
 
 ## Read
 
 | Tool | Description |
 |------|-------------|
-| `get_document` | Current page tree overview (`depth` optional) |
+| `get_document` | Current page tree overview (`depth` optional, 0–20) |
 | `get_selection` | Current selection |
-| `get_node` | Serialize node(s) by id (`depth` optional) |
+| `get_node` | Serialize node(s) by id (`nodeIds` required, `depth` optional) |
 | `get_styles` | Local paint / text / effect styles |
-| `get_metadata` | Lightweight id/name/type/size |
+| `get_metadata` | Lightweight id / name / type / size |
 | `get_design_context` | Serialized nodes for agent context |
 | `get_variable_defs` | Local variable collections and variables |
-| `get_screenshot` | Raster/vector export; wire uses raw bytes (MsgPack bin), agent result is base64. Default `format=PNG`, `scale=2`. Uncompressed — prefer `save_screenshots` for compressed slices |
+| `get_screenshot` | Raster/vector export; wire uses raw bytes (MsgPack bin), agent result is base64. Default `format=PNG`, `scale=2`. **Uncompressed** — prefer `save_screenshots` for compressed slices |
 
 ## Write / mutate
 
 | Tool | Description |
 |------|-------------|
-| `set_node_visibility` | Show / hide nodes (`visible`) |
+| `set_node_visibility` | Show / hide (`visible`) |
 | `set_text_content` | Set text characters (`text`) |
 | `set_text_properties` | Font size / family / style / align / spacing |
 | `set_node_properties` | Name, position, size, opacity, rotation |
@@ -44,7 +56,7 @@ When `nodeIds` is omitted for screenshot / metadata / design context / zoom, the
 | `create_frame` | Create a frame |
 | `create_text` | Create a text node |
 | `create_shape` | Create `RECTANGLE` / `ELLIPSE` / `LINE` / `POLYGON` / `STAR` |
-| `create_image` | Create a rectangle with image fill from base64 `imageData` |
+| `create_image` | Rectangle with image fill from base64 `imageData` |
 | `duplicate_nodes` | Duplicate |
 | `reparent_nodes` | Move in hierarchy (`parentId`, optional `index`) |
 | `group_nodes` | Group |
@@ -55,13 +67,11 @@ When `nodeIds` is omitted for screenshot / metadata / design context / zoom, the
 
 ## Motion (Figma Motion API beta)
 
-Requires a Figma build that exposes `figma.motion` / `applyAnimationStyle` on nodes. Otherwise tools return a clear capability error.
-
 | Tool | Description |
 |------|-------------|
-| `get_motion_styles` | List available animation styles |
-| `get_node_motion` | Read node animation styles, keyframes, timelines |
-| `apply_animation_style` | Apply style (`styleId`, optional `animationStyleData`) |
+| `get_motion_styles` | List available animation styles / presets |
+| `get_node_motion` | Read animation styles, keyframes, timelines |
+| `apply_animation_style` | Apply style (`styleId`, optional `animationStyleData`) — use `animationStyleData.type: "FIGMA"` for built-in presets |
 | `remove_animation_style` | Remove one style or all (`animationStyleId` optional) |
 | `apply_manual_keyframe_track` | Write a manual keyframe track (`field`, `track`) |
 | `remove_manual_keyframe_track` | Remove a manual keyframe track (`field`) |
@@ -69,8 +79,20 @@ Requires a Figma build that exposes `figma.motion` / `applyAnimationStyle` on no
 
 ## Example agent flow
 
-1. `list_files`  
-2. `get_selection`  
-3. `get_screenshot` on the selected frame (preview)  
-4. `save_screenshots` with `scale: 3`, `compress: true` for delivery slices  
-5. `set_text_content` / `set_node_properties` to apply edits  
+```mermaid
+flowchart TD
+  A[list_files] --> B[get_selection]
+  B --> C[get_screenshot_preview]
+  C --> D[save_screenshots_scale3]
+  D --> E[set_text_or_properties]
+```
+
+1. `list_files`
+2. `get_selection` / `get_node`
+3. `get_screenshot` for a quick preview
+4. `save_screenshots` with `scale: 3`, `compress: true` for delivery slices
+5. `set_text_content` / `set_node_properties` (or motion tools) to apply edits
+
+## Schema source
+
+Authoritative Zod schemas live in [`packages/figma-agent-mcp/src/schema.ts`](../packages/figma-agent-mcp/src/schema.ts). Tool registration is in [`tools.ts`](../packages/figma-agent-mcp/src/tools.ts).

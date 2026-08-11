@@ -15,21 +15,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [0.1.3] - 2026-08-11
 
-### Changed
+### Added
 
-- Motion MCP tools (7) + TinyPNG save_screenshots scale/format; codec inject fix; dynamic-page getNodeByIdAsync
+- Motion bridge handlers for the seven Motion MCP tools
+- `get_screenshot` support for `format`, `scale` (default 2), and `clip`
+
+### Fixed
+
+- MsgPack codec inject in Rsbuild (`String.replace` with `$&` from minified msgpackr)
+- Node resolution under `documentAccess: "dynamic-page"` using `figma.getNodeByIdAsync`
 
 ## [0.1.2] - 2026-08-11
 
+### Added
+
+- Slice export UI: 1× preview thumbs, 3× PNG download, ZIP via JSZip
+- Chinese / English i18n (`locales.json`)
+- Language switch in the settings (⚙) menu
+
 ### Changed
 
-- Slice export (1× preview / 3× PNG+ZIP), zh-en i18n, language switch in settings menu
+- Moved language preference out of model settings into the settings dropdown
 
 ## [0.1.1] - 2026-08-11
 
 ### Changed
 
-- CI npm publish test; keep mcp + plugin at same version
+- Version alignment with MCP for CI publish testing
 
 ## [0.1.0] - 2026-08-11
 
@@ -37,8 +49,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 - Initial open-source plugin release
 - Local MCP bridge client (MessagePack WebSocket)
-- AI layer rename & visual grouping (OpenAI-compatible)
-- Settings, Mini mode, and GitHub version check
+- AI layer rename and visual grouping (OpenAI-compatible)
+- Settings, Mini mode, and GitHub `version.json` update check
 
-[Unreleased]: https://github.com/ChinaCarlos/figma-agent-kit/releases
+[Unreleased]: https://github.com/ChinaCarlos/figma-agent-kit/compare/figma-agent-plugin-v0.1.3...HEAD
 [0.1.3]: https://github.com/ChinaCarlos/figma-agent-kit/releases/tag/figma-agent-plugin-v0.1.3
+[0.1.2]: https://github.com/ChinaCarlos/figma-agent-kit/releases/tag/figma-agent-plugin-v0.1.2
+[0.1.1]: https://github.com/ChinaCarlos/figma-agent-kit/releases/tag/figma-agent-plugin-v0.1.1
+[0.1.0]: https://github.com/ChinaCarlos/figma-agent-kit/releases/tag/figma-agent-plugin-v0.1.0

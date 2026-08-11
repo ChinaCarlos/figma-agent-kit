@@ -1,23 +1,21 @@
 # figma-agent-mcp
 
-MCP server that bridges AI agents (Cursor, Claude Desktop, etc.) to Figma via a companion plugin WebSocket bridge.
+[![npm](https://img.shields.io/npm/v/figma-agent-mcp.svg)](https://www.npmjs.com/package/figma-agent-mcp)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
-## Prerequisites
+Local **Model Context Protocol** server that bridges AI agents to the **Figma Agent Kit** Desktop plugin over `localhost` (MessagePack WebSocket + Leader/Follower election).
 
-- Node.js 18+
-- A Figma plugin that connects to this server's WebSocket endpoint (`/ws?fileKey=...&fileName=...`)
+This package is part of the [figma-agent-kit](https://github.com/ChinaCarlos/figma-agent-kit) monorepo. Full docs: [Getting started](https://github.com/ChinaCarlos/figma-agent-kit/blob/main/docs/getting-started.md) · [Screenshots](https://github.com/ChinaCarlos/figma-agent-kit/blob/main/docs/screenshots.md) · [Tools](https://github.com/ChinaCarlos/figma-agent-kit/blob/main/docs/tools.md) · [Architecture](https://github.com/ChinaCarlos/figma-agent-kit/blob/main/docs/architecture.md).
 
-## Install
+## Install / run
 
 ```bash
-npm install figma-agent-mcp
-# or
-pnpm add figma-agent-mcp
+npx -y figma-agent-mcp
 ```
 
-## Cursor configuration
+Or pin a version: `npx -y figma-agent-mcp@0.1.3`
 
-Add to your Cursor MCP settings (`~/.cursor/mcp.json` or project `.cursor/mcp.json`):
+### Cursor (`~/.cursor/mcp.json`)
 
 ```json
 {
@@ -30,65 +28,20 @@ Add to your Cursor MCP settings (`~/.cursor/mcp.json` or project `.cursor/mcp.js
 }
 ```
 
-### Custom port
-
-Default port is **1998**. Override with the `FIGMA_AGENT_MCP_PORT` environment variable:
+Optional port (must match the plugin):
 
 ```json
-{
-  "mcpServers": {
-    "figma-agent-mcp": {
-      "command": "npx",
-      "args": ["-y", "figma-agent-mcp"],
-      "env": {
-        "FIGMA_AGENT_MCP_PORT": "1998"
-      }
-    }
-  }
-}
+"env": { "FIGMA_AGENT_MCP_PORT": "1998" }
 ```
 
-## How it works
+## Requirements
 
-1. **MCP process** — speaks stdio MCP to your agent and runs an internal HTTP/WebSocket server on the configured port.
-2. **Leader election** — if multiple MCP instances start, one becomes leader (holds the WebSocket bridge); others forward RPC to the leader.
-3. **Figma plugin** — connects via WebSocket to `ws://localhost:PORT/ws?fileKey=KEY&fileName=NAME`.
-4. **Tools** — MCP tools forward requests to the plugin through the bridge.
+- Node.js ≥ 18 (monorepo recommends ≥ 20)
+- [Figma Agent Kit plugin](https://github.com/ChinaCarlos/figma-agent-kit/releases) running in Figma Desktop on the **same version**
 
-## Available tools
+## Tools
 
-### MCP-local
-
-| Tool | Description |
-|------|-------------|
-| `list_files` | List connected Figma files |
-| `save_screenshots` | Export to disk; PNG TinyPNG-style compression by default; use `scale: 3` for slices |
-
-### Bridge-forwarded (require plugin)
-
-Read: `get_document`, `get_selection`, `get_node`, `get_styles`, `get_metadata`, `get_design_context`, `get_variable_defs`, `get_screenshot`
-
-Write: `set_node_visibility`, `set_text_content`, `set_text_properties`, `set_node_properties`, `set_solid_fill`, `set_gradient_fill`, `set_effects`, `set_stroke_properties`, `set_auto_layout`, `create_frame`, `create_text`, `create_shape`, `create_image`, `duplicate_nodes`, `reparent_nodes`, `group_nodes`, `ungroup_node`, `set_selection`, `scroll_and_zoom_into_view`, `delete_nodes`
-
-Motion (Figma Motion API beta): `get_motion_styles`, `get_node_motion`, `apply_animation_style`, `remove_animation_style`, `apply_manual_keyframe_track`, `remove_manual_keyframe_track`, `set_timeline_duration`
-
-Full list: [docs/tools.md](../../docs/tools.md) (37 tools).
-
-## Release
-
-From the monorepo root (see [docs/mcp-release.md](../../docs/mcp-release.md)):
-
-```bash
-pnpm release:mcp:patch   # bump → tag → CI publishes npm + GitHub Release
-```
-
-## Development
-
-```bash
-pnpm install
-pnpm build
-pnpm start
-```
+37 tools: read/write canvas, screenshots (`save_screenshots` with TinyPNG-style PNG compression), Motion beta. See the [tool catalog](https://github.com/ChinaCarlos/figma-agent-kit/blob/main/docs/tools.md).
 
 ## License
 

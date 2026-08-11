@@ -1,75 +1,81 @@
-# Figma Agent Kit 插件发版指南
+# Releasing the Figma plugin
 
-插件**不发 npm**。分发包是 ZIP，挂在 **GitHub Releases**，并更新 `releases/version.json`（插件内更新检查）。
+**English** | [简体中文](./zh/plugin-release.md)
 
-MCP（`figma-agent-mcp`）走 npm，见 [mcp-release.md](./mcp-release.md)。
+The plugin is **not** published to npm. Distribution is a **ZIP** on **GitHub Releases**, plus [`releases/version.json`](../releases/version.json) for in-plugin update checks.
 
-## 产物结构
+MCP npm releases: [mcp-release.md](./mcp-release.md).
+
+## Artifacts
 
 ```text
 releases/
-  version.json                          # latest / notes / downloadUrl（提交到 main）
-  figma-agent-plugin-v0.1.0.zip         # GitHub Release 附件（不进 git）
-  figma-agent-plugin-v0.1.0/            # 本地解压校验目录（不进 git）
+  version.json                          # latest / notes / downloadUrl (committed on main)
+  figma-agent-plugin-v0.1.3.zip         # GitHub Release asset (gitignored)
+  figma-agent-plugin-v0.1.3/            # local unpack for verification (gitignored)
     manifest.json
     dist/code.js
 ```
 
-`downloadUrl` 形如：
+Example `downloadUrl`:
 
 ```text
-https://github.com/ChinaCarlos/figma-agent-kit/releases/download/figma-agent-plugin-v0.1.0/figma-agent-plugin-v0.1.0.zip
+https://github.com/ChinaCarlos/figma-agent-kit/releases/download/figma-agent-plugin-v0.1.3/figma-agent-plugin-v0.1.3.zip
 ```
 
-## 日常发版
+## Daily release
 
-工作区干净时：
+Working tree clean:
 
 ```bash
-# 预览
+# Preview
 cd packages/figma-agent-plugin && node scripts/release.mjs patch --dry-run
 
 # bump → CHANGELOG → build → ZIP → version.json → commit → tag → push
-# → Actions 创建 GitHub Release（标题/说明/ZIP）
 pnpm release:plugin:patch
 pnpm release:plugin:minor
 pnpm release:plugin:major
 ```
 
-只打包不推送：
+Prefer co-release with MCP:
+
+```bash
+pnpm release:kit:patch
+```
+
+Pack only (no push):
 
 ```bash
 pnpm pack:plugin
 ```
 
-## 测试 CI 打包
+## CI pack only
 
 ```bash
 gh workflow run pack-plugin.yml
 ```
 
-Artifacts：`figma-agent-plugin-pack`。
+Artifact: `figma-agent-plugin-pack`.
 
-## 用户如何安装某版本
+## Install a released build
 
-1. 打开仓库 **Releases**，下载 `figma-agent-plugin-vX.Y.Z.zip`
-2. 解压
-3. Figma Desktop → **Plugins → Development → Import plugin from manifest…**
-4. 选择解压目录里的 `manifest.json`
+1. Open repository **Releases**
+2. Download `figma-agent-plugin-vX.Y.Z.zip`
+3. Unzip
+4. Figma Desktop → **Plugins → Development → Import plugin from manifest…**
+5. Select the unzipped `manifest.json`
 
-## Tag 约定
+## Tag convention
 
 ```text
-figma-agent-plugin-v0.1.0
+figma-agent-plugin-v0.1.3
 ```
 
-## 相关文件
+## CHANGELOG
 
-| 路径 | 说明 |
-|------|------|
-| `packages/figma-agent-plugin/scripts/assemble-release.mjs` | 组装 ZIP + version.json |
-| `packages/figma-agent-plugin/scripts/release.mjs` | bump / tag |
-| `packages/figma-agent-plugin/CHANGELOG.md` | 版本说明 |
-| `.github/workflows/release-plugin.yml` | 打 Release |
-| `.github/workflows/pack-plugin.yml` | 仅验证打包 |
-| `releases/version.json` | 插件更新检查源 |
+[`packages/figma-agent-plugin/CHANGELOG.md`](../packages/figma-agent-plugin/CHANGELOG.md) must keep `## [Unreleased]` for the release script.
+
+## Related
+
+- [AI features](./ai-features.md) — update check URL
+- [MCP release](./mcp-release.md)
