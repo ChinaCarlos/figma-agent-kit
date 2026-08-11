@@ -11,7 +11,16 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](https://nodejs.org)
 
-**开源 Figma Desktop 插件 + 本地 MCP 桥**：让 Cursor / Claude Code / Codex 等 AI Agent 读写当前打开的设计稿，而无需把画布经 Figma REST API 上传到云端。
+[![Cursor](https://img.shields.io/badge/Cursor-MCP-000000?style=flat-square)](./docs/zh/agent-setup.md#cursor)
+[![Claude Code](https://img.shields.io/badge/Claude%20Code-MCP-D97706?style=flat-square)](./docs/zh/agent-setup.md#claude-code)
+[![Codex](https://img.shields.io/badge/Codex-MCP-10A37F?style=flat-square)](./docs/zh/agent-setup.md#codexopenai)
+[![Qoder](https://img.shields.io/badge/Qoder-MCP-2563EB?style=flat-square)](./docs/zh/agent-setup.md#qoder)
+[![CodeBuddy](https://img.shields.io/badge/CodeBuddy-MCP-7C3AED?style=flat-square)](./docs/zh/agent-setup.md#codebuddy)
+[![Trae](https://img.shields.io/badge/Trae-MCP-0EA5E9?style=flat-square)](./docs/zh/agent-setup.md#trae)
+
+**开源 Figma Desktop 插件 + 本地 MCP 桥**：让 AI 编程 Agent **读写**当前打开的设计稿，无需经 Figma REST API 上传画布。
+
+已适配 **Cursor · Claude Code · Codex · Qoder · CodeBuddy · Trae**（以及其他支持 stdio MCP 的宿主）。
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/ChinaCarlos/figma-agent-kit/main/docs/images/plugin-in-figma.png" alt="Figma Desktop 中已连接 MCP Bridge 的插件界面" width="720" />
@@ -27,6 +36,23 @@ flowchart LR
 ```
 
 深入阅读：[架构说明](./docs/zh/architecture.md) · [截图图库](./docs/zh/screenshots.md) · [英文文档](./docs/README.md)
+
+## 支持的编辑器
+
+`figma-agent-mcp` 是标准 **stdio MCP** 服务，可接入你正在用的 AI 编辑器：
+
+| 编辑器 / IDE | 接入入口 | 配置方式 |
+|--------------|----------|----------|
+| **[Cursor](./docs/zh/agent-setup.md#cursor)** | Settings → MCP，或 `~/.cursor/mcp.json` | JSON `mcpServers` |
+| **[Claude Code](./docs/zh/agent-setup.md#claude-code)** | `claude mcp add` 或 `.mcp.json` | JSON / CLI |
+| **[Codex](./docs/zh/agent-setup.md#codexopenai)**（OpenAI） | `codex mcp add` 或 `~/.codex/config.toml` | TOML / CLI |
+| **[Qoder](./docs/zh/agent-setup.md#qoder)** | 设置 → MCP → 添加 | JSON `mcpServers` |
+| **[CodeBuddy](./docs/zh/agent-setup.md#codebuddy)** | 设置 → MCP → Add MCP | JSON `mcpServers` |
+| **[Trae](./docs/zh/agent-setup.md#trae)** | 设置 → MCP，或 `.trae/mcp.json` | JSON `mcpServers` |
+
+完整复制粘贴配置：**[接入 AI Agent](./docs/zh/agent-setup.md)** · [English guide](./docs/agent-setup.md)
+
+> 其他兼容 MCP 的客户端同样适用：用 stdio 运行 `npx -y figma-agent-mcp` 即可。
 
 ## 为什么需要它
 
@@ -48,6 +74,7 @@ flowchart LR
 
 ## 功能特性
 
+- **多编辑器 MCP** — Cursor、Claude Code、Codex、Qoder、CodeBuddy、Trae（[接入指南](./docs/zh/agent-setup.md)）
 - **37 个 MCP 工具** — 文档/选区/节点读写、填充、文本、Auto Layout、创建/分组/删除、Motion 等（[目录](./docs/zh/tools.md)）
 - **MessagePack 桥** — 二进制 WS + Follower RPC；截图在链路上为原始 PNG 字节
 - **`save_screenshots`** — TinyPNG 风格 PNG 压缩；`scale=3` 与插件切图一致
@@ -69,9 +96,9 @@ flowchart LR
 |----------|-----------|
 | ![插件界面](https://raw.githubusercontent.com/ChinaCarlos/figma-agent-kit/main/docs/images/plugin-in-figma.png) | ![Mini 模式](https://raw.githubusercontent.com/ChinaCarlos/figma-agent-kit/main/docs/images/plugin-mini-mode.png) |
 
-### 2. 配置 MCP 客户端
+### 2. 接入你的编辑器（MCP）
 
-**Cursor、Claude Code、Codex、Qoder、CodeBuddy、Trae** 的完整接入步骤：
+先在 [支持的编辑器](#支持的编辑器) 选中你的工具，再按对应章节配置：
 
 **[docs/zh/agent-setup.md](./docs/zh/agent-setup.md)** · [English](./docs/agent-setup.md)
 

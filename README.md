@@ -11,7 +11,16 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](https://nodejs.org)
 
-**Open-source Figma Desktop plugin + local MCP bridge** so AI agents (Cursor, Claude Code, Codex, …) can read and write the file you have open — without uploading the canvas through Figma’s REST API.
+[![Cursor](https://img.shields.io/badge/Cursor-MCP-000000?style=flat-square)](./docs/agent-setup.md#cursor)
+[![Claude Code](https://img.shields.io/badge/Claude%20Code-MCP-D97706?style=flat-square)](./docs/agent-setup.md#claude-code)
+[![Codex](https://img.shields.io/badge/Codex-MCP-10A37F?style=flat-square)](./docs/agent-setup.md#codex-openai)
+[![Qoder](https://img.shields.io/badge/Qoder-MCP-2563EB?style=flat-square)](./docs/agent-setup.md#qoder)
+[![CodeBuddy](https://img.shields.io/badge/CodeBuddy-MCP-7C3AED?style=flat-square)](./docs/agent-setup.md#codebuddy)
+[![Trae](https://img.shields.io/badge/Trae-MCP-0EA5E9?style=flat-square)](./docs/agent-setup.md#trae)
+
+**Open-source Figma Desktop plugin + local MCP bridge** so AI coding agents can **read and write** the file you have open — without uploading the canvas through Figma’s REST API.
+
+Works with **Cursor · Claude Code · Codex · Qoder · CodeBuddy · Trae** (and any other stdio MCP host).
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/ChinaCarlos/figma-agent-kit/main/docs/images/plugin-in-figma.png" alt="Figma Agent Kit plugin in Figma Desktop with MCP Bridge connected" width="720" />
@@ -27,6 +36,23 @@ flowchart LR
 ```
 
 Deep dive: [docs/architecture.md](./docs/architecture.md) · [Screenshot gallery](./docs/screenshots.md).
+
+## Supported editors
+
+`figma-agent-mcp` is a standard **stdio MCP** server. Plug it into the AI editor you already use:
+
+| Editor / IDE | Setup | Config style |
+|--------------|-------|--------------|
+| **[Cursor](./docs/agent-setup.md#cursor)** | Settings → MCP, or `~/.cursor/mcp.json` | JSON `mcpServers` |
+| **[Claude Code](./docs/agent-setup.md#claude-code)** | `claude mcp add` or `.mcp.json` | JSON / CLI |
+| **[Codex](./docs/agent-setup.md#codex-openai)** (OpenAI) | `codex mcp add` or `~/.codex/config.toml` | TOML / CLI |
+| **[Qoder](./docs/agent-setup.md#qoder)** | Settings → MCP → Add | JSON `mcpServers` |
+| **[CodeBuddy](./docs/agent-setup.md#codebuddy)** | Settings → MCP → Add MCP | JSON `mcpServers` |
+| **[Trae](./docs/agent-setup.md#trae)** | Settings → MCP, or `.trae/mcp.json` | JSON `mcpServers` |
+
+Full copy-paste configs (EN / 中文): **[Connect AI agents](./docs/agent-setup.md)** · [中文接入指南](./docs/zh/agent-setup.md)
+
+> Other MCP-compatible clients work the same way: run `npx -y figma-agent-mcp` over stdio.
 
 ## Why
 
@@ -48,6 +74,7 @@ Keep MCP and plugin on the **same version** (see [npm](https://www.npmjs.com/pac
 
 ## Features
 
+- **Multi-editor MCP** — Cursor, Claude Code, Codex, Qoder, CodeBuddy, Trae ([setup](./docs/agent-setup.md))
 - **37 MCP tools** — document/selection/node reads, fills, text, auto-layout, create/group/delete, Motion beta, and more ([catalog](./docs/tools.md))
 - **MessagePack bridge** — binary WS + follower RPC; screenshots as raw PNG bytes on the wire
 - **`save_screenshots`** — TinyPNG-style PNG compression; `scale=3` matches plugin slice export
@@ -69,9 +96,9 @@ A green **MCP Bridge connected** status means the plugin can talk to the local M
 |------------|-----------|
 | ![Plugin UI](https://raw.githubusercontent.com/ChinaCarlos/figma-agent-kit/main/docs/images/plugin-in-figma.png) | ![Mini mode](https://raw.githubusercontent.com/ChinaCarlos/figma-agent-kit/main/docs/images/plugin-mini-mode.png) |
 
-### 2. MCP clients
+### 2. Connect your editor (MCP)
 
-Step-by-step for **Cursor, Claude Code, Codex, Qoder, CodeBuddy, Trae**:
+Pick your tool from [Supported editors](#supported-editors), then follow the matching section:
 
 **[docs/agent-setup.md](./docs/agent-setup.md)** · [中文](./docs/zh/agent-setup.md)
 
