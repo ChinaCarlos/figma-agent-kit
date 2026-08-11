@@ -9,7 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- First stable **1.0.0** kit release (MCP + plugin versions locked)
+- Docs site for install / agent setup / tools: https://chinacarlos.github.io/figma-agent-kit/
+
 ### Changed
+
+- Promoted from 0.1.x preview line to stable 1.0.0
 
 ### Fixed
 
