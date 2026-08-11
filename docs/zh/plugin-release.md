@@ -11,8 +11,8 @@ MCP npm 发版见 [mcp-release.md](./mcp-release.md)。
 ```text
 releases/
   version.json                          # latest / notes / downloadUrl（提交到 main）
-  figma-agent-plugin-v0.1.3.zip         # GitHub Release 附件（gitignore）
-  figma-agent-plugin-v0.1.3/            # 本地解压校验（gitignore）
+  figma-agent-plugin-vX.Y.Z.zip         # GitHub Release 附件（gitignore）
+  figma-agent-plugin-vX.Y.Z/            # 本地解压校验（gitignore）
     manifest.json
     dist/code.js
 ```
@@ -20,7 +20,7 @@ releases/
 示例 `downloadUrl`：
 
 ```text
-https://github.com/ChinaCarlos/figma-agent-kit/releases/download/figma-agent-plugin-v0.1.3/figma-agent-plugin-v0.1.3.zip
+https://github.com/ChinaCarlos/figma-agent-kit/releases/download/figma-agent-plugin-vX.Y.Z/figma-agent-plugin-vX.Y.Z.zip
 ```
 
 ## 日常发版
@@ -66,7 +66,7 @@ gh workflow run pack-plugin.yml
 ## Tag 约定
 
 ```text
-figma-agent-plugin-v0.1.3
+figma-agent-plugin-vX.Y.Z
 ```
 
 ## CHANGELOG

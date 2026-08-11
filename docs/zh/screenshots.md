@@ -2,7 +2,7 @@
 
 [English](../screenshots.md) | **简体中文**
 
-Figma 插件与 Cursor MCP 配置界面一览（v0.1.3）。图片地址均为 GitHub raw。
+Figma 插件与 Cursor MCP 配置界面一览。图片地址均为 GitHub raw。
 
 ## 插件在 Figma Desktop 中打开
 
@@ -42,7 +42,7 @@ OpenAI 兼容的 **API base URL**、模型名、API Key，以及 **测试连接*
 
 ## Cursor MCP 配置
 
-`mcp.json` 中使用 `npx` 的示例（可锁定如 `@0.1.3`）。
+`mcp.json` 中使用 `npx` 的示例（未锁定，npx 安装最新版）。
 
 ![Cursor mcp.json 配置](https://raw.githubusercontent.com/ChinaCarlos/figma-agent-kit/main/docs/images/cursor-mcp-config.png)
 

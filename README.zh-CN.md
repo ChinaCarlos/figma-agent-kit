@@ -44,7 +44,7 @@ flowchart LR
 | [`figma-agent-mcp`](https://www.npmjs.com/package/figma-agent-mcp) | npm / [GitHub Packages](https://github.com/ChinaCarlos/figma-agent-kit/pkgs/npm/figma-agent-mcp) | Stdio MCP + HTTP/WS 桥 |
 | `figma-agent-plugin` | [GitHub Releases](https://github.com/ChinaCarlos/figma-agent-kit/releases) ZIP | Figma 插件（桥客户端、AI、切图） |
 
-请保持 MCP 与插件为**同一版本**（当前 **0.1.3**）。
+请保持 MCP 与插件为**同一版本**（见 [npm](https://www.npmjs.com/package/figma-agent-mcp) / [Releases](https://github.com/ChinaCarlos/figma-agent-kit/releases)）。
 
 ## 功能特性
 
@@ -69,9 +69,13 @@ flowchart LR
 |----------|-----------|
 | ![插件界面](https://raw.githubusercontent.com/ChinaCarlos/figma-agent-kit/main/docs/images/plugin-in-figma.png) | ![Mini 模式](https://raw.githubusercontent.com/ChinaCarlos/figma-agent-kit/main/docs/images/plugin-mini-mode.png) |
 
-### 2. 配置 MCP（Cursor 示例）
+### 2. 配置 MCP 客户端
 
-`~/.cursor/mcp.json`：
+**Cursor、Claude Code、Codex、Qoder、CodeBuddy、Trae** 的完整接入步骤：
+
+**[docs/zh/agent-setup.md](./docs/zh/agent-setup.md)** · [English](./docs/agent-setup.md)
+
+**Cursor 快速示例** — `~/.cursor/mcp.json`：
 
 ```json
 {
@@ -82,12 +86,6 @@ flowchart LR
     }
   }
 }
-```
-
-推荐锁定版本以便复现：
-
-```json
-"args": ["-y", "figma-agent-mcp@0.1.3"]
 ```
 
 ![Cursor mcp.json](https://raw.githubusercontent.com/ChinaCarlos/figma-agent-kit/main/docs/images/cursor-mcp-config.png)
@@ -116,6 +114,7 @@ pnpm build:all
 | 文档 | 说明 |
 |------|------|
 | [上手指南](./docs/zh/getting-started.md) | 安装、配置、冒烟测试 |
+| [接入 AI Agent](./docs/zh/agent-setup.md) | Cursor / Claude Code / Codex / Qoder / CodeBuddy / Trae |
 | [截图图库](./docs/zh/screenshots.md) | 插件 + Cursor 界面截图 |
 | [架构说明](./docs/zh/architecture.md) | 模块、技术栈、流程图 |
 | [桥接协议](./docs/zh/bridge-protocol.md) | WS / HTTP / MsgPack |

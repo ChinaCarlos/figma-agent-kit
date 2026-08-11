@@ -2,6 +2,21 @@
 
 [English](../faq.md) | **简体中文**
 
+## Agent / MCP 客户端
+
+### 支持哪些客户端？
+
+任何 stdio MCP 宿主都可运行 `npx -y figma-agent-mcp`。我们整理了：
+
+**Cursor · Claude Code · Codex · Qoder · CodeBuddy · Trae** — 见 **[接入 AI Agent](./agent-setup.md)**（English：[Connect AI agents](../agent-setup.md)）。
+
+### 客户端已配置但工具失败 / Not connected？
+
+1. 确认 Figma 插件桥为绿色
+2. 确认客户端确实拉起了 MCP（PATH 上有 `npx` / Node）
+3. 对照 [agent-setup.md](./agent-setup.md) 中对应客户端章节
+4. 再看下文 [桥接 / 连接](#桥接--连接)
+
 ## 桥接 / 连接
 
 ### `list_files` 返回 Not connected 或空
@@ -40,7 +55,7 @@
 
 ### 换页后 `getNodeById` / 找不到节点
 
-插件使用 `documentAccess: "dynamic-page"` 与 **`getNodeByIdAsync`**。请使用 ≥ 0.1.3。多文件时传入正确 `fileKey`。
+插件使用 `documentAccess: "dynamic-page"` 与 **`getNodeByIdAsync`**。请使用包含 `getNodeByIdAsync` 支持的较新插件/MCP 版本。多文件时传入正确 `fileKey`。
 
 ## AI（插件 UI）
 

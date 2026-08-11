@@ -2,6 +2,21 @@
 
 **English** | [简体中文](./zh/faq.md)
 
+## Agents / MCP clients
+
+### Which clients are supported?
+
+Any stdio MCP host can run `npx -y figma-agent-mcp`. We document:
+
+**Cursor · Claude Code · Codex · Qoder · CodeBuddy · Trae** — see **[Connect AI agents](./agent-setup.md)** (中文：[接入 AI Agent](./zh/agent-setup.md)).
+
+### My client is configured but tools fail / show Not connected
+
+1. Confirm the Figma plugin bridge is green
+2. Confirm the client actually spawned MCP (`npx` / Node on PATH)
+3. Follow the client-specific section in [agent-setup.md](./agent-setup.md)
+4. See [Bridge / connection](#bridge--connection) below
+
 ## Bridge / connection
 
 ### `list_files` returns “Not connected” or empty
@@ -40,7 +55,7 @@ Use `save_screenshots` with `compress: true` (default for PNG) and write to disk
 
 ### `getNodeById` / node not found after page switch
 
-The plugin uses `documentAccess: "dynamic-page"` and **`getNodeByIdAsync`**. Ensure you are on a build ≥ 0.1.3. Pass correct `fileKey` when multiple files are connected.
+The plugin uses `documentAccess: "dynamic-page"` and **`getNodeByIdAsync`**. Use a recent plugin/MCP release with `getNodeByIdAsync` support. Pass correct `fileKey` when multiple files are connected.
 
 ## AI (plugin UI)
 

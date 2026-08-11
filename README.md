@@ -44,7 +44,7 @@ Deep dive: [docs/architecture.md](./docs/architecture.md) · [Screenshot gallery
 | [`figma-agent-mcp`](https://www.npmjs.com/package/figma-agent-mcp) | npm / [GitHub Packages](https://github.com/ChinaCarlos/figma-agent-kit/pkgs/npm/figma-agent-mcp) | Stdio MCP server + HTTP/WS bridge |
 | `figma-agent-plugin` | [GitHub Releases](https://github.com/ChinaCarlos/figma-agent-kit/releases) ZIP | Figma plugin (bridge client, AI, export) |
 
-Keep MCP and plugin on the **same version** (currently **0.1.3**).
+Keep MCP and plugin on the **same version** (see [npm](https://www.npmjs.com/package/figma-agent-mcp) / [Releases](https://github.com/ChinaCarlos/figma-agent-kit/releases)).
 
 ## Features
 
@@ -69,9 +69,13 @@ A green **MCP Bridge connected** status means the plugin can talk to the local M
 |------------|-----------|
 | ![Plugin UI](https://raw.githubusercontent.com/ChinaCarlos/figma-agent-kit/main/docs/images/plugin-in-figma.png) | ![Mini mode](https://raw.githubusercontent.com/ChinaCarlos/figma-agent-kit/main/docs/images/plugin-mini-mode.png) |
 
-### 2. MCP (Cursor example)
+### 2. MCP clients
 
-`~/.cursor/mcp.json`:
+Step-by-step for **Cursor, Claude Code, Codex, Qoder, CodeBuddy, Trae**:
+
+**[docs/agent-setup.md](./docs/agent-setup.md)** · [中文](./docs/zh/agent-setup.md)
+
+**Cursor quick example** — `~/.cursor/mcp.json`:
 
 ```json
 {
@@ -82,12 +86,6 @@ A green **MCP Bridge connected** status means the plugin can talk to the local M
     }
   }
 }
-```
-
-Pin a version if you prefer (recommended for reproducible setups):
-
-```json
-"args": ["-y", "figma-agent-mcp@0.1.3"]
 ```
 
 ![Cursor mcp.json](https://raw.githubusercontent.com/ChinaCarlos/figma-agent-kit/main/docs/images/cursor-mcp-config.png)
@@ -118,6 +116,7 @@ Default docs are **English**. Switch language: **English** (this page) · [简�
 | Doc | Description |
 |-----|-------------|
 | [Getting started](./docs/getting-started.md) · [中文](./docs/zh/getting-started.md) | Install, configure, smoke test |
+| [Connect AI agents](./docs/agent-setup.md) · [中文](./docs/zh/agent-setup.md) | Cursor / Claude Code / Codex / Qoder / CodeBuddy / Trae |
 | [Screenshots](./docs/screenshots.md) · [中文](./docs/zh/screenshots.md) | Plugin + Cursor UI gallery |
 | [Chinese docs index](./docs/zh/README.md) | Full 简体中文 documentation set |
 | [Architecture](./docs/architecture.md) · [中文](./docs/zh/architecture.md) | Modules, stack, Mermaid flows |

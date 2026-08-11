@@ -11,8 +11,8 @@ MCP npm releases: [mcp-release.md](./mcp-release.md).
 ```text
 releases/
   version.json                          # latest / notes / downloadUrl (committed on main)
-  figma-agent-plugin-v0.1.3.zip         # GitHub Release asset (gitignored)
-  figma-agent-plugin-v0.1.3/            # local unpack for verification (gitignored)
+  figma-agent-plugin-vX.Y.Z.zip         # GitHub Release asset (gitignored)
+  figma-agent-plugin-vX.Y.Z/            # local unpack for verification (gitignored)
     manifest.json
     dist/code.js
 ```
@@ -20,7 +20,7 @@ releases/
 Example `downloadUrl`:
 
 ```text
-https://github.com/ChinaCarlos/figma-agent-kit/releases/download/figma-agent-plugin-v0.1.3/figma-agent-plugin-v0.1.3.zip
+https://github.com/ChinaCarlos/figma-agent-kit/releases/download/figma-agent-plugin-vX.Y.Z/figma-agent-plugin-vX.Y.Z.zip
 ```
 
 ## Daily release
@@ -68,7 +68,7 @@ Artifact: `figma-agent-plugin-pack`.
 ## Tag convention
 
 ```text
-figma-agent-plugin-v0.1.3
+figma-agent-plugin-vX.Y.Z
 ```
 
 ## CHANGELOG

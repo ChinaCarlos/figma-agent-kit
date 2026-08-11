@@ -5,7 +5,7 @@
 
 Local **Model Context Protocol** server that bridges AI agents to the **Figma Agent Kit** Desktop plugin over `localhost` (MessagePack WebSocket + Leader/Follower election).
 
-This package is part of the [figma-agent-kit](https://github.com/ChinaCarlos/figma-agent-kit) monorepo. Full docs: [Getting started](https://github.com/ChinaCarlos/figma-agent-kit/blob/main/docs/getting-started.md) · [Screenshots](https://github.com/ChinaCarlos/figma-agent-kit/blob/main/docs/screenshots.md) · [Tools](https://github.com/ChinaCarlos/figma-agent-kit/blob/main/docs/tools.md) · [Architecture](https://github.com/ChinaCarlos/figma-agent-kit/blob/main/docs/architecture.md).
+This package is part of the [figma-agent-kit](https://github.com/ChinaCarlos/figma-agent-kit) monorepo. Full docs: [Getting started](https://github.com/ChinaCarlos/figma-agent-kit/blob/main/docs/getting-started.md) · [Connect AI agents](https://github.com/ChinaCarlos/figma-agent-kit/blob/main/docs/agent-setup.md) (Cursor / Claude Code / Codex / Qoder / CodeBuddy / Trae) · [Tools](https://github.com/ChinaCarlos/figma-agent-kit/blob/main/docs/tools.md) · [Architecture](https://github.com/ChinaCarlos/figma-agent-kit/blob/main/docs/architecture.md).
 
 ## Install / run
 
@@ -13,7 +13,7 @@ This package is part of the [figma-agent-kit](https://github.com/ChinaCarlos/fig
 npx -y figma-agent-mcp
 ```
 
-Or pin a version: `npx -y figma-agent-mcp@0.1.3`
+This always resolves to the latest published npm version (do not pin `@x.y.z` in docs or shared configs unless you need a frozen install).
 
 ### Cursor (`~/.cursor/mcp.json`)
 

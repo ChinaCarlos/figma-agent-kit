@@ -2,14 +2,16 @@
 
 [English](../getting-started.md) | **简体中文**
 
-通过本地 MCP 桥，将 **Figma Desktop** 连接到 AI Agent（Cursor、Claude Code、Codex 等）。
+通过本地 MCP 桥，将 **Figma Desktop** 连接到 AI Agent。
+
+支持的 MCP 客户端（详细步骤）：**[接入 AI Agent](./agent-setup.md)** — Cursor、Claude Code、Codex、Qoder、CodeBuddy、Trae。
 
 ## 环境要求
 
 - [Figma Desktop](https://www.figma.com/downloads/)（推荐；浏览器标签可能休眠导致 WebSocket 断开）
 - [Node.js](https://nodejs.org/) **≥ 20**
 - [pnpm](https://pnpm.io/) **≥ 9**（从源码构建时需要）
-- 支持 MCP 的 Agent（Cursor / Claude / Codex / …）
+- 支持 MCP 的 Agent（[Cursor / Claude Code / Codex / Qoder / CodeBuddy / Trae](./agent-setup.md)）
 
 ## 路径 A — 使用已发布包（最快）
 
@@ -36,7 +38,9 @@ MCP 启动后，确认桥状态为绿色（或可手动重连）：
 
 ### 2. 配置 MCP
 
-**Cursor** — `~/.cursor/mcp.json` 或项目 `.cursor/mcp.json`：
+各客户端完整说明见：**[接入 AI Agent](./agent-setup.md)**（Cursor、Claude Code、Codex、Qoder、CodeBuddy、Trae）。
+
+**Cursor 快速示例** — `~/.cursor/mcp.json` 或项目 `.cursor/mcp.json`：
 
 ```json
 {
@@ -49,13 +53,7 @@ MCP 启动后，确认桥状态为绿色（或可手动重连）：
 }
 ```
 
-锁定版本：
-
-```json
-"args": ["-y", "figma-agent-mcp@0.1.3"]
-```
-
-![Cursor mcp.json 锁定 figma-agent-mcp@0.1.3](https://raw.githubusercontent.com/ChinaCarlos/figma-agent-kit/main/docs/images/cursor-mcp-config.png)
+![Cursor mcp.json 配置 figma-agent-mcp](https://raw.githubusercontent.com/ChinaCarlos/figma-agent-kit/main/docs/images/cursor-mcp-config.png)
 
 自定义端口（必须与插件构建一致）：
 
@@ -66,6 +64,15 @@ MCP 启动后，确认桥状态为绿色（或可手动重连）：
 修改后重启 Agent / MCP。在 Cursor 的 MCP 面板应看到 **37 tools enabled**：
 
 ![Cursor 显示 figma-agent-mcp 的 37 个工具](https://raw.githubusercontent.com/ChinaCarlos/figma-agent-kit/main/docs/images/cursor-mcp-tools.png)
+
+| 客户端 | 配置方式 | 文档章节 |
+|--------|----------|----------|
+| Cursor | `~/.cursor/mcp.json` | [Cursor](./agent-setup.md#cursor) |
+| Claude Code | `claude mcp add` / `.mcp.json` | [Claude Code](./agent-setup.md#claude-code) |
+| Codex | `codex mcp add` / `~/.codex/config.toml` | [Codex](./agent-setup.md#codexopenai) |
+| Qoder | 设置 → MCP → JSON | [Qoder](./agent-setup.md#qoder) |
+| CodeBuddy | 设置 → MCP → JSON | [CodeBuddy](./agent-setup.md#codebuddy) |
+| Trae | 设置 → MCP / `.trae/mcp.json` | [Trae](./agent-setup.md#trae) |
 
 ### 3. 冒烟测试
 
@@ -142,6 +149,7 @@ pnpm sync:bridge   # predev / prebuild 也会执行
 
 | 主题 | 文档 |
 |------|------|
+| Agent / MCP 客户端接入 | [agent-setup.md](./agent-setup.md) |
 | 截图图库 | [screenshots.md](./screenshots.md) |
 | 架构与流程图 | [architecture.md](./architecture.md) |
 | 线协议 | [bridge-protocol.md](./bridge-protocol.md) |

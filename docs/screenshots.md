@@ -2,7 +2,7 @@
 
 **English** | [简体中文](./zh/screenshots.md)
 
-Visual tour of the Figma plugin and Cursor MCP setup (v0.1.3).
+Visual tour of the Figma plugin and Cursor MCP setup.
 
 ## Plugin in Figma Desktop
 
@@ -42,7 +42,7 @@ Compact window: bridge status + current selection only (use the minimize control
 
 ## Cursor MCP config
 
-Example `mcp.json` entry using `npx` (pin a version such as `@0.1.3` if you prefer).
+Example `mcp.json` entry using `npx` (unpinned; npx installs latest).
 
 ![Cursor mcp.json configuration](https://raw.githubusercontent.com/ChinaCarlos/figma-agent-kit/main/docs/images/cursor-mcp-config.png)
 

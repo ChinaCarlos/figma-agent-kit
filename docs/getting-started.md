@@ -2,14 +2,16 @@
 
 **English** | [简体中文](./zh/getting-started.md)
 
-Connect **Figma Desktop** to an AI agent (Cursor, Claude Code, Codex, …) via the local MCP bridge.
+Connect **Figma Desktop** to an AI agent via the local MCP bridge.
+
+Supported MCP clients (setup details): **[Connect AI agents](./agent-setup.md)** — Cursor, Claude Code, Codex, Qoder, CodeBuddy, Trae.
 
 ## Requirements
 
 - [Figma Desktop](https://www.figma.com/downloads/) (recommended; browser tabs may sleep and drop WebSockets)
 - [Node.js](https://nodejs.org/) **≥ 20**
 - [pnpm](https://pnpm.io/) **≥ 9** (for building from source)
-- An MCP-capable agent (Cursor / Claude / Codex / …)
+- An MCP-capable agent ([Cursor / Claude Code / Codex / Qoder / CodeBuddy / Trae](./agent-setup.md))
 
 ## Path A — published packages (fastest)
 
@@ -36,7 +38,9 @@ Gear menu (language, model, prompts, updates):
 
 ### 2. Configure the MCP server
 
-**Cursor** — `~/.cursor/mcp.json` or project `.cursor/mcp.json`:
+Full per-client instructions: **[Connect AI agents](./agent-setup.md)** (Cursor, Claude Code, Codex, Qoder, CodeBuddy, Trae).
+
+**Cursor quick example** — `~/.cursor/mcp.json` or project `.cursor/mcp.json`:
 
 ```json
 {
@@ -49,13 +53,7 @@ Gear menu (language, model, prompts, updates):
 }
 ```
 
-Pin a version if you want:
-
-```json
-"args": ["-y", "figma-agent-mcp@0.1.3"]
-```
-
-![Cursor mcp.json with pinned figma-agent-mcp@0.1.3](https://raw.githubusercontent.com/ChinaCarlos/figma-agent-kit/main/docs/images/cursor-mcp-config.png)
+![Cursor mcp.json for figma-agent-mcp](https://raw.githubusercontent.com/ChinaCarlos/figma-agent-kit/main/docs/images/cursor-mcp-config.png)
 
 Custom port (must match the plugin build):
 
@@ -66,6 +64,15 @@ Custom port (must match the plugin build):
 Restart the agent / MCP servers after editing. In Cursor’s MCP panel you should see **37 tools enabled**:
 
 ![Cursor shows figma-agent-mcp with 37 tools](https://raw.githubusercontent.com/ChinaCarlos/figma-agent-kit/main/docs/images/cursor-mcp-tools.png)
+
+| Client | Config style | Doc section |
+|--------|--------------|-------------|
+| Cursor | `~/.cursor/mcp.json` | [Cursor](./agent-setup.md#cursor) |
+| Claude Code | `claude mcp add` / `.mcp.json` | [Claude Code](./agent-setup.md#claude-code) |
+| Codex | `codex mcp add` / `~/.codex/config.toml` | [Codex](./agent-setup.md#codex-openai) |
+| Qoder | Settings → MCP → JSON | [Qoder](./agent-setup.md#qoder) |
+| CodeBuddy | Settings → MCP → JSON | [CodeBuddy](./agent-setup.md#codebuddy) |
+| Trae | Settings → MCP / `.trae/mcp.json` | [Trae](./agent-setup.md#trae) |
 
 ### 3. Smoke test
 
@@ -142,6 +149,7 @@ See [Exporting slices](./exporting-slices.md) for 1× preview / 3× PNG + ZIP fr
 
 | Topic | Doc |
 |-------|-----|
+| Agent / MCP client setup | [agent-setup.md](./agent-setup.md) |
 | Screenshot gallery | [screenshots.md](./screenshots.md) |
 | Architecture & diagrams | [architecture.md](./architecture.md) |
 | Wire protocol | [bridge-protocol.md](./bridge-protocol.md) |

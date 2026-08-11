@@ -68,7 +68,7 @@ Artifact: `figma-agent-mcp-pack` (`.tgz`).
 ## Tag convention
 
 ```text
-figma-agent-mcp-v0.1.3
+figma-agent-mcp-vX.Y.Z
 ```
 
 ## CHANGELOG

@@ -8,7 +8,8 @@
 
 | 文档 | 说明 |
 |------|------|
-| [上手指南](./getting-started.md) | 安装插件 + MCP、Cursor 配置、冒烟测试 |
+| [上手指南](./getting-started.md) | 安装插件 + MCP、冒烟测试 |
+| [接入 AI Agent](./agent-setup.md) | Cursor、Claude Code、Codex、Qoder、CodeBuddy、Trae |
 | [截图图库](./screenshots.md) | 插件与 Cursor UI 截图 |
 | [架构说明](./architecture.md) | 模块、技术栈、原理与 Mermaid 图 |
 | [桥接协议](./bridge-protocol.md) | WebSocket / HTTP / MsgPack 契约 |

@@ -8,7 +8,8 @@ English docs for **Figma Agent Kit** — local Figma Desktop bridge for AI agent
 
 | Doc | Description |
 |-----|-------------|
-| [Getting started](./getting-started.md) | Install plugin + MCP, Cursor config, smoke test |
+| [Getting started](./getting-started.md) | Install plugin + MCP, smoke test |
+| [Connect AI agents](./agent-setup.md) | Cursor, Claude Code, Codex, Qoder, CodeBuddy, Trae |
 | [Screenshots](./screenshots.md) | Plugin + Cursor UI gallery |
 | [Architecture](./architecture.md) | Modules, stack, principles, Mermaid diagrams |
 | [Bridge protocol](./bridge-protocol.md) | WebSocket / HTTP / MsgPack contract |

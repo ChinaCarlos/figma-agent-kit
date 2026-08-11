@@ -64,7 +64,7 @@ gh workflow run pack-mcp.yml
 ## Tag 约定
 
 ```text
-figma-agent-mcp-v0.1.3
+figma-agent-mcp-vX.Y.Z
 ```
 
 ## CHANGELOG
