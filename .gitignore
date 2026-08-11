@@ -25,3 +25,12 @@ docs-site/docs/zh/release/*.md
 docs-site/docs/en/guide/*.md
 docs-site/docs/en/reference/*.md
 docs-site/docs/en/release/*.md
+docs-site/docs/ko/guide/*.md
+docs-site/docs/ko/reference/*.md
+docs-site/docs/ko/release/*.md
+docs-site/docs/ja/guide/*.md
+docs-site/docs/ja/reference/*.md
+docs-site/docs/ja/release/*.md
+docs-site/docs/ru/guide/*.md
+docs-site/docs/ru/reference/*.md
+docs-site/docs/ru/release/*.md

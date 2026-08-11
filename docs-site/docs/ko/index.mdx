@@ -1,0 +1,47 @@
+---
+pageType: home
+
+hero:
+  name: Figma Agent Kit
+  text: AI 에이전트를 위한 로컬 Figma 브리지
+  tagline: Cursor, Claude Code, Codex 등에서 현재 열어 둔 파일을 읽고 쓸 수 있도록 하는 오픈 소스 Desktop 플러그인 + MCP
+  image:
+    src: /hero.jpg
+    alt: 로컬 MCP 브리지를 통해 AI 에이전트에 연결된 Figma 캔버스
+  actions:
+    - theme: brand
+      text: 시작하기
+      link: /ko/guide/getting-started
+    - theme: alt
+      text: GitHub
+      link: https://github.com/ChinaCarlos/figma-agent-kit
+
+features:
+  - title: 다중 에디터 MCP
+    details: Cursor, Claude Code, Codex, Qoder, CodeBuddy, Trae 및 모든 stdio MCP 호스트와 함께 작동합니다.
+    icon: /icons/mcp.png
+  - title: 37개 읽기/쓰기 도구
+    details: 문서, 선택 항목, 노드, fill, 텍스트, Auto Layout, 생성/그룹화, Motion, 스크린샷을 지원합니다.
+    icon: /icons/tools.png
+  - title: 기본 개인 정보 보호
+    details: 브리지 트래픽은 localhost(포트 1998)에 유지됩니다. Figma REST API를 통한 캔버스 업로드가 없습니다.
+    icon: /icons/privacy.png
+  - title: Leader / Follower
+    details: 여러 에이전트 창이 선출 및 follower RPC를 통해 하나의 WebSocket 브리지를 공유합니다.
+    icon: /icons/bridge.png
+  - title: 디자이너 워크플로
+    details: 선택 사항인 AI 이름 변경/그룹화, 3× 슬라이스 내보내기, 중국어 / 영어 플러그인 UI를 제공합니다.
+    icon: /icons/design.png
+  - title: 오픈 소스
+    details: MIT 라이선스입니다. MCP는 npm에서, 플러그인 ZIP은 GitHub Releases를 통해 제공합니다.
+    icon: /icons/oss.png
+---
+
+## 현재 버전
+
+| 구성 요소 | 버전 | 받기 |
+|-----------|---------|--------|
+| MCP | `1.0.0` | [npm](https://www.npmjs.com/package/figma-agent-mcp) · `npx -y figma-agent-mcp` |
+| 플러그인 | `1.0.0` | [GitHub Releases](https://github.com/ChinaCarlos/figma-agent-kit/releases/tag/figma-agent-plugin-v1.0.0) ZIP |
+
+문서는 제품과 함께 배포됩니다. Kit **v1.0.0**의 첫 번째 안정 문서 릴리스입니다.

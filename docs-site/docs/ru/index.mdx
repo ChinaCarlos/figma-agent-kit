@@ -1,0 +1,47 @@
+---
+pageType: home
+
+hero:
+  name: Figma Agent Kit
+  text: Локальный мост Figma для ИИ-агентов
+  tagline: Плагин Desktop с открытым исходным кодом + MCP, позволяющие Cursor, Claude Code, Codex и другим читать и записывать открытый вами файл
+  image:
+    src: /hero.jpg
+    alt: Холст Figma, подключённый к ИИ-агенту через локальный MCP-мост
+  actions:
+    - theme: brand
+      text: Начало работы
+      link: /ru/guide/getting-started
+    - theme: alt
+      text: GitHub
+      link: https://github.com/ChinaCarlos/figma-agent-kit
+
+features:
+  - title: MCP для нескольких редакторов
+    details: Работает с Cursor, Claude Code, Codex, Qoder, CodeBuddy, Trae и любым stdio-хостом MCP.
+    icon: /icons/mcp.png
+  - title: 37 инструментов чтения и записи
+    details: Документ, выделение, узлы, заливки, текст, Auto Layout, создание/группировка, Motion и скриншоты.
+    icon: /icons/tools.png
+  - title: Конфиденциальность по умолчанию
+    details: Трафик моста остаётся на localhost (порт 1998). Холст не загружается через Figma REST API.
+    icon: /icons/privacy.png
+  - title: Leader / Follower
+    details: Несколько окон агента используют один мост WebSocket с выбором роли и RPC follower.
+    icon: /icons/bridge.png
+  - title: Рабочие процессы дизайнера
+    details: Необязательное ИИ-переименование/группировка, экспорт срезов 3× и UI плагина на китайском / английском.
+    icon: /icons/design.png
+  - title: Открытый исходный код
+    details: Лицензия MIT. MCP в npm; ZIP плагина через GitHub Releases.
+    icon: /icons/oss.png
+---
+
+## Текущая версия
+
+| Компонент | Версия | Получить |
+|-----------|---------|--------|
+| MCP | `1.0.0` | [npm](https://www.npmjs.com/package/figma-agent-mcp) · `npx -y figma-agent-mcp` |
+| Плагин | `1.0.0` | [GitHub Releases](https://github.com/ChinaCarlos/figma-agent-kit/releases/tag/figma-agent-plugin-v1.0.0) ZIP |
+
+Документация поставляется вместе с продуктом — это первый стабильный выпуск документации для kit **v1.0.0**.

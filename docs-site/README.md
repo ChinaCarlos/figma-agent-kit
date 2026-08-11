@@ -1,6 +1,6 @@
 # Figma Agent Kit Docs
 
-Rspress documentation site (zh / en) deployed to GitHub Pages.
+Rspress documentation site (zh / en / ko / ja / ru) deployed to GitHub Pages.
 
 ## Local development
 
@@ -23,17 +23,25 @@ Output: `docs-site/doc_build/`.
 
 ## Content source
 
-Markdown under `docs/` (English) and `docs/zh/` (Chinese) is synced into `docs-site/docs/{en,zh}/` by `scripts/sync-docs-site.mjs` on every `dev` / `build`.
+| Locale | Source | Site route prefix |
+|--------|--------|-------------------|
+| `zh` (default) | `docs/zh/*.md` | `/` |
+| `en` | `docs/*.md` | `/en/` |
+| `ko` | `docs/ko/*.md` | `/ko/` |
+| `ja` | `docs/ja/*.md` | `/ja/` |
+| `ru` | `docs/ru/*.md` | `/ru/` |
+
+`scripts/sync-docs-site.mjs` copies Markdown into `docs-site/docs/{lang}/` on every `dev` / `build`. Missing `ko` / `ja` / `ru` sources fall back to English.
 
 Hand-maintained site files:
 
-- `docs/{zh,en}/index.mdx` — home pages
-- `docs/{zh,en}/_nav.json` / `_meta.json` — navigation
+- `docs/{zh,en,ko,ja,ru}/index.mdx` — home pages
+- `docs/{zh,en,ko,ja,ru}/_nav.json` / `_meta.json` — navigation
 - `i18n.json` — nav label translations
 - `theme/index.css` — purple / deep-blue brand tokens
 - `docs/public/logo.png` · `hero.jpg` · `icons/*` — AI brand artwork
 
-**Nav links must omit the locale prefix** (write `/guide/...`, not `/en/guide/...`). Rspress prefixes the current language automatically; doubling `/en` causes 404s. Home MDX / Markdown body links for English still use `/en/...` because those are not auto-prefixed.
+**Nav links must omit the locale prefix** (write `/guide/...`, not `/en/guide/...`). Rspress prefixes the current language automatically; doubling `/en` causes 404s. Home MDX body links for non-default locales still use `/en/...`, `/ko/...`, etc., because those are not auto-prefixed.
 
 ## Deploy
 

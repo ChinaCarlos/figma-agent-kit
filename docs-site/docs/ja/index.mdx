@@ -1,0 +1,47 @@
+---
+pageType: home
+
+hero:
+  name: Figma Agent Kit
+  text: AI Agent 向けローカル Figma ブリッジ
+  tagline: オープンソースの Desktop プラグイン + MCP。Cursor、Claude Code、Codex などから、現在開いているファイルを読み書きできます
+  image:
+    src: /hero.jpg
+    alt: ローカル MCP ブリッジを介して AI Agent に接続された Figma キャンバス
+  actions:
+    - theme: brand
+      text: はじめに
+      link: /ja/guide/getting-started
+    - theme: alt
+      text: GitHub
+      link: https://github.com/ChinaCarlos/figma-agent-kit
+
+features:
+  - title: 複数エディター対応 MCP
+    details: Cursor、Claude Code、Codex、Qoder、CodeBuddy、Trae、およびすべての stdio MCP host で利用できます。
+    icon: /icons/mcp.png
+  - title: 37 個の読み書きツール
+    details: ドキュメント、選択範囲、ノード、fill、テキスト、Auto Layout、作成 / グループ化、Motion、スクリーンショットに対応します。
+    icon: /icons/tools.png
+  - title: デフォルトでプライバシー重視
+    details: ブリッジトラフィックは localhost（ポート 1998）に留まります。Figma REST API 経由で canvas をアップロードしません。
+    icon: /icons/privacy.png
+  - title: Leader / Follower
+    details: 複数の Agent window が election と follower RPC により、1 つの WebSocket ブリッジを共有します。
+    icon: /icons/bridge.png
+  - title: デザイナーのワークフロー
+    details: 任意の AI rename/grouping、3× slice export、中文 / English のプラグイン UI を提供します。
+    icon: /icons/design.png
+  - title: オープンソース
+    details: MIT ライセンス。MCP は npm、プラグイン ZIP は GitHub Releases から提供します。
+    icon: /icons/oss.png
+---
+
+## 現在のバージョン
+
+| コンポーネント | バージョン | 入手先 |
+|-----------|---------|--------|
+| MCP | `1.0.0` | [npm](https://www.npmjs.com/package/figma-agent-mcp) · `npx -y figma-agent-mcp` |
+| Plugin | `1.0.0` | [GitHub Releases](https://github.com/ChinaCarlos/figma-agent-kit/releases/tag/figma-agent-plugin-v1.0.0) ZIP |
+
+ドキュメントは製品とともに提供されます。これは kit **v1.0.0** 向けの最初の安定版ドキュメントリリースです。

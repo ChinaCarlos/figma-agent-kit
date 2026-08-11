@@ -1,10 +1,10 @@
 # 文档
 
-**简体中文** | [English docs](../README.md)
+**简体中文** | [English](../README.md) | [한국어](../ko/README.md) | [日本語](../ja/README.md) | [Русский](../ru/README.md)
 
 **Figma Agent Kit** 中文文档 — 面向 AI Agent 的本地 Figma Desktop 桥。仓库首页默认展示 [中文 README](../../README.md)。
 
-在线文档站（中英切换）：[https://chinacarlos.github.io/figma-agent-kit/](https://chinacarlos.github.io/figma-agent-kit/)
+在线文档站（多语言切换）：[https://chinacarlos.github.io/figma-agent-kit/](https://chinacarlos.github.io/figma-agent-kit/)
 
 > 截图一律使用 GitHub raw 地址：`https://raw.githubusercontent.com/ChinaCarlos/figma-agent-kit/main/docs/images/...`，便于在 npm、镜像站与跨页面引用时正常显示。
 

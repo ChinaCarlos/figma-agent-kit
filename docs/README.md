@@ -1,10 +1,10 @@
 # Documentation
 
-[简体中文](./zh/README.md) | **English**
+[简体中文](./zh/README.md) | **English** | [한국어](./ko/README.md) | [日本語](./ja/README.md) | [Русский](./ru/README.md)
 
 English docs for **Figma Agent Kit** — local Figma Desktop bridge for AI agents.
 
-Published site (zh / en): [https://chinacarlos.github.io/figma-agent-kit/en/](https://chinacarlos.github.io/figma-agent-kit/en/)
+Published site (zh / en / ko / ja / ru): [https://chinacarlos.github.io/figma-agent-kit/en/](https://chinacarlos.github.io/figma-agent-kit/en/)
 
 > The repository homepage ([README.md](../README.md)) defaults to **Chinese**. English landing page: [README.en.md](../README.en.md).
 

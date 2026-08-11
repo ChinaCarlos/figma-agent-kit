@@ -1,58 +1,100 @@
 {
   "guide": {
     "zh": "指南",
-    "en": "Guide"
+    "en": "Guide",
+    "ko": "가이드",
+    "ja": "ガイド",
+    "ru": "Руководство"
   },
   "reference": {
     "zh": "参考",
-    "en": "Reference"
+    "en": "Reference",
+    "ko": "레퍼런스",
+    "ja": "リファレンス",
+    "ru": "Справка"
   },
   "release": {
     "zh": "发版",
-    "en": "Release"
+    "en": "Release",
+    "ko": "릴리스",
+    "ja": "リリース",
+    "ru": "Релизы"
   },
   "gettingStarted": {
     "zh": "上手指南",
-    "en": "Getting started"
+    "en": "Getting started",
+    "ko": "시작하기",
+    "ja": "はじめに",
+    "ru": "Быстрый старт"
   },
   "agentSetup": {
     "zh": "接入 AI Agent",
-    "en": "Connect AI agents"
+    "en": "Connect AI agents",
+    "ko": "AI Agent 연결",
+    "ja": "AI Agent の接続",
+    "ru": "Подключение AI-агентов"
   },
   "screenshots": {
     "zh": "截图图库",
-    "en": "Screenshots"
+    "en": "Screenshots",
+    "ko": "스크린샷",
+    "ja": "スクリーンショット",
+    "ru": "Скриншоты"
   },
   "aiFeatures": {
     "zh": "AI 功能",
-    "en": "AI features"
+    "en": "AI features",
+    "ko": "AI 기능",
+    "ja": "AI 機能",
+    "ru": "AI-функции"
   },
   "exportingSlices": {
     "zh": "导出切图",
-    "en": "Exporting slices"
+    "en": "Exporting slices",
+    "ko": "슬라이스 내보내기",
+    "ja": "スライス書き出し",
+    "ru": "Экспорт слайсов"
   },
   "faq": {
     "zh": "常见问题",
-    "en": "FAQ"
+    "en": "FAQ",
+    "ko": "FAQ",
+    "ja": "FAQ",
+    "ru": "FAQ"
   },
   "architecture": {
     "zh": "架构说明",
-    "en": "Architecture"
+    "en": "Architecture",
+    "ko": "아키텍처",
+    "ja": "アーキテクチャ",
+    "ru": "Архитектура"
   },
   "bridgeProtocol": {
     "zh": "桥接协议",
-    "en": "Bridge protocol"
+    "en": "Bridge protocol",
+    "ko": "브리지 프로토콜",
+    "ja": "ブリッジプロトコル",
+    "ru": "Протокол моста"
   },
   "tools": {
     "zh": "MCP 工具",
-    "en": "MCP tools"
+    "en": "MCP tools",
+    "ko": "MCP 도구",
+    "ja": "MCP ツール",
+    "ru": "Инструменты MCP"
   },
   "mcpRelease": {
     "zh": "MCP 发版",
-    "en": "MCP release"
+    "en": "MCP release",
+    "ko": "MCP 릴리스",
+    "ja": "MCP リリース",
+    "ru": "Релиз MCP"
   },
   "pluginRelease": {
     "zh": "插件发版",
-    "en": "Plugin release"
+    "en": "Plugin release",
+    "ko": "플러그인 릴리스",
+    "ja": "プラグインリリース",
+    "ru": "Релиз плагина"
   }
 }
