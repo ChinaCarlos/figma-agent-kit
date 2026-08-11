@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Figma Agent Kit</title>
+  <style>
+    :root {
+      --bg: #f7f8fa;
+      --surface: #ffffff;
+      --border: #e2e5eb;
+      --text: #1a1d23;
+      --muted: #6b7280;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --ok: #16a34a;
+      --err: #dc2626;
+      --radius: 8px;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 13px;
+      color: var(--text);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 12px 14px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand {
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: -0.01em;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--err);
+      flex-shrink: 0;
+    }
+
+    .dot.connected { background: var(--ok); }
+
+    button {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      border-radius: 6px;
+      padding: 5px 10px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    button:hover { background: #f0f2f5; }
+    button.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    button.primary:hover { background: var(--accent-hover); }
+
+    main {
+      flex: 1;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow: auto;
+    }
+
+    body.mini main { display: none; }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 12px;
+    }
+
+    .card h2 {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .selection-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 200px;
+      overflow: auto;
+    }
+
+    .selection-list li {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 6px 8px;
+      background: var(--bg);
+      border-radius: 6px;
+      font-size: 12px;
+    }
+
+    .selection-list .type {
+      color: var(--muted);
+      font-size: 11px;
+      flex-shrink: 0;
+    }
+
+    .empty {
+      color: var(--muted);
+      font-size: 12px;
+      font-style: italic;
+    }
+
+    .help {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .help code {
+      background: #eef1f5;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 11px;
+    }
+
+    .log {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 11px;
+      color: var(--muted);
+      max-height: 80px;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    /* Modal */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.35);
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 10;
+    }
+
+    .overlay.open { display: flex; }
+
+    .modal {
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      width: 100%;
+      max-width: 340px;
+      padding: 16px;
+    }
+
+    .modal h3 {
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .modal p {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 14px;
+      line-height: 1.4;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    input {
+      width: 100%;
+      padding: 7px 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 12px;
+      margin-bottom: 12px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <span class="brand">Figma Agent Kit</span>
+    <div class="header-right">
+      <div class="status" title="MCP bridge connection">
+        <span class="dot" id="statusDot"></span>
+        <span id="statusText">Disconnected</span>
+      </div>
+      <button id="miniBtn" type="button">Mini</button>
+      <button id="settingsBtn" type="button">Settings</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>Selection</h2>
+      <ul class="selection-list" id="selectionList">
+        <li class="empty">No layers selected</li>
+      </ul>
+    </section>
+
+    <section class="card help">
+      <p>Run <code>figma-agent-mcp</code> locally, then connect your AI agent (Cursor, Claude Code, Codex, …) via MCP.</p>
+      <p style="margin-top:6px">Bridge: <code id="bridgeUrl">ws://localhost:1994/ws</code></p>
+    </section>
+
+    <section class="card">
+      <h2>Activity</h2>
+      <div class="log" id="log">Waiting for bridge…</div>
+    </section>
+  </main>
+
+  <div class="overlay" id="settingsOverlay">
+    <div class="modal">
+      <h3>Settings</h3>
+      <p>Optional AI provider credentials (stored locally in Figma). Not used by the bridge.</p>
+      <label for="apiBaseUrl">API base URL</label>
+      <input id="apiBaseUrl" type="url" placeholder="https://api.example.com/v1" autocomplete="off" />
+      <label for="apiKey">API key</label>
+      <input id="apiKey" type="password" placeholder="sk-…" autocomplete="off" />
+      <div class="modal-actions">
+        <button type="button" id="settingsCancel">Cancel</button>
+        <button type="button" class="primary" id="settingsSave">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const BRIDGE_PORT = 1994;
+    const UI_SIZE = {
+      normal: { width: 420, height: 520 },
+      mini: { width: 300, height: 120 },
+    };
+
+    const statusDot = document.getElementById("statusDot");
+    const statusText = document.getElementById("statusText");
+    const selectionList = document.getElementById("selectionList");
+    const logEl = document.getElementById("log");
+    const bridgeUrlEl = document.getElementById("bridgeUrl");
+    const miniBtn = document.getElementById("miniBtn");
+    const settingsBtn = document.getElementById("settingsBtn");
+    const settingsOverlay = document.getElementById("settingsOverlay");
+    const apiBaseUrlInput = document.getElementById("apiBaseUrl");
+    const apiKeyInput = document.getElementById("apiKey");
+    const settingsCancel = document.getElementById("settingsCancel");
+    const settingsSave = document.getElementById("settingsSave");
+
+    let fileKey = "";
+    let fileName = "";
+    let miniMode = false;
+    let socket = null;
+    let reconnectTimer = null;
+    let reconnectDelay = 1000;
+
+    function post(msg) {
+      parent.postMessage({ pluginMessage: msg }, "*");
+    }
+
+    function appendLog(line) {
+      const ts = new Date().toLocaleTimeString();
+      logEl.textContent = `[${ts}] ${line}\n` + logEl.textContent.slice(0, 2000);
+    }
+
+    function setConnected(connected) {
+      statusDot.classList.toggle("connected", connected);
+      statusText.textContent = connected ? "Connected" : "Disconnected";
+      post({ type: connected ? "bridge-connected" : "bridge-disconnected" });
+    }
+
+    function buildWsUrl() {
+      const params = new URLSearchParams({
+        fileKey: fileKey || "unknown",
+        fileName: fileName || "Untitled",
+      });
+      return `ws://localhost:${BRIDGE_PORT}/ws?${params.toString()}`;
+    }
+
+    function renderSelection(items) {
+      selectionList.innerHTML = "";
+      if (!items || items.length === 0) {
+        const li = document.createElement("li");
+        li.className = "empty";
+        li.textContent = "No layers selected";
+        selectionList.appendChild(li);
+        return;
+      }
+      for (const item of items) {
+        const li = document.createElement("li");
+        const name = document.createElement("span");
+        name.textContent = item.name;
+        const type = document.createElement("span");
+        type.className = "type";
+        type.textContent = item.type;
+        li.appendChild(name);
+        li.appendChild(type);
+        selectionList.appendChild(li);
+      }
+    }
+
+    function scheduleReconnect() {
+      if (reconnectTimer) return;
+      reconnectTimer = setTimeout(() => {
+        reconnectTimer = null;
+        connectBridge();
+        reconnectDelay = Math.min(reconnectDelay * 1.5, 15000);
+      }, reconnectDelay);
+    }
+
+    function connectBridge() {
+      if (socket && (socket.readyState === WebSocket.OPEN || socket.readyState === WebSocket.CONNECTING)) {
+        return;
+      }
+
+      const url = buildWsUrl();
+      bridgeUrlEl.textContent = url;
+      appendLog("Connecting to bridge…");
+
+      try {
+        socket = new WebSocket(url);
+      } catch (err) {
+        appendLog("WebSocket error: " + err.message);
+        setConnected(false);
+        scheduleReconnect();
+        return;
+      }
+
+      socket.onopen = () => {
+        reconnectDelay = 1000;
+        setConnected(true);
+        appendLog("Bridge connected");
+      };
+
+      socket.onclose = () => {
+        setConnected(false);
+        appendLog("Bridge disconnected");
+        scheduleReconnect();
+      };
+
+      socket.onerror = () => {
+        appendLog("Bridge connection failed");
+      };
+
+      socket.onmessage = (event) => {
+        let msg;
+        try {
+          msg = JSON.parse(event.data);
+        } catch {
+          appendLog("Invalid JSON from bridge");
+          return;
+        }
+
+        if (msg.requestId && (msg.tool || msg.type)) {
+          const tool = msg.tool || msg.type;
+          post({
+            type: "server-request",
+            requestId: msg.requestId,
+            tool,
+            nodeIds: msg.nodeIds,
+            params: msg.params,
+          });
+          return;
+        }
+
+        if (msg.type === "ping") {
+          socket.send(JSON.stringify({ type: "pong" }));
+        }
+      };
+    }
+
+    function sendBridgeResponse(response) {
+      if (!socket || socket.readyState !== WebSocket.OPEN) return;
+      socket.send(JSON.stringify(response));
+    }
+
+    function toggleMini() {
+      miniMode = !miniMode;
+      document.body.classList.toggle("mini", miniMode);
+      miniBtn.textContent = miniMode ? "Expand" : "Mini";
+      const size = miniMode ? UI_SIZE.mini : UI_SIZE.normal;
+      post({ type: "resizeWindow", width: size.width, height: size.height });
+    }
+
+    function openSettings() {
+      settingsOverlay.classList.add("open");
+      post({ type: "getSettings" });
+    }
+
+    function closeSettings() {
+      settingsOverlay.classList.remove("open");
+    }
+
+    function saveSettings() {
+      post({
+        type: "setSettings",
+        settings: {
+          apiBaseUrl: apiBaseUrlInput.value.trim() || undefined,
+          apiKey: apiKeyInput.value.trim() || undefined,
+        },
+      });
+      closeSettings();
+      appendLog("Settings saved");
+    }
+
+    miniBtn.addEventListener("click", toggleMini);
+    settingsBtn.addEventListener("click", openSettings);
+    settingsCancel.addEventListener("click", closeSettings);
+    settingsSave.addEventListener("click", saveSettings);
+    settingsOverlay.addEventListener("click", (e) => {
+      if (e.target === settingsOverlay) closeSettings();
+    });
+
+    window.onmessage = (event) => {
+      const msg = event.data.pluginMessage;
+      if (!msg) return;
+
+      switch (msg.type) {
+        case "selectionChange":
+          fileKey = msg.fileKey;
+          fileName = msg.fileName;
+          renderSelection(msg.selection);
+          if (!socket || socket.readyState !== WebSocket.OPEN) connectBridge();
+          break;
+
+        case "bridgeStatus":
+          fileKey = msg.fileKey;
+          fileName = msg.fileName;
+          break;
+
+        case "server-response":
+          sendBridgeResponse({
+            requestId: msg.requestId,
+            ok: msg.ok,
+            data: msg.data,
+            error: msg.error,
+          });
+          appendLog(`${msg.ok ? "OK" : "ERR"} ${msg.requestId.slice(0, 8)}…`);
+          break;
+
+        case "settings":
+          apiBaseUrlInput.value = msg.settings.apiBaseUrl || "";
+          apiKeyInput.value = msg.settings.apiKey || "";
+          break;
+
+        case "log":
+          appendLog(`[${msg.level}] ${msg.message}`);
+          break;
+
+        case "status":
+          appendLog(msg.message);
+          break;
+
+        case "error":
+          appendLog("Error: " + msg.message);
+          break;
+      }
+    };
+
+    post({ type: "ui-ready" });
+    connectBridge();
+  </script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "name": "Figma Agent Kit",
+  "id": "figma-agent-kit",
+  "api": "1.0.0",
+  "main": "dist/code.js",
+  "editorType": ["figma", "dev"],
+  "documentAccess": "dynamic-page",
+  "networkAccess": {
+    "allowedDomains": ["ws://localhost:1994"],
+    "reasoning": "Local MCP bridge WebSocket connection to figma-agent-mcp on the developer machine."
+  }
+}

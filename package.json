@@ -1,0 +1,33 @@
+{
+  "name": "figma-agent-kit",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Open-source Figma plugin + MCP bridge for AI agents (Cursor, Claude Code, Codex, …)",
+  "packageManager": "pnpm@10.12.1",
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=9"
+  },
+  "scripts": {
+    "dev": "pnpm --filter figma-agent-plugin dev",
+    "build": "pnpm --filter figma-agent-plugin build",
+    "dev:mcp": "pnpm --filter figma-agent-mcp dev",
+    "build:mcp": "pnpm --filter figma-agent-mcp build",
+    "build:all": "pnpm -r --filter figma-agent-plugin --filter figma-agent-mcp run build",
+    "start:mcp": "pnpm --filter figma-agent-mcp start"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ChinaCarlos/figma-agent-kit.git"
+  },
+  "keywords": [
+    "figma",
+    "mcp",
+    "model-context-protocol",
+    "cursor",
+    "claude",
+    "ai",
+    "design"
+  ]
+}

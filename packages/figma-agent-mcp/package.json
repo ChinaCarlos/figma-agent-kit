@@ -1,0 +1,44 @@
+{
+  "name": "figma-agent-mcp",
+  "version": "0.1.0",
+  "description": "MCP server bridging Cursor agents to a Figma plugin via WebSocket",
+  "type": "module",
+  "main": "./dist/index.js",
+  "bin": {
+    "figma-agent-mcp": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc -w",
+    "start": "node dist/index.js"
+  },
+  "keywords": [
+    "figma",
+    "mcp",
+    "model-context-protocol",
+    "cursor",
+    "agent"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "pngjs": "^7.0.0",
+    "upng-js": "^2.1.0",
+    "ws": "^8.18.0",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.10",
+    "@types/pngjs": "^6.0.5",
+    "@types/ws": "^8.18.0",
+    "typescript": "^5.8.2"
+  }
+}

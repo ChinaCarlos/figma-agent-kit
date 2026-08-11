@@ -1,0 +1,58 @@
+export interface BridgeRequest {
+  requestId: string;
+  tool: string;
+  nodeIds?: string[];
+  params?: Record<string, unknown>;
+}
+
+export interface BridgeResponse {
+  requestId: string;
+  ok: boolean;
+  data?: unknown;
+  error?: string;
+}
+
+export type BridgeToolName =
+  | "get_document"
+  | "get_selection"
+  | "get_node"
+  | "get_metadata"
+  | "get_design_context"
+  | "get_screenshot"
+  | "set_node_visibility"
+  | "set_text_content"
+  | "set_node_properties"
+  | "create_frame"
+  | "create_text"
+  | "group_nodes"
+  | "ungroup_node"
+  | "duplicate_nodes"
+  | "reparent_nodes"
+  | "set_selection"
+  | "scroll_and_zoom_into_view"
+  | "delete_nodes"
+  | "get_styles"
+  | "get_variable_defs";
+
+export const CORE_BRIDGE_TOOLS: readonly BridgeToolName[] = [
+  "get_document",
+  "get_selection",
+  "get_node",
+  "get_metadata",
+  "get_design_context",
+  "get_screenshot",
+  "set_node_visibility",
+  "set_text_content",
+  "set_node_properties",
+  "create_frame",
+  "create_text",
+  "group_nodes",
+  "ungroup_node",
+  "duplicate_nodes",
+  "reparent_nodes",
+  "set_selection",
+  "scroll_and_zoom_into_view",
+  "delete_nodes",
+  "get_styles",
+  "get_variable_defs",
+] as const;
