@@ -1,10 +1,10 @@
 {
-  "latest": "0.1.1",
+  "latest": "0.1.2",
   "releasedAt": "2026-08-11",
   "notes": [
-    "CI npm publish test; keep mcp + plugin at same version"
+    "Slice export (1× preview / 3× PNG+ZIP), zh-en i18n, language switch in settings menu"
   ],
-  "downloadUrl": "https://github.com/ChinaCarlos/figma-agent-kit/releases/download/figma-agent-plugin-v0.1.1/figma-agent-plugin-v0.1.1.zip",
-  "zipFileName": "figma-agent-plugin-v0.1.1.zip",
-  "tag": "figma-agent-plugin-v0.1.1"
+  "downloadUrl": "https://github.com/ChinaCarlos/figma-agent-kit/releases/download/figma-agent-plugin-v0.1.2/figma-agent-plugin-v0.1.2.zip",
+  "zipFileName": "figma-agent-plugin-v0.1.2.zip",
+  "tag": "figma-agent-plugin-v0.1.2"
 }

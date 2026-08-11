@@ -1,6 +1,6 @@
 {
   "name": "figma-agent-kit",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "description": "Open-source Figma plugin + MCP bridge for AI agents (Cursor, Claude Code, Codex, …)",
   "packageManager": "pnpm@10.12.1",

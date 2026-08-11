@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+## [0.1.2] - 2026-08-11
+
+### Changed
+
+- Slice export (1× preview / 3× PNG+ZIP), zh-en i18n, language switch in settings menu
+
 ## [0.1.1] - 2026-08-11
 
 ### Changed
@@ -29,4 +35,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Settings, Mini mode, and GitHub version check
 
 [Unreleased]: https://github.com/ChinaCarlos/figma-agent-kit/releases
-[0.1.1]: https://github.com/ChinaCarlos/figma-agent-kit/releases/tag/figma-agent-plugin-v0.1.1
+[0.1.2]: https://github.com/ChinaCarlos/figma-agent-kit/releases/tag/figma-agent-plugin-v0.1.2
