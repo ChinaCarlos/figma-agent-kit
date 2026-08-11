@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
+## [0.1.3] - 2026-08-11
+
+### Changed
+
+- Motion MCP tools (7) + TinyPNG save_screenshots scale/format; codec inject fix; dynamic-page getNodeByIdAsync
+
 ## [0.1.2] - 2026-08-11
 
 ### Changed
@@ -35,4 +41,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Core read/write Figma tools via the companion plugin
 
 [Unreleased]: https://www.npmjs.com/package/figma-agent-mcp
-[0.1.2]: https://www.npmjs.com/package/figma-agent-mcp/v/0.1.2
+[0.1.3]: https://www.npmjs.com/package/figma-agent-mcp/v/0.1.3
