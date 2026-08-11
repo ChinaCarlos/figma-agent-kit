@@ -11,6 +11,7 @@ pnpm build:all
 
 | Task | Command |
 |------|---------|
+| Sync bridge port | `pnpm sync:bridge` |
 | Plugin watch | `pnpm dev` |
 | Plugin production build | `pnpm build` |
 | MCP watch | `pnpm dev:mcp` |
@@ -19,13 +20,28 @@ pnpm build:all
 
 After plugin changes, **Reload plugin** in Figma Desktop.
 
+## Bridge port (single source of truth)
+
+Edit **`/bridge.config.json`** → `defaultPort`, then run any build (`pnpm build:all` / `pnpm sync:bridge`).
+
+That syncs:
+
+- `packages/figma-agent-mcp/src/default-port.ts`
+- `packages/figma-agent-plugin/src/shared/bridge-port.generated.ts` (exported as `BRIDGE_PORT` from `constants.ts`)
+- `packages/figma-agent-plugin/manifest.json` (`ws://localhost:<port>`)
+- Plugin UI (`__BRIDGE_PORT__` injected into `ui.html` at rsbuild time)
+
+Do **not** hand-edit those generated files or hardcode `1998` in the UI.
+
 ## Project layout
 
 ```text
+bridge.config.json      # default MCP / plugin bridge port
 packages/
   figma-agent-plugin/   # Figma plugin
   figma-agent-mcp/      # MCP server + bridge
 docs/                   # User & protocol docs
+scripts/                # sync-bridge-config.mjs, …
 ```
 
 ## Guidelines
@@ -35,6 +51,7 @@ docs/                   # User & protocol docs
 3. Keep bridge tool names stable when possible (agents depend on them).
 4. Use `console.error` for MCP server logs (stdout is reserved for MCP stdio).
 5. Document new tools in `docs/tools.md`.
+6. Change the bridge port only via `bridge.config.json`.
 
 ## Pull requests
 

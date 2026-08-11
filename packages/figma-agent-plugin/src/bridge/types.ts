@@ -21,9 +21,17 @@ export type BridgeToolName =
   | "get_screenshot"
   | "set_node_visibility"
   | "set_text_content"
+  | "set_text_properties"
   | "set_node_properties"
+  | "set_solid_fill"
+  | "set_gradient_fill"
+  | "set_effects"
+  | "set_stroke_properties"
+  | "set_auto_layout"
   | "create_frame"
   | "create_text"
+  | "create_shape"
+  | "create_image"
   | "group_nodes"
   | "ungroup_node"
   | "duplicate_nodes"
@@ -43,9 +51,17 @@ export const CORE_BRIDGE_TOOLS: readonly BridgeToolName[] = [
   "get_screenshot",
   "set_node_visibility",
   "set_text_content",
+  "set_text_properties",
   "set_node_properties",
+  "set_solid_fill",
+  "set_gradient_fill",
+  "set_effects",
+  "set_stroke_properties",
+  "set_auto_layout",
   "create_frame",
   "create_text",
+  "create_shape",
+  "create_image",
   "group_nodes",
   "ungroup_node",
   "duplicate_nodes",

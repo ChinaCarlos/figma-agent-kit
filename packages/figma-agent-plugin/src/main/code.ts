@@ -3,7 +3,7 @@ import { applyGroupPlan } from "../group/apply";
 import { collectGroupCandidates } from "../group/collect";
 import { applyRenames } from "../rename/apply";
 import { collectRenameCandidates } from "../rename/collect";
-import { SETTINGS_STORAGE_KEY, UI_SIZE } from "../shared/constants";
+import { BRIDGE_PORT, SETTINGS_STORAGE_KEY, UI_SIZE } from "../shared/constants";
 import type {
   GroupPlan,
   PluginMessage,
@@ -109,6 +109,11 @@ figma.on("selectionchange", () => {
 figma.ui.onmessage = async (raw: UIMessage) => {
   switch (raw.type) {
     case "ui-ready": {
+      // Drive UI WebSocket port from shared constants (synced from bridge.config.json).
+      figma.ui.postMessage({
+        type: "bridgeConfig",
+        port: BRIDGE_PORT,
+      } satisfies PluginMessage);
       postSelection();
       postBridgeStatus(false);
       figma.ui.postMessage({

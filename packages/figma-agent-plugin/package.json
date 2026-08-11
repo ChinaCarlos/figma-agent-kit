@@ -5,12 +5,18 @@
   "description": "Figma Agent Kit — MCP bridge, AI layer rename & visual grouping",
   "license": "MIT",
   "scripts": {
+    "predev": "node ../../scripts/sync-bridge-config.mjs",
     "dev": "NODE_ENV=development rsbuild build --watch",
+    "prebuild": "node ../../scripts/sync-bridge-config.mjs",
     "build": "NODE_ENV=production rsbuild build"
   },
   "devDependencies": {
     "@figma/plugin-typings": "^1.109.0",
     "@rsbuild/core": "^1.2.19",
+    "esbuild": "^0.28.2",
     "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "msgpackr": "^2.0.5"
   }
 }

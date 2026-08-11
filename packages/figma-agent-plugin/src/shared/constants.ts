@@ -1,4 +1,9 @@
-export const BRIDGE_PORT = 1998;
+/**
+ * Bridge port shared by plugin main. The UI reads the same value via
+ * `__BRIDGE_PORT__` injected at build time from /bridge.config.json.
+ * Do not hardcode a port — change bridge.config.json and rebuild.
+ */
+export { DEFAULT_BRIDGE_PORT as BRIDGE_PORT } from "./bridge-port.generated";
 
 export const UI_SIZE = {
   normal: { width: 440, height: 640 },

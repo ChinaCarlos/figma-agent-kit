@@ -3,14 +3,17 @@
   "id": "figma-agent-kit",
   "api": "1.0.0",
   "main": "dist/code.js",
-  "editorType": ["figma", "dev"],
+  "editorType": [
+    "figma",
+    "dev"
+  ],
   "documentAccess": "dynamic-page",
   "networkAccess": {
     "allowedDomains": [
-      "ws://localhost:1998",
       "https://raw.githubusercontent.com",
-      "https://api.openai.com"
+      "https://api.openai.com",
+      "ws://localhost:1998"
     ],
-    "reasoning": "Local MCP bridge (ws://localhost:1998), GitHub release version checks (raw.githubusercontent.com), and default OpenAI-compatible API (api.openai.com). For other AI providers, add their host to allowedDomains in manifest.json and rebuild."
+    "reasoning": "Local MCP bridge (ws://localhost:1998), GitHub release version checks (raw.githubusercontent.com), and default OpenAI-compatible API (api.openai.com). For other AI providers, add their host to allowedDomains in manifest.json and rebuild. Change the bridge port in /bridge.config.json then run pnpm sync:bridge (or any build)."
   }
 }

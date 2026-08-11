@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { DEFAULT_BRIDGE_PORT } from "./default-port.js";
 import { Election } from "./election.js";
 import { registerTools } from "./tools.js";
 import { VERSION } from "./version.js";
 
-const DEFAULT_PORT = 1998;
-const port = Number(process.env.FIGMA_AGENT_MCP_PORT ?? DEFAULT_PORT);
+const port = Number(process.env.FIGMA_AGENT_MCP_PORT ?? DEFAULT_BRIDGE_PORT);
 
 let election: Election | null = null;
 let mcpServer: McpServer | null = null;

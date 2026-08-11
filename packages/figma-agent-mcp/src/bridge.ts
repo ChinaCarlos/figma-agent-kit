@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import type { Duplex } from "node:stream";
 import { WebSocket, WebSocketServer } from "ws";
 import type { IncomingMessage } from "node:http";
+import { decodeMsgPack, encodeMsgPack } from "./codec.js";
 import type {
   BridgeRequest,
   BridgeResponse,
@@ -10,6 +11,8 @@ import type {
 
 const REQUEST_TIMEOUT_MS = 180_000;
 const HEARTBEAT_INTERVAL_MS = 30_000;
+/** Drop a connection if it misses this many heartbeat rounds. */
+const HEARTBEAT_MISS_LIMIT = 2;
 
 interface PendingRequest {
   resolve: (value: unknown) => void;
@@ -21,6 +24,23 @@ interface FileConnection {
   ws: WebSocket;
   fileKey: string;
   fileName: string;
+  missedHeartbeats: number;
+}
+
+function isControlMessage(msg: Record<string, unknown>): boolean {
+  return msg.type === "ping" || msg.type === "pong";
+}
+
+function toBuffer(raw: WebSocket.RawData): Buffer {
+  if (Buffer.isBuffer(raw)) return raw;
+  if (raw instanceof ArrayBuffer) return Buffer.from(raw);
+  if (ArrayBuffer.isView(raw)) {
+    return Buffer.from(raw.buffer, raw.byteOffset, raw.byteLength);
+  }
+  if (Array.isArray(raw)) {
+    return Buffer.concat(raw.map((part) => toBuffer(part)));
+  }
+  return Buffer.from(String(raw));
 }
 
 export class Bridge {
@@ -48,10 +68,15 @@ export class Bridge {
         existing.ws.close(4001, "replaced");
       }
 
-      this.connections.set(fileKey, { ws, fileKey, fileName });
+      this.connections.set(fileKey, {
+        ws,
+        fileKey,
+        fileName,
+        missedHeartbeats: 0,
+      });
 
-      ws.on("message", (raw) => {
-        this.handleMessage(raw.toString());
+      ws.on("message", (raw, isBinary) => {
+        this.handleMessage(fileKey, raw, isBinary);
       });
 
       ws.on("close", () => {
@@ -110,6 +135,7 @@ export class Bridge {
 
     const requestId = randomUUID();
     const request: BridgeRequest = { requestId, type, nodeIds, params };
+    const payload = encodeMsgPack(request);
 
     return new Promise<unknown>((resolve, reject) => {
       const timer = setTimeout(() => {
@@ -119,7 +145,7 @@ export class Bridge {
 
       this.pending.set(requestId, { resolve, reject, timer });
 
-      conn.ws.send(JSON.stringify(request), (err) => {
+      conn.ws.send(payload, { binary: true }, (err) => {
         if (err) {
           clearTimeout(timer);
           this.pending.delete(requestId);
@@ -129,40 +155,65 @@ export class Bridge {
     });
   }
 
-  private handleMessage(raw: string): void {
-    let msg: BridgeResponse;
+  private handleMessage(
+    fileKey: string,
+    raw: WebSocket.RawData,
+    isBinary: boolean,
+  ): void {
+    let msg: Record<string, unknown>;
     try {
-      msg = JSON.parse(raw) as BridgeResponse;
-    } catch {
-      console.error("[bridge] invalid JSON message");
+      if (isBinary || Buffer.isBuffer(raw) || raw instanceof ArrayBuffer) {
+        msg = decodeMsgPack(toBuffer(raw)) as Record<string, unknown>;
+      } else {
+        // Legacy text frames (should not be used after MsgPack migration).
+        msg = JSON.parse(raw.toString()) as Record<string, unknown>;
+      }
+    } catch (err) {
+      console.error(
+        "[bridge] invalid message:",
+        err instanceof Error ? err.message : err,
+      );
       return;
     }
 
-    if (msg.requestId === "pong") {
+    if (isControlMessage(msg)) {
+      if (msg.type === "pong") {
+        const conn = this.connections.get(fileKey);
+        if (conn) conn.missedHeartbeats = 0;
+      }
       return;
     }
 
-    const pending = this.pending.get(msg.requestId);
-    if (!pending) {
-      return;
-    }
+    const response = msg as unknown as BridgeResponse;
+    if (!response.requestId) return;
+
+    const pending = this.pending.get(response.requestId);
+    if (!pending) return;
 
     clearTimeout(pending.timer);
-    this.pending.delete(msg.requestId);
+    this.pending.delete(response.requestId);
 
-    if (msg.ok) {
-      pending.resolve(msg.data);
+    if (response.ok) {
+      pending.resolve(response.data);
     } else {
-      pending.reject(new Error(msg.error ?? "Unknown bridge error"));
+      pending.reject(new Error(response.error ?? "Unknown bridge error"));
     }
   }
 
   private startHeartbeat(): void {
     this.heartbeatTimer = setInterval(() => {
-      for (const conn of this.connections.values()) {
-        if (conn.ws.readyState === WebSocket.OPEN) {
-          conn.ws.send(JSON.stringify({ requestId: "ping", type: "ping" }));
+      for (const [fileKey, conn] of this.connections) {
+        if (conn.ws.readyState !== WebSocket.OPEN) continue;
+
+        if (conn.missedHeartbeats >= HEARTBEAT_MISS_LIMIT) {
+          console.error(`[bridge] heartbeat timeout, closing: ${fileKey}`);
+          conn.ws.close(4002, "heartbeat timeout");
+          this.connections.delete(fileKey);
+          continue;
         }
+
+        conn.missedHeartbeats += 1;
+        conn.ws.send(encodeMsgPack({ type: "ping" }), { binary: true });
       }
     }, HEARTBEAT_INTERVAL_MS);
   }

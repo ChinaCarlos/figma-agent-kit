@@ -68,6 +68,25 @@ If `list_files` is empty, reload the plugin and confirm the status dot is green/
 
 See [ai-features.md](./ai-features.md) for details, custom providers, and manifest domain notes.
 
+## Changing the bridge port
+
+Default port is defined once in **`bridge.config.json`** at the repo root.
+
+```json
+{ "defaultPort": 1998 }
+```
+
+Then:
+
+```bash
+pnpm sync:bridge   # or any pnpm build / build:all
+pnpm build:all
+```
+
+Rebuild updates MCP default, plugin `constants` / UI, and `manifest.json` `networkAccess` together. Reload the plugin in Figma after building.
+
+Optional runtime override for the MCP process only: `FIGMA_AGENT_MCP_PORT` (must still match the port baked into the plugin + manifest).
+
 ## Mini mode
 
 Use the Mini toggle in the plugin header to shrink the panel to bridge + selection only. Useful while chatting with an agent.
@@ -91,9 +110,9 @@ Users with an older build see a red dot on Settings and an update modal (unless 
 
 | Symptom | What to try |
 |---------|-------------|
-| Always disconnected | Is `pnpm start:mcp` running? Is port 1998 free? |
+| Always disconnected | Is `pnpm start:mcp` running? Is the port free? Reload plugin after upgrades (MsgPack + port must match) |
 | `list_files` empty | Plugin must be running on an open file; check fileKey in panel logs |
-| Permission / network errors | Ensure `manifest.json` allows `ws://localhost:1998` and you rebuilt after edits |
+| Permission / network errors | Change port via `bridge.config.json` + rebuild (manifest whitelist is synced automatically) |
 | AI API fails | Check API key; for non-OpenAI hosts add domain to `manifest.json` and rebuild |
 | Unsaved file warning | Save the Figma file; unsaved documents may use a temporary key |
 

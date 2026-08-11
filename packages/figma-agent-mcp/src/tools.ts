@@ -21,6 +21,84 @@ function textResult(data: unknown): ToolResult {
   };
 }
 
+type ScreenshotBytes = Buffer | Uint8Array;
+
+function isBinaryData(value: unknown): value is ScreenshotBytes {
+  return Buffer.isBuffer(value) || value instanceof Uint8Array;
+}
+
+function toPngBuffer(data: string | ScreenshotBytes): Buffer {
+  if (isBinaryData(data)) {
+    return Buffer.isBuffer(data) ? data : Buffer.from(data);
+  }
+  const base64 = data.replace(/^data:image\/png;base64,/, "");
+  return Buffer.from(base64, "base64");
+}
+
+/** Normalize get_screenshot payloads into a flat list of { nodeId, data }. */
+function normalizeScreenshotEntries(
+  payload: unknown,
+): Array<{ nodeId: string; data: string | ScreenshotBytes }> {
+  const entries: Array<{ nodeId: string; data: string | ScreenshotBytes }> = [];
+
+  if (!payload || typeof payload !== "object") return entries;
+
+  if (Array.isArray(payload)) {
+    for (const item of payload) {
+      if (!item || typeof item !== "object") continue;
+      const nodeId = (item as { nodeId?: unknown }).nodeId;
+      const data = (item as { data?: unknown }).data;
+      if (typeof nodeId !== "string") continue;
+      if (typeof data === "string" || isBinaryData(data)) {
+        entries.push({ nodeId, data });
+      }
+    }
+    return entries;
+  }
+
+  const obj = payload as Record<string, unknown>;
+
+  if (Array.isArray(obj.images)) {
+    return normalizeScreenshotEntries(obj.images);
+  }
+
+  for (const [nodeId, data] of Object.entries(obj)) {
+    if (typeof data === "string" || isBinaryData(data)) {
+      entries.push({ nodeId, data });
+    }
+  }
+
+  return entries;
+}
+
+/** Convert binary screenshot payloads to base64 for MCP text tool results. */
+function screenshotPayloadForAgent(payload: unknown): unknown {
+  if (!payload || typeof payload !== "object") return payload;
+
+  const convertList = (list: unknown[]): unknown[] =>
+    list.map((item) => {
+      if (!item || typeof item !== "object") return item;
+      const row = item as Record<string, unknown>;
+      if (!isBinaryData(row.data)) return item;
+      return {
+        ...row,
+        data: Buffer.from(row.data).toString("base64"),
+        encoding: "base64",
+      };
+    });
+
+  if (Array.isArray(payload)) {
+    return convertList(payload);
+  }
+
+  const obj = payload as Record<string, unknown>;
+  if (Array.isArray(obj.images)) {
+    return { ...obj, images: convertList(obj.images) };
+  }
+
+  return payload;
+}
+
 function forwardTool(
   node: Node,
   toolName: string,
@@ -49,7 +127,7 @@ export function registerTools(
       inputSchema: z.object({}),
     },
     async () => {
-      const files = node.listFiles();
+      const files = await node.listFiles();
       return textResult(files);
     },
   );
@@ -64,29 +142,29 @@ export function registerTools(
       const outDir = args.path ?? join(process.cwd(), "screenshots");
       await mkdir(outDir, { recursive: true });
 
-      const screenshots = (await forwardTool(node, "get_screenshot", {
+      const screenshots = await forwardTool(node, "get_screenshot", {
         fileKey: args.fileKey,
         nodeIds: args.nodeIds,
-      })) as Array<{ nodeId: string; data: string }> | Record<string, string>;
+      });
 
-      const entries: Array<{ nodeId: string; data: string }> = [];
-
-      if (Array.isArray(screenshots)) {
-        entries.push(...screenshots);
-      } else if (screenshots && typeof screenshots === "object") {
-        for (const [nodeId, data] of Object.entries(screenshots)) {
-          entries.push({ nodeId, data });
-        }
+      const entries = normalizeScreenshotEntries(screenshots);
+      if (entries.length === 0) {
+        return textResult({
+          saved: [],
+          count: 0,
+          directory: outDir,
+          error: "No screenshot data returned from plugin",
+        });
       }
 
       const saved: string[] = [];
       for (const entry of entries) {
-        const base64 = entry.data.replace(/^data:image\/png;base64,/, "");
-        const rawBuffer = Buffer.from(base64, "base64");
+        const rawBuffer = toPngBuffer(entry.data);
         const fileBuffer = args.compress
           ? await compressPng(rawBuffer)
           : rawBuffer;
-        const filePath = join(outDir, `${entry.nodeId}.png`);
+        const safeId = entry.nodeId.replace(/[^a-zA-Z0-9:_-]/g, "_");
+        const filePath = join(outDir, `${safeId}.png`);
         await writeFile(filePath, fileBuffer);
         saved.push(filePath);
       }
@@ -251,7 +329,11 @@ export function registerTools(
       },
       async (args) => {
         const data = await forwardTool(node, tool.name, args);
-        return textResult(data);
+        const forAgent =
+          tool.name === "get_screenshot"
+            ? screenshotPayloadForAgent(data)
+            : data;
+        return textResult(forAgent);
       },
     );
   }

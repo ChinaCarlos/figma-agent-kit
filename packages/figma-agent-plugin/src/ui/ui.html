@@ -392,7 +392,7 @@
       </section>
       <section class="card help">
         <p>Run <code>figma-agent-mcp</code> locally, then connect your AI agent via MCP.</p>
-        <p style="margin-top:6px">Bridge: <code id="bridgeUrl">ws://localhost:1998/ws</code></p>
+        <p style="margin-top:6px">Bridge: <code id="bridgeUrl">ws://localhost:__BRIDGE_PORT__/ws</code></p>
       </section>
       <section class="card">
         <h2>Activity</h2>
@@ -489,10 +489,13 @@
     </div>
   </div>
 
+  <!--FIGMA_AGENT_CODEC-->
   <script>
     const PLUGIN_VERSION = "__PLUGIN_VERSION__";
     const VERSION_CHECK_URL = "__VERSION_CHECK_URL__";
-    const BRIDGE_PORT = 1998;
+    // Build-time default from /bridge.config.json; overridden by main `bridgeConfig` (constants.BRIDGE_PORT).
+    let BRIDGE_PORT = Number("__BRIDGE_PORT__");
+    let bridgePortReady = false;
     const DEFAULT_API_BASE = "https://api.openai.com/v1";
     const DEFAULT_MODEL = "gpt-4o";
     const VERSION_CHECK_DELAY_MS = 1000;
@@ -769,6 +772,7 @@ Use kebab-case English group names. Each nodeId must appear at most once. Prefer
 
       try {
         socket = new WebSocket(url);
+        socket.binaryType = "arraybuffer";
       } catch (err) {
         logBridge("WebSocket error: " + err.message);
         setConnected(false);
@@ -779,7 +783,7 @@ Use kebab-case English group names. Each nodeId must appear at most once. Prefer
       socket.onopen = () => {
         reconnectDelay = 1000;
         setConnected(true);
-        logBridge("Bridge connected");
+        logBridge("Bridge connected (msgpack)");
       };
 
       socket.onclose = () => {
@@ -795,11 +799,18 @@ Use kebab-case English group names. Each nodeId must appear at most once. Prefer
       socket.onmessage = (event) => {
         let msg;
         try {
-          msg = JSON.parse(event.data);
-        } catch {
-          logBridge("Invalid JSON from bridge");
+          msg = decodeBridgeMessage(event.data);
+        } catch (err) {
+          logBridge("Invalid bridge message: " + (err && err.message ? err.message : err));
           return;
         }
+
+        // Control frames (heartbeat) — never forward to the plugin main thread.
+        if (msg.type === "ping") {
+          sendBridgeEncoded({ type: "pong" });
+          return;
+        }
+        if (msg.type === "pong") return;
 
         if (msg.requestId && (msg.tool || msg.type)) {
           const tool = msg.tool || msg.type;
@@ -810,18 +821,35 @@ Use kebab-case English group names. Each nodeId must appear at most once. Prefer
             nodeIds: msg.nodeIds,
             params: msg.params,
           });
-          return;
-        }
-
-        if (msg.type === "ping") {
-          socket.send(JSON.stringify({ type: "pong" }));
         }
       };
     }
 
-    function sendBridgeResponse(response) {
+    function getBridgeCodec() {
+      return window.__figmaAgentCodec;
+    }
+
+    function decodeBridgeMessage(data) {
+      const codec = getBridgeCodec();
+      if (typeof data === "string") {
+        return JSON.parse(data);
+      }
+      if (!codec) throw new Error("MsgPack codec not loaded");
+      return codec.decode(data);
+    }
+
+    function sendBridgeEncoded(value) {
       if (!socket || socket.readyState !== WebSocket.OPEN) return;
-      socket.send(JSON.stringify(response));
+      const codec = getBridgeCodec();
+      if (!codec) {
+        logBridge("MsgPack codec not loaded — cannot send");
+        return;
+      }
+      socket.send(codec.encode(value));
+    }
+
+    function sendBridgeResponse(response) {
+      sendBridgeEncoded(response);
     }
 
     function switchTab(name) {
@@ -1058,6 +1086,24 @@ Use kebab-case English group names. Each nodeId must appear at most once. Prefer
         case "pluginVersion":
           break;
 
+        case "bridgeConfig": {
+          const nextPort = Number(msg.port);
+          if (!Number.isInteger(nextPort) || nextPort < 1) break;
+          const changed = nextPort !== BRIDGE_PORT;
+          BRIDGE_PORT = nextPort;
+          bridgePortReady = true;
+          if (changed && socket) {
+            try { socket.close(); } catch (_) { /* ignore */ }
+            socket = null;
+          }
+          if (!socket || socket.readyState !== WebSocket.OPEN) {
+            connectBridge();
+          } else {
+            bridgeUrlEl.textContent = buildWsUrl();
+          }
+          break;
+        }
+
         case "aiRenameRequest":
           handleAiRename(msg);
           break;
@@ -1094,7 +1140,10 @@ Use kebab-case English group names. Each nodeId must appear at most once. Prefer
     };
 
     post({ type: "ui-ready" });
-    connectBridge();
+    // Prefer port from plugin main (constants.BRIDGE_PORT). Fallback to build inject.
+    setTimeout(() => {
+      if (!bridgePortReady) connectBridge();
+    }, 300);
 
     setTimeout(() => {
       checkForUpdates({ showModal: true });

@@ -90,6 +90,7 @@ export type PluginMessage =
   | { type: "error"; message: string }
   | { type: "settings"; settings: PluginSettings }
   | { type: "pluginVersion"; version: string }
+  | { type: "bridgeConfig"; port: number }
   | {
       type: "aiRenameRequest";
       png: number[];

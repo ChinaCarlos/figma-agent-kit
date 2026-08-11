@@ -17,9 +17,10 @@ AI Agent  ──stdio MCP──►  figma-agent-mcp  ──WebSocket──►  F
 ## Features (v0.1)
 
 - Local **MCP Bridge** so agents can read/write the open Figma file
+- **MessagePack** binary framing on WebSocket + leader/follower RPC (PNG as `bin`, no base64 on the wire)
 - Multi-file support via `fileKey` (leader/follower when multiple MCP processes start)
 - Plugin panel: bridge status, selection sync, settings storage, Mini mode
-- Core tools: document/selection/node/screenshot, text & visibility edits, create/group/delete, selection & zoom
+- Core tools: document/selection/node/screenshot, text/fill/stroke/effects/auto-layout edits, create frame/text/shape/image, group/delete, selection & zoom
 - **AI layer rename** — semantic names on a clone via OpenAI-compatible vision API
 - **AI visual grouping** — nested group plan on a clone, editable JSON before apply
 - **GitHub version checks** — `releases/version.json` on `main` (no CDN)
@@ -54,7 +55,7 @@ pnpm start:mcp
 # or: pnpm --filter figma-agent-mcp start
 ```
 
-Default bridge port: `1998` (override with `FIGMA_AGENT_MCP_PORT`).
+Default bridge port: from [`bridge.config.json`](./bridge.config.json) (synced into MCP, plugin UI, and `manifest.json` on build). Optional MCP override: `FIGMA_AGENT_MCP_PORT`.
 
 ### 3. Connect an agent (Cursor example)
 

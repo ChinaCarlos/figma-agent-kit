@@ -9,11 +9,12 @@
     "pnpm": ">=9"
   },
   "scripts": {
-    "dev": "pnpm --filter figma-agent-plugin dev",
-    "build": "pnpm --filter figma-agent-plugin build",
-    "dev:mcp": "pnpm --filter figma-agent-mcp dev",
-    "build:mcp": "pnpm --filter figma-agent-mcp build",
-    "build:all": "pnpm -r --filter figma-agent-plugin --filter figma-agent-mcp run build",
+    "sync:bridge": "node ./scripts/sync-bridge-config.mjs",
+    "dev": "pnpm sync:bridge && pnpm --filter figma-agent-plugin dev",
+    "build": "pnpm sync:bridge && pnpm --filter figma-agent-plugin build",
+    "dev:mcp": "pnpm sync:bridge && pnpm --filter figma-agent-mcp dev",
+    "build:mcp": "pnpm sync:bridge && pnpm --filter figma-agent-mcp build",
+    "build:all": "pnpm sync:bridge && pnpm -r --filter figma-agent-plugin --filter figma-agent-mcp run build",
     "start:mcp": "pnpm --filter figma-agent-mcp start"
   },
   "license": "MIT",

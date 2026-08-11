@@ -4,45 +4,49 @@ Tools exposed by **figma-agent-mcp**. Unless noted, calls are forwarded to the o
 
 Optional common argument: `fileKey` — select which connected file to use.
 
+Many write tools accept either **flat** fields (`name`, `x`, `visible`, …) or a nested `properties` object (merged into flat params on the plugin side).
+
+When `nodeIds` is omitted for screenshot / metadata / design context / zoom, the plugin falls back to the **current selection**.
+
 ## Meta
 
 | Tool | Description |
 |------|-------------|
-| `list_files` | List Figma files currently connected to the bridge |
-| `save_screenshots` | Call `get_screenshot` and write PNG files to disk (optional compress) |
+| `list_files` | List Figma files currently connected to the bridge (works on leader and follower) |
+| `save_screenshots` | Call `get_screenshot` and write PNG files to disk (binary path, optional compress) |
 
 ## Read
 
 | Tool | Description |
 |------|-------------|
-| `get_document` | Document / page overview |
+| `get_document` | Current page tree overview (`depth` optional) |
 | `get_selection` | Current selection |
-| `get_node` | Serialize node(s) by id |
-| `get_styles` | Local styles (best effort) |
-| `get_metadata` | File / page metadata |
-| `get_design_context` | Lightweight design context for agents |
-| `get_variable_defs` | Variables (best effort) |
-| `get_screenshot` | Raster export (PNG) of node(s) |
+| `get_node` | Serialize node(s) by id (`depth` optional) |
+| `get_styles` | Local paint / text / effect styles |
+| `get_metadata` | Lightweight id/name/type/size |
+| `get_design_context` | Serialized nodes for agent context |
+| `get_variable_defs` | Local variable collections and variables |
+| `get_screenshot` | Raster export of node(s); wire uses raw PNG bytes (MsgPack bin), agent result is base64 |
 
 ## Write / mutate
 
 | Tool | Description |
 |------|-------------|
-| `set_node_visibility` | Show / hide nodes |
-| `set_text_content` | Set text characters |
-| `set_text_properties` | Font / size / etc. when supported |
-| `set_node_properties` | Name, position, opacity, etc. |
-| `set_solid_fill` | Solid paint |
-| `set_gradient_fill` | Gradient paint |
-| `set_effects` | Shadows / blurs |
-| `set_stroke_properties` | Stroke |
-| `set_auto_layout` | Auto-layout props |
+| `set_node_visibility` | Show / hide nodes (`visible`) |
+| `set_text_content` | Set text characters (`text`) |
+| `set_text_properties` | Font size / family / style / align / spacing |
+| `set_node_properties` | Name, position, size, opacity, rotation |
+| `set_solid_fill` | Solid paint (`color: {r,g,b,a?}`, 0–1 or 0–255) |
+| `set_gradient_fill` | Gradient fill (`gradientStops`, optional `gradientType`) |
+| `set_effects` | Shadows / blurs (`effects` array) |
+| `set_stroke_properties` | Stroke weight / align / color |
+| `set_auto_layout` | Auto-layout on frames |
 | `create_frame` | Create a frame |
 | `create_text` | Create a text node |
-| `create_shape` | Create a shape |
-| `create_image` | Create an image node (when supported) |
+| `create_shape` | Create `RECTANGLE` / `ELLIPSE` / `LINE` / `POLYGON` / `STAR` |
+| `create_image` | Create a rectangle with image fill from base64 `imageData` |
 | `duplicate_nodes` | Duplicate |
-| `reparent_nodes` | Move in hierarchy |
+| `reparent_nodes` | Move in hierarchy (`parentId`, optional `index`) |
 | `group_nodes` | Group |
 | `ungroup_node` | Ungroup |
 | `set_selection` | Change selection |

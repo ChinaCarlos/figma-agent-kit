@@ -52,9 +52,12 @@ export class Node {
     throw new Error("Node has no active role");
   }
 
-  listFiles(): { fileKey: string; fileName: string }[] {
+  async listFiles(): Promise<{ fileKey: string; fileName: string }[]> {
     if (this.role === Role.Leader && this.leader) {
       return this.leader.getBridge().listFiles();
+    }
+    if (this.role === Role.Follower && this.follower) {
+      return this.follower.listFiles();
     }
     return [];
   }
